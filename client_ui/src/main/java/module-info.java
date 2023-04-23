@@ -7,8 +7,10 @@ module itmo.lab8.client_ui {
             requires org.kordamp.bootstrapfx.core;
     requires chunker;
 
-    opens itmo.lab8.client_ui to javafx.fxml;
-    exports itmo.lab8.client_ui;
-    exports itmo.lab8.client_ui.ui.controllers;
-    opens itmo.lab8.client_ui.ui.controllers to javafx.fxml;
+    opens itmo.lab8 to javafx.fxml;
+    exports itmo.lab8;
+    exports itmo.lab8.ui.controllers;
+    opens itmo.lab8.ui.controllers to javafx.fxml;
+    exports itmo.lab8.ui;
+    opens itmo.lab8.ui to javafx.fxml;
 }

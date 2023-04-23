@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" prefHeight="235.0" prefWidth="223.0" spacing="20.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="itmo.lab8.ui.controllers.HelloController">
+  <padding>
+    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+  </padding>
+
+  <Label fx:id="welcomeText" prefWidth="35.0" />
+   <Button layoutX="93.0" layoutY="199.0" onAction="#onHelloButtonClick" text="Sign up" />
+  <Button onAction="#onHelloButtonClick" text="Sign in" />
+   <HBox prefHeight="160.0" prefWidth="182.0" />
+</VBox>

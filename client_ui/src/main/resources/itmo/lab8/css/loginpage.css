@@ -1,0 +1,31 @@
+#signUpButton:hover {
+    -fx-background-color: #303030!important;
+}
+
+#signUpButton:pressed {
+    -fx-background-color: #252525!important;
+}
+
+#passwordField {
+    -fx-text-fill: #dadada;
+}
+
+#loginField {
+    -fx-text-fill: #dadada;
+}
+
+#signInButton {
+    -fx-background-color: #474747!important;
+}
+
+#signUpButton {
+    -fx-background-color: #474747!important;
+}
+
+#signInButton:hover {
+    -fx-background-color: #303030!important;
+}
+
+#signInButton:pressed {
+    -fx-background-color: #252525!important;
+}
