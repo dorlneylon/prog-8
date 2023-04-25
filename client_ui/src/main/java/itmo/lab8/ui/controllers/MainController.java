@@ -8,7 +8,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -18,7 +17,7 @@ import java.io.IOException;
 
 public class MainController {
 
-    private SceneManager sceneManager;
+    private final SceneManager sceneManager;
     @FXML
     private ListView<CommandButton> commandList;
 
