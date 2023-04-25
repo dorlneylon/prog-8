@@ -3,6 +3,7 @@ package itmo.lab8;
 import itmo.lab8.core.ClientCore;
 import itmo.lab8.ui.SceneManager;
 import itmo.lab8.ui.controllers.AuthController;
+import itmo.lab8.ui.types.UTF8Control;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -10,14 +11,18 @@ import javafx.stage.Stage;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.ResourceBundle;
 
 public class ClientMain extends Application {
+    public static System.Logger log = System.getLogger(ClientMain.class.getName());
     private static final InetAddress serverAddress;
     private static final int serverPort = 5050;
 
     static {
         try {
-            serverAddress = InetAddress.getLocalHost();
+            serverAddress = InetAddress.getByName("192.168.137.234");
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
         }
@@ -42,10 +47,10 @@ public class ClientMain extends Application {
         AuthController authController = new AuthController(sceneManager);
         fxmlLoader.setController(authController);
         Scene scene = new Scene(fxmlLoader.load());
-        scene.getStylesheets().add(ClientMain.class.getResource("css/loginpage.css").toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(ClientMain.class.getResource("css/loginpage.css")).toExternalForm());
         sceneManager.showLoginScene();
 
-        stage.setTitle("Authentification");
+        stage.setTitle("Authentication");
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();

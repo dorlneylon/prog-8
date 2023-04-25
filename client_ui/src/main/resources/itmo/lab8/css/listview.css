@@ -1,0 +1,27 @@
+.list-view {
+    /* Set the background color of the list view to #363636 */
+    -fx-background-color: #404040;
+}
+
+.list-cell {
+    /* Set the background color of each cell to #474747 */
+    -fx-background-color: #404040;
+    -fx-font-size: 16px;
+    -fx-text-fill: #FFFFFF;
+}
+.list-view .scroll-bar {
+    /* Set the background color of the vertical scroll bar to #C0C0C0 */
+    -fx-background-color: #404040;
+}
+
+.list-view .scroll-bar .thumb{
+    -fx-background-color: #4d4d4d;
+}
+
+.list-cell:hover {
+    -fx-background-color: #333333;
+}
+
+.list-cell:pressed {
+    -fx-background-color: #252525;
+}

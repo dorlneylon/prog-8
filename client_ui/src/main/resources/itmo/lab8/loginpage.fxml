@@ -32,36 +32,65 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 
-<?import javafx.scene.Cursor?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.effect.Blend?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<VBox prefHeight="355.0" prefWidth="265.0" style="-fx-background-color: #363636;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
-  <children>
-    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="366.0" prefWidth="257.0" VBox.vgrow="ALWAYS">
-      <children>
-        <Label alignment="CENTER" contentDisplay="CENTER" layoutX="29.0" layoutY="61.0" style="&#10;" text="Login or register to proceed" textAlignment="CENTER" textFill="#dadada" textOverrun="CLIP" wrapText="false">
-          <font>
-            <Font size="18.0" />
-          </font>
-               <effect>
-                  <Blend />
-               </effect>
-               <cursor>
-                  <Cursor fx:constant="DEFAULT" />
-               </cursor>
+<VBox alignment="CENTER" focusTraversable="true" prefHeight="372.0" prefWidth="276.0" style="-fx-background-color: #363636;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+    <VBox alignment="TOP_CENTER" fillWidth="false" prefHeight="323.0" prefWidth="242.0" snapToPixel="false" spacing="50.0">
+        <VBox.margin>
+            <Insets bottom="30.0" left="20.0" right="20.0" top="40.0" />
+        </VBox.margin>
+        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="237.0" style="&#10;" text="Login or register to proceed" textAlignment="CENTER" textFill="#dadada" textOverrun="CLIP">
+            <font>
+                <Font size="18.0" />
+            </font>
+            <effect>
+                <Blend />
+            </effect>
+            <cursor>
+                <Cursor fx:constant="DEFAULT" />
+            </cursor>
+            <VBox.margin>
+                <Insets right="5.0" top="10.0" />
+            </VBox.margin>
         </Label>
-            <Button fx:id="signUpButton" layoutX="42.0" onAction="#onSignUpButtonClick" layoutY="261.0" mnemonicParsing="false" style="-fx-background-color: #474747;" text="Sign Up" textFill="#dadada" />
-            <Button fx:id="signInButton" layoutX="169.0" onAction="#onSignInButtonClick" layoutY="261.0" mnemonicParsing="false" style="-fx-background-color: #474747;" text="Sign In" textFill="#dadada" />
-            <PasswordField fx:id="passwordField" layoutX="29.0" layoutY="191.0" prefHeight="26.0" prefWidth="207.0" promptText="Password" style="-fx-background-color: #474747;" />
-            <TextField fx:id="loginField" layoutX="29.0" layoutY="126.0" prefHeight="26.0" prefWidth="207.0" promptText="Login" style="-fx-background-color: #474747;" />
-      </children>
-    </AnchorPane>
-  </children>
+        <VBox prefHeight="82.0" prefWidth="215.0" spacing="25.0">
+            <TextField fx:id="loginField" prefHeight="26.0" prefWidth="207.0" promptText="Login" style="-fx-background-color: #474747;">
+                <VBox.margin>
+                    <Insets />
+                </VBox.margin>
+            </TextField>
+            <PasswordField fx:id="passwordField" prefHeight="26.0" prefWidth="207.0" promptText="Password" style="-fx-background-color: #474747;">
+                <VBox.margin>
+                    <Insets />
+                </VBox.margin>
+            </PasswordField>
+        </VBox>
+        <HBox alignment="CENTER" prefHeight="37.0" prefWidth="280.0" spacing="50.0">
+            <VBox.margin>
+                <Insets left="-5.0" top="-5.0" />
+            </VBox.margin>
+            <Button fx:id="signUpButton" mnemonicParsing="false" onAction="#onSignUpButtonClick" prefHeight="25.0" prefWidth="80.0" style="-fx-background-color: #474747;" text="Sign Up" textFill="#dadada" />
+            <Button fx:id="signInButton" mnemonicParsing="false" onAction="#onSignInButtonClick" prefHeight="25.0" prefWidth="80.0" style="-fx-background-color: #474747;" text="Sign In" textFill="#dadada">
+                <HBox.margin>
+                    <Insets />
+                </HBox.margin>
+            </Button>
+        </HBox>
+      <Label fx:id="statusLabel" alignment="CENTER" prefHeight="32.0" prefWidth="207.0" textFill="#ff2323">
+         <effect>
+            <Blend />
+         </effect>
+         <cursor>
+            <Cursor fx:constant="DEFAULT" />
+         </cursor>
+         <font>
+            <Font size="13.0" />
+         </font>
+      </Label>
+    </VBox>
 </VBox>

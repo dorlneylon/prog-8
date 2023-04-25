@@ -3,6 +3,7 @@ package itmo.lab8.commands;
 import itmo.lab8.commands.implemented.*;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public enum CommandType implements Serializable {
     CLEAR(ClearCommand.class, "clear: clear the collection"),
@@ -38,4 +39,19 @@ public enum CommandType implements Serializable {
     public String getDescription() {
         return description;
     }
+
+    public static ArrayList<CommandType> getCommands() {
+        ArrayList<CommandType> commands = new ArrayList<>();
+        commands.add(SHOW);
+        commands.add(EXECUTE_SCRIPT);
+        commands.add(INFO);
+        commands.add(INSERT);
+        commands.add(REMOVE_GREATER);
+        commands.add(REMOVE_ALL_BY_MPAA_RATING);
+        commands.add(REPLACE_IF_LOWER);
+        commands.add(REMOVE_KEY);
+        commands.add(EXIT);
+        return commands;
+    }
+
 }
