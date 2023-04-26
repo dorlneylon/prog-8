@@ -31,6 +31,10 @@ public class AuthController {
     protected void onSignUpButtonClick(ActionEvent event) {
         String login = loginField.getText();
         String password = passwordField.getText();
+        if (login.isEmpty() || password.isEmpty()) {
+            statusLabel.setText("Логин или пароль не заполнены!");
+            return;
+        }
         Task<Boolean> task = new Task<>() {
             @Override
             protected Boolean call() throws Exception {

@@ -81,16 +81,16 @@
                 </HBox.margin>
             </Button>
         </HBox>
-      <Label fx:id="statusLabel" alignment="CENTER" prefHeight="32.0" prefWidth="207.0" textFill="#ff2323">
-         <effect>
-            <Blend />
-         </effect>
-         <cursor>
-            <Cursor fx:constant="DEFAULT" />
-         </cursor>
-         <font>
-            <Font size="13.0" />
-         </font>
-      </Label>
+        <Label fx:id="statusLabel" alignment="CENTER" prefHeight="32.0" prefWidth="207.0" textFill="#ff2323">
+            <effect>
+                <Blend />
+            </effect>
+            <cursor>
+                <Cursor fx:constant="DEFAULT" />
+            </cursor>
+            <font>
+                <Font size="13.0" />
+            </font>
+        </Label>
     </VBox>
 </VBox>

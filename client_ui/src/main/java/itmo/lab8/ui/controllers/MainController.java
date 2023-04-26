@@ -14,6 +14,8 @@ import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class MainController {
 
@@ -29,8 +31,11 @@ public class MainController {
     public void initialize() {
         initListView();
         ObservableList<CommandButton> items = commandList.getItems();
+        ResourceBundle resources = ResourceBundle.getBundle("itmo.lab8.locale");
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("loginpage.fxml"), resources);
         for (CommandType type : CommandType.getCommands()) {
             CommandButton label = new CommandButton(type);
+            label.setText(resources.getString(type.name()));
             items.add(label);
         }
         commandList.setItems(items);
@@ -60,6 +65,7 @@ public class MainController {
                 CommandButton clickedBtn = commandList.getItems().get(index);
                 switch (clickedBtn.getType()) {
                     case SHOW -> showHandler();
+                    case INSERT -> Locale.setDefault(new Locale("en"));
                     case EXIT -> System.exit(0);
                 }
             }
