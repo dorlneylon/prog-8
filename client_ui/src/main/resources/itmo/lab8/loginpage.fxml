@@ -44,7 +44,7 @@
         <VBox.margin>
             <Insets bottom="30.0" left="20.0" right="20.0" top="40.0" />
         </VBox.margin>
-        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="237.0" style="&#10;" text="Login or register to proceed" textAlignment="CENTER" textFill="#dadada" textOverrun="CLIP">
+        <Label fx:id="login_upper_label" alignment="CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="237.0" style="&#10;" text="Login or register to proceed" textAlignment="CENTER" textFill="#dadada" textOverrun="CLIP">
             <font>
                 <Font size="18.0" />
             </font>

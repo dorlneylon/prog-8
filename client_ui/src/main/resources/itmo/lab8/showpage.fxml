@@ -32,23 +32,57 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox prefHeight="617.0" prefWidth="995.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
   <children>
-      <TableView id="showTable" fx:id="showTable" prefHeight="644.0" prefWidth="1063.0" style="-fx-background-color: #363636;">
-        <columns>
-          <TableColumn fx:id="tableIdColumn" editable="false" prefWidth="70.70130491256714" resizable="false" style="-fx-background-color: #474747;" text="id" />
-          <TableColumn fx:id="tableNameColumn" editable="false" prefWidth="290.213134765625" resizable="false" style="-fx-background-color: #474747;" text="name" />
-            <TableColumn fx:id="tableCoordsColumn" editable="false" prefWidth="112.03265380859375" resizable="false" style="-fx-background-color: #474747;" text="Coordinates" />
-            <TableColumn fx:id="tableDateColumn" editable="false" prefWidth="111.13217163085938" resizable="false" style="-fx-background-color: #474747;" text="Creation Date" />
-            <TableColumn fx:id="tableOscarsColumn" editable="false" prefWidth="70.99102783203125" resizable="false" style="-fx-background-color: #474747;" text="Oscars" />
-            <TableColumn fx:id="tableGenreColumn" editable="false" prefWidth="67.3892822265625" resizable="false" style="-fx-background-color: #474747;" text="Genre" />
-            <TableColumn fx:id="tableMpaaColumn" editable="false" prefWidth="98.14111328125" resizable="false" style="-fx-background-color: #474747;" text="MPAA" />
-            <TableColumn fx:id="tableDirectorColumn" editable="false" prefWidth="172.990966796875" resizable="false" style="-fx-background-color: #474747;" text="Director" />
-        </columns>
-      </TableView>
+    <TableView id="showTable" fx:id="showTable" prefHeight="644.0" prefWidth="1063.0" style="-fx-background-color: #363636;">
+      <columns>
+        <TableColumn fx:id="idColumn" editable="false" prefWidth="70.70130491256714" resizable="false" style="-fx-background-color: #474747;" text="id" />
+        <TableColumn fx:id="nameColumn" editable="false" prefWidth="290.213134765625" resizable="false" style="-fx-background-color: #474747;" text="name" />
+        <TableColumn fx:id="coordinatesColumn" editable="false" prefWidth="112.03265380859375" resizable="false" style="-fx-background-color: #474747;" text="Coordinates" />
+        <TableColumn fx:id="creationDateColumn" editable="false" prefWidth="111.13217163085938" resizable="false" style="-fx-background-color: #474747;" text="Creation Date" />
+        <TableColumn fx:id="oscarsColumn" editable="false" prefWidth="70.99102783203125" resizable="false" style="-fx-background-color: #474747;" text="Oscars" />
+        <TableColumn fx:id="genreColumn" editable="false" prefWidth="67.3892822265625" resizable="false" style="-fx-background-color: #474747;" text="Genre" />
+        <TableColumn fx:id="mpaaColumn" editable="false" prefWidth="98.14111328125" resizable="false" style="-fx-background-color: #474747;" text="MPAA" />
+        <TableColumn fx:id="directorNameColumn" editable="false" prefWidth="172.990966796875" resizable="false" style="-fx-background-color: #474747;" text="Director" />
+      </columns>
+    </TableView>
+      <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #474747; -fx-padding: 5px;">
+         <children>
+            <Label fx:id="filter_by_label" prefHeight="28.0" prefWidth="79.0" text="Фильтр по" textFill="#dadada" />
+            <ChoiceBox fx:id="filter_options" prefWidth="150.0" style="-fx-background-color: #555555;" />
+            <Label prefHeight="37.0" prefWidth="19.0" text="   :" textFill="WHITE" />
+            <TextField fx:id="filter_criteria" style="-fx-background-color: #555555;">
+               <HBox.margin>
+                  <Insets right="10.0" />
+               </HBox.margin>
+            </TextField>
+            <Button fx:id="apply_button" mnemonicParsing="false" style="-fx-background-color: #555555;" text="Применить" textFill="#dadada">
+               <HBox.margin>
+                  <Insets right="10.0" />
+               </HBox.margin>
+               <opaqueInsets>
+                  <Insets right="10.0" />
+               </opaqueInsets>
+            </Button>
+            <Button fx:id="visualise_button" mnemonicParsing="false" style="-fx-background-color: #555555;" text="Визуализация" textFill="#dadada">
+               <opaqueInsets>
+                  <Insets left="10.0" />
+               </opaqueInsets>
+               <HBox.margin>
+                  <Insets left="370.0" />
+               </HBox.margin>
+            </Button>
+         </children>
+      </HBox>
   </children>
 </VBox>

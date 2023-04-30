@@ -1,8 +1,13 @@
 package itmo.lab8.ui.controllers;
 
+import com.dlsc.formsfx.view.controls.SimpleTextControl;
 import itmo.lab8.connection.Authenticator;
 import itmo.lab8.ui.SceneManager;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.StringBinding;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -11,15 +16,19 @@ import javafx.scene.control.TextField;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class AuthController {
+    private final ResourceBundle resources = ResourceBundle.getBundle("itmo.lab8.locale");
     @FXML
     private TextField loginField;
     @FXML
     private TextField passwordField;
-
     @FXML
     private Label statusLabel;
+    @FXML
+    private Label login_upper_label;
 
     private final SceneManager sceneManager;
 
@@ -32,7 +41,7 @@ public class AuthController {
         String login = loginField.getText();
         String password = passwordField.getText();
         if (login.isEmpty() || password.isEmpty()) {
-            statusLabel.setText("Логин или пароль не заполнены!");
+            statusLabel.setText(resources.getString("login_or_password_is_empty"));
             return;
         }
         Task<Boolean> task = new Task<>() {
@@ -51,7 +60,7 @@ public class AuthController {
                         throw new RuntimeException(ex);
                     }
                 } else {
-                    statusLabel.setText("Данный логин уже занят!");
+                    statusLabel.setText(resources.getString("login_is_already_taken"));
                 }
             });
         });
@@ -68,7 +77,7 @@ public class AuthController {
 //            throw new RuntimeException(e);
 //        }
         if (login.isEmpty() || password.isEmpty()) {
-            statusLabel.setText("Логин или пароль не заполнены!");
+            statusLabel.setText(resources.getString("login_or_password_is_empty"));
             return;
         }
         Thread thread = new Thread(() -> {
@@ -86,7 +95,7 @@ public class AuthController {
             Boolean finalStatus = status;
             Platform.runLater(() -> {
                 if (finalStatus == null) {
-                    statusLabel.setText("Сервер не отвечает...");
+                    statusLabel.setText(resources.getString("server_is_not_available"));
                     return;
                 }
                 if (finalStatus) {
@@ -96,7 +105,7 @@ public class AuthController {
                         throw new RuntimeException(ex);
                     }
                 } else {
-                    statusLabel.setText("Неверный логин или пароль");
+                    statusLabel.setText(resources.getString("login_or_password_is_incorrect"));
                 }
             });
         });
@@ -106,6 +115,9 @@ public class AuthController {
 
     @FXML
     public void initialize() {
+        loginField.setPromptText(resources.getString("login_input"));
+        passwordField.setPromptText(resources.getString("pass_input"));
+        login_upper_label.setText(resources.getString("login_upper_label"));
         loginField.textProperty().addListener((observable, oldValue, newValue) -> statusLabel.setText(""));
         passwordField.textProperty().addListener((observable, oldValue, newValue) -> statusLabel.setText(""));
     }

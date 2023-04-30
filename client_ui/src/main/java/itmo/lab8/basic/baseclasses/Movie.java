@@ -181,6 +181,9 @@ public class Movie implements Comparable<Movie>, Serializable {
     public Movie() {
     }
 
+    public String getDirectorName() {
+        return director.getName();
+    }
 
     /**
      * @return the amount of Oscars won by the movie
@@ -190,6 +193,10 @@ public class Movie implements Comparable<Movie>, Serializable {
         return oscarsCount;
     }
 
+    public MpaaRating getMpaaRating() {
+        return mpaaRating;
+    }
+
     /**
      * @return the unique ID of the movie
      * @see Movie#id
@@ -197,6 +204,10 @@ public class Movie implements Comparable<Movie>, Serializable {
      */
     public Long getId() {
         return id;
+    }
+
+    public Long getOscars() {
+        return oscarsCount;
     }
 
     /**
