@@ -2,27 +2,30 @@ package itmo.lab8.connection;
 
 import itmo.chunker.ChuckReceiver;
 import itmo.chunker.Chunker;
+import itmo.lab8.basic.utils.serializer.Serializer;
 import itmo.lab8.basic.utils.terminal.Colors;
+import itmo.lab8.commands.response.Response;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 /**
  * Connector is used to connect to a remote server
  */
-public class Connector {
+public class ConnectorSingleton {
+
+    private static ConnectorSingleton instance;
     private final static int socketTimeout = 16000;
     /**
      * Socket for UDP connection
      */
-    private static DatagramSocket socket;
-    private final InetAddress address;
-    private final int port;
+    private DatagramSocket socket;
+    private InetAddress address;
+    private int port;
     private int chunkSize;
 
 
@@ -32,11 +35,24 @@ public class Connector {
      * @param port server port
      * @throws Exception Socket exception
      */
-    public Connector(InetAddress address, int port) throws Exception {
+    public void setConnectorValues(InetAddress address, int port) throws Exception {
         socket = new DatagramSocket();
         socket.setSoTimeout(socketTimeout);
         this.address = address;
         this.port = port;
+    }
+
+    public static ConnectorSingleton newInstance(InetAddress address, int port) throws Exception {
+        instance = new ConnectorSingleton();
+        instance.setConnectorValues(address, port);
+        return instance;
+    }
+
+    public static ConnectorSingleton getInstance() {
+        if (instance == null) {
+            instance = new ConnectorSingleton();
+        }
+        return instance;
     }
 
     /**
@@ -44,14 +60,14 @@ public class Connector {
      *
      * @return localhost port
      */
-    public static int getPort() {
+    public int getPort() {
         return socket.getLocalPort();
     }
 
     public void setBufferSize(int size) throws SocketException {
         socket.setReceiveBufferSize(size);
         socket.setSendBufferSize(size);
-        this.chunkSize = 1024;
+        chunkSize = 1024;
     }
 
     /**
@@ -91,7 +107,7 @@ public class Connector {
      * @return string message
      * @throws IOException Receiving exception
      */
-    public String receive() throws IOException {
+    public Response receive() throws IOException {
         ChuckReceiver receiver = new ChuckReceiver();
         byte[] buffer = new byte[chunkSize + 4];
         DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
@@ -99,6 +115,6 @@ public class Connector {
             socket.receive(packet);
             receiver.add(Arrays.copyOf(packet.getData(), packet.getLength()));
         } while (!receiver.isReceived());
-        return new String(receiver.getAllChunks(), StandardCharsets.UTF_8);
+        return (Response) Serializer.deserialize(receiver.getAllChunks());
     }
 }

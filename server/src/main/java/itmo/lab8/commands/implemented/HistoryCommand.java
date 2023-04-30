@@ -2,9 +2,9 @@ package itmo.lab8.commands.implemented;
 
 import itmo.lab8.commands.Action;
 import itmo.lab8.server.UdpServer;
-import itmo.lab8.server.response.Color;
-import itmo.lab8.server.response.Response;
-import itmo.lab8.server.response.ResponseType;
+import itmo.lab8.commands.response.Color;
+import itmo.lab8.commands.response.Response;
+import itmo.lab8.commands.response.ResponseType;
 
 import java.util.Arrays;
 

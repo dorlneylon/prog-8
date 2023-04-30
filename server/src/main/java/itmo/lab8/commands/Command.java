@@ -1,8 +1,8 @@
 package itmo.lab8.commands;
 
 import itmo.lab8.server.ServerLogger;
-import itmo.lab8.server.response.Response;
-import itmo.lab8.server.response.ResponseType;
+import itmo.lab8.commands.response.Response;
+import itmo.lab8.commands.response.ResponseType;
 
 import java.io.Serial;
 import java.io.Serializable;

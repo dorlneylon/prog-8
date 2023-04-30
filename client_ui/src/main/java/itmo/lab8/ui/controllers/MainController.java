@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class MainController {
@@ -101,10 +102,14 @@ public class MainController {
             FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("showpage.fxml"));
             Stage stage = new Stage();
             stage.setTitle("Show");
-            fxmlLoader.setController(new ShowController(sceneManager));
+            ShowController controller = new ShowController(sceneManager);
+            fxmlLoader.setController(controller);
             Scene scene = new Scene(fxmlLoader.load());
             stage.setScene(scene);
-            scene.getStylesheets().add(ClientMain.class.getResource("css/showpage.css").toExternalForm());
+            scene.getStylesheets().add(Objects.requireNonNull(ClientMain.class.getResource("css/showpage.css")).toExternalForm());
+            stage.setOnCloseRequest(event -> {
+                controller.getMainThread().interrupt();
+            });
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

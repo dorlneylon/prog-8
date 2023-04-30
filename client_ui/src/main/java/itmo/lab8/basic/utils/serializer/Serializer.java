@@ -1,18 +1,14 @@
 package itmo.lab8.basic.utils.serializer;
 
-
 import itmo.lab8.commands.Command;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 
 /**
- * CommandSerializer is used to serialize a command
+ * Serializer is used to serialize a command
  * {@link Command}
  */
-public final class CommandSerializer {
+public final class Serializer {
     /**
      * Serializes object and returns the serialized object as a byte array
      *
@@ -41,5 +37,22 @@ public final class CommandSerializer {
             System.err.println("Unable to close ObjectOutputStream");
         }
         return byteArrayOutputStream.toByteArray();
+    }
+
+    /**
+     * Deserializes a byte array into an object.
+     *
+     * @param bytes The byte array to deserialize.
+     * @return The deserialized object.
+     */
+    public static Object deserialize(byte[] bytes) {
+        try {
+            ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+            ObjectInputStream ois = new ObjectInputStream(bis);
+            return ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Unable to deserialize: " + e);
+            return null;
+        }
     }
 }

@@ -4,7 +4,7 @@ import itmo.lab8.basic.baseclasses.builders.annotations.Generated;
 import itmo.lab8.basic.baseenums.MovieGenre;
 import itmo.lab8.basic.baseenums.MpaaRating;
 import itmo.lab8.server.UdpServer;
-import itmo.lab8.server.response.Color;
+import itmo.lab8.commands.response.Color;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.format.DateTimeFormatter;

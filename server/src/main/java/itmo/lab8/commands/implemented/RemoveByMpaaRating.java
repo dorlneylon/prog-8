@@ -3,8 +3,8 @@ package itmo.lab8.commands.implemented;
 import itmo.lab8.basic.baseenums.MpaaRating;
 import itmo.lab8.commands.Action;
 import itmo.lab8.server.UdpServer;
-import itmo.lab8.server.response.Response;
-import itmo.lab8.server.response.ResponseType;
+import itmo.lab8.commands.response.Response;
+import itmo.lab8.commands.response.ResponseType;
 
 /**
  * This class implements the Action interface and is used to remove elements from the collection by their MPAA rating.

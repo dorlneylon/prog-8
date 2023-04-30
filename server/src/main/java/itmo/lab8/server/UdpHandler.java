@@ -2,8 +2,9 @@ package itmo.lab8.server;
 
 import itmo.chunker.ChuckReceiver;
 import itmo.chunker.Chunker;
-import itmo.lab8.server.response.Response;
-import itmo.lab8.server.response.ResponseType;
+import itmo.lab8.commands.response.Response;
+import itmo.lab8.commands.response.ResponseType;
+import itmo.lab8.utils.serializer.Serializer;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -58,7 +59,7 @@ public class UdpHandler implements Runnable {
             } catch (Exception e) {
                 // If something goes wrong, send an error message to the client
                 try {
-                    Chunker chunker = new Chunker(new Response("ServerError: " + e.getMessage(), ResponseType.ERROR).getMessage().getBytes());
+                    Chunker chunker = new Chunker(Serializer.serialize(new Response("ServerError: " + e.getMessage(), ResponseType.ERROR)), 1024);
                     var iterator = chunker.newIterator();
                     while (iterator.hasNext()) {
                         keyChannel.send(ByteBuffer.wrap(iterator.next()), clientAddress);

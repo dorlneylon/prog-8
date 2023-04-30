@@ -3,8 +3,8 @@ package itmo.lab8.commands.implemented;
 import itmo.lab8.basic.baseclasses.Movie;
 import itmo.lab8.commands.Action;
 import itmo.lab8.server.UdpServer;
-import itmo.lab8.server.response.Response;
-import itmo.lab8.server.response.ResponseType;
+import itmo.lab8.commands.response.Response;
+import itmo.lab8.commands.response.ResponseType;
 
 /**
  * This class implements the {@link Action} interface and is used to remove a {@link Movie} from the {@link UdpServer#collection}.

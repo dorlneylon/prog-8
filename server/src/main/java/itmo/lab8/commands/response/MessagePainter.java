@@ -1,4 +1,4 @@
-package itmo.lab8.server.response;
+package itmo.lab8.commands.response;
 
 
 public final class MessagePainter {

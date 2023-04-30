@@ -6,7 +6,10 @@ import itmo.lab8.basic.baseenums.MpaaRating;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * The MovieCol class is a collection based on HashMap that extends the MHMap class.

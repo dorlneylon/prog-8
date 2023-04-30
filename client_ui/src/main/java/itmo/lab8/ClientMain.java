@@ -1,9 +1,8 @@
 package itmo.lab8;
 
-import itmo.lab8.core.ClientCore;
+import itmo.lab8.core.AppCore;
 import itmo.lab8.ui.SceneManager;
 import itmo.lab8.ui.controllers.AuthController;
-import itmo.lab8.ui.types.UTF8Control;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -13,7 +12,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.ResourceBundle;
 
 public class ClientMain extends Application {
     public static System.Logger log = System.getLogger(ClientMain.class.getName());
@@ -41,9 +39,8 @@ public class ClientMain extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         Locale.setDefault(new Locale("ru"));
-//        System.out.println(resourceBundle.getString("SHOW"));
-        ClientCore core = new ClientCore(serverAddress, serverPort);
-        SceneManager sceneManager = new SceneManager(core);
+        AppCore.newInstance(serverAddress, serverPort);
+        SceneManager sceneManager = new SceneManager();
         sceneManager.setStage(stage);
         FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("loginpage.fxml"));
         AuthController authController = new AuthController(sceneManager);

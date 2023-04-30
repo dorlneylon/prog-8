@@ -1,7 +1,7 @@
 package itmo.lab8.ui;
 
 import itmo.lab8.ClientMain;
-import itmo.lab8.core.ClientCore;
+import itmo.lab8.core.AppCore;
 import itmo.lab8.ui.controllers.AuthController;
 import itmo.lab8.ui.controllers.MainController;
 import javafx.fxml.FXMLLoader;
@@ -11,13 +11,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class SceneManager {
-    private final ClientCore core;
-
     private Stage stage;
-
-    public SceneManager(ClientCore core) {
-        this.core = core;
-    }
 
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -39,9 +33,7 @@ public class SceneManager {
         scene.getStylesheets().add(ClientMain.class.getResource("css/mainpage.css").toExternalForm());
         stage.setTitle("Main page");
         stage.setScene(scene);
-    }
-
-    public ClientCore getCore() {
-        return core;
+        stage.setHeight(538);
+        stage.setWidth(635);
     }
 }
