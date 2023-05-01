@@ -1,0 +1,18 @@
+.list-cell:selected {
+    -fx-background-color: #474747;
+    -fx-text-fill: #b2b2b2;
+}
+
+.list-cell {
+    -fx-background-color: #474747;
+    -fx-text-fill: #dadada;
+    -fx-border-color: #474747;
+}
+
+.combo-box {
+    -fx-border-color: #474747;
+}
+
+TextField {
+    -fx-text-fill: #dadada;
+}
