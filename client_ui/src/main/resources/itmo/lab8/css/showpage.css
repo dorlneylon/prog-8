@@ -1,3 +1,7 @@
 .table-view .column-header .label {
     -fx-text-fill: #dadada;
 }
+
+TableRow {
+    -fx-text-fill: #dadada;
+}

@@ -62,5 +62,7 @@ public final class CollectionValidator {
         connector.send(Serializer.serialize(new Request(new Command(CommandType.SERVICE, "is_user_creator %d %s".formatted(key, name)))));
         return Boolean.parseBoolean(connector.receive().getStringMessage());
     }
+
+
 }
 

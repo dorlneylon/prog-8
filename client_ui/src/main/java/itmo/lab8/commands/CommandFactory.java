@@ -142,7 +142,8 @@ public final class CommandFactory {
         return name;
     }
 
-    public static void setName(String name) {
+    public static boolean setName(String name) {
         CommandFactory.name = name;
+        return true;
     }
 }

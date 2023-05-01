@@ -66,11 +66,6 @@ public class AuthController {
     protected void onSignInButtonClick(ActionEvent event) {
         String login = loginField.getText();
         String password = passwordField.getText();
-//        try {
-//            sceneManager.showMainScene();
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
         if (login.isEmpty() || password.isEmpty()) {
             statusLabel.setText(resources.getString("login_or_password_is_empty"));
             return;

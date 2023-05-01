@@ -87,6 +87,7 @@ public class ShowController {
     private void initialize() {
         fieldInit();
         showThread = new ShowThread();
+        showThread.start();
         idColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(Math.toIntExact(cellData.getValue().getId())).asObject());
         nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
         coordinatesColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getCoordinates()));
@@ -205,7 +206,6 @@ public class ShowController {
                     }
                 }
             });
-
         }
     }
 }
