@@ -55,8 +55,6 @@ public class MainController {
                 try {
                     Label label = (Label) field.get(this);
                     label.setText(resources.getString(field.getName()));
-                    String labelText = resources.getString(field.getName());
-                    label.setText(labelText);
                 } catch (IllegalAccessException e) {
                     ClientMain.log.log(System.Logger.Level.ERROR, "Error while initializing labels: " + e.getMessage());
                 }
@@ -89,7 +87,7 @@ public class MainController {
                 CommandButton clickedBtn = commandList.getItems().get(index);
                 switch (clickedBtn.getType()) {
                     case SHOW -> showHandler();
-                    case INSERT -> Locale.setDefault(new Locale("en"));
+                    case INSERT -> insertHandler();
                     case EXIT -> System.exit(0);
                 }
             }
@@ -105,6 +103,21 @@ public class MainController {
             Scene scene = new Scene(fxmlLoader.load());
             stage.setScene(scene);
             scene.getStylesheets().add(ClientMain.class.getResource("css/showpage.css").toExternalForm());
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void insertHandler() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("insert.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("Insert");
+            fxmlLoader.setController(new InsertController(sceneManager));
+            Scene scene = new Scene(fxmlLoader.load());
+            stage.setScene(scene);
+            scene.getStylesheets().add(ClientMain.class.getResource("css/insert.css").toExternalForm());
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

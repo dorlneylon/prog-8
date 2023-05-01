@@ -99,7 +99,7 @@ public class ShowController {
         for (Field field : getClass().getDeclaredFields()) {
             if (field.isAnnotationPresent(FXML.class) && field.getType().equals(Label.class)) {
                 try {
-                    field.set(this, resources.getString(field.getName()));
+                    field.set(this, new Label(resources.getString(field.getName())));
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
