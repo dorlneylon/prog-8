@@ -1,6 +1,6 @@
 package itmo.lab8.connection;
 
-import itmo.lab8.basic.utils.serializer.CommandSerializer;
+import itmo.lab8.basic.utils.serializer.Serializer;
 import itmo.lab8.commands.Command;
 import itmo.lab8.commands.CommandType;
 import itmo.lab8.commands.Request;
@@ -14,7 +14,7 @@ import static itmo.lab8.basic.utils.strings.StringUtils.toSnakeCase;
 
 
 public class Authenticator {
-    public static String authorize(Scanner scanner, Connector connector) throws Exception {
+    public static String authorize(Scanner scanner, ConnectorSingleton connector) throws Exception {
         while (true) {
             System.out.println("sign_up or sign_in using login:password without spaces");
             System.out.println("For example: sign_up login:password");
@@ -31,8 +31,8 @@ public class Authenticator {
                 continue;
             }
             String login = toSnakeCase(matcher.group(1));
-            connector.send(CommandSerializer.serialize(new Request(new Command(CommandType.SERVICE, requisites))));
-            String response = connector.receive();
+            connector.send(Serializer.serialize(new Request(new Command(CommandType.SERVICE, requisites))));
+            String response = connector.receive().getStringMessage();
             if (response.equals("OK")) {
                 System.out.printf("Welcome, %s.\n", login);
                 return login;
@@ -41,15 +41,15 @@ public class Authenticator {
         }
     }
 
-    public static boolean register(String login, String password, Connector connector) throws Exception {
-        connector.send(CommandSerializer.serialize(new Request(new Command(CommandType.SERVICE, "sign_up " + login + ":" + password))));
-        String response = connector.receive();
+    public static boolean register(String login, String password) throws Exception {
+        ConnectorSingleton.getInstance().send(Serializer.serialize(new Request(new Command(CommandType.SERVICE, "sign_up " + login + ":" + password))));
+        String response = ConnectorSingleton.getInstance().receive().getStringMessage();
         return response.equals("OK");
     }
 
-    public static boolean login(String login, String password, Connector connector) throws Exception {
-        connector.send(CommandSerializer.serialize(new Request(new Command(CommandType.SERVICE, "sign_in " + login + ":" + password))));
-        String response = connector.receive();
+    public static boolean login(String login, String password) throws Exception {
+        ConnectorSingleton.getInstance().send(Serializer.serialize(new Request(new Command(CommandType.SERVICE, "sign_in " + login + ":" + password))));
+        String response = ConnectorSingleton.getInstance().receive().getStringMessage();
         return response.equals("OK");
     }
 }

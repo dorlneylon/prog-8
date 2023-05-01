@@ -1,13 +1,9 @@
 package itmo.lab8.ui.controllers;
 
-import com.dlsc.formsfx.view.controls.SimpleTextControl;
 import itmo.lab8.connection.Authenticator;
+import itmo.lab8.core.AppCore;
 import itmo.lab8.ui.SceneManager;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.StringBinding;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,7 +12,6 @@ import javafx.scene.control.TextField;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class AuthController {
@@ -47,7 +42,7 @@ public class AuthController {
         Task<Boolean> task = new Task<>() {
             @Override
             protected Boolean call() throws Exception {
-                return Authenticator.register(login, password, sceneManager.getCore().getConnector());
+                return Authenticator.register(login, password);
             }
         };
         task.setOnSucceeded(e -> {
@@ -82,9 +77,9 @@ public class AuthController {
         }
         Thread thread = new Thread(() -> {
             // Run the long-running operation in the background thread
-            Boolean status = false;
+            Boolean status;
             try {
-                status = Authenticator.login(login, password, sceneManager.getCore().getConnector());
+                status = Authenticator.login(login, password);
             } catch (SocketTimeoutException ste) {
                 status = null;
             } catch (Exception e) {
@@ -100,6 +95,7 @@ public class AuthController {
                 }
                 if (finalStatus) {
                     try {
+                        AppCore.getInstance().setName(login);
                         sceneManager.showMainScene();
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);

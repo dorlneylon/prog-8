@@ -2,9 +2,9 @@ package itmo.lab8.commands.implemented;
 
 import itmo.lab8.commands.Action;
 import itmo.lab8.server.UdpServer;
-import itmo.lab8.server.response.MessagePainter;
-import itmo.lab8.server.response.Response;
-import itmo.lab8.server.response.ResponseType;
+import itmo.lab8.commands.response.MessagePainter;
+import itmo.lab8.commands.response.Response;
+import itmo.lab8.commands.response.ResponseType;
 
 /**
  * InfoCommand class implements Action interface and is used to return information about the collection.

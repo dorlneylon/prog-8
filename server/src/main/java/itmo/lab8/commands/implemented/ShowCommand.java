@@ -1,31 +1,32 @@
 package itmo.lab8.commands.implemented;
 
+import itmo.lab8.basic.baseclasses.Movie;
 import itmo.lab8.commands.Action;
-import itmo.lab8.server.response.MessagePainter;
-import itmo.lab8.server.response.Response;
-import itmo.lab8.server.response.ResponseType;
+import itmo.lab8.commands.response.Response;
+import itmo.lab8.commands.response.ResponseType;
+import itmo.lab8.utils.serializer.Serializer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static itmo.lab8.server.UdpServer.collection;
-import static java.lang.Math.min;
 
 /**
  * Class that implements the {@link Action} interface and is used to show the elements of the collection.
  */
 public class ShowCommand implements Action {
 
-    private final int index;
-    private boolean isScript = false;
+    private final int offset;
 
     /**
      * Constructor for ShowCommand
      *
-     * @param index the index of the item to be shown
+     * @param offset the offset of the item to be shown
      */
-    public ShowCommand(Integer index) {
-        this.index = index;
+    public ShowCommand(Integer offset) {
+        this.offset = offset;
     }
 
     /**
@@ -38,12 +39,9 @@ public class ShowCommand implements Action {
 
     /**
      * Constructor for ShowCommand.
-     *
-     * @param isScript Boolean value indicating whether the command is being executed from a script.
      */
     public ShowCommand(Boolean isScript) {
         this();
-        this.isScript = isScript;
     }
 
     /**
@@ -53,18 +51,7 @@ public class ShowCommand implements Action {
      */
     @Override
     public Response run(String username) {
-        if (collection.isEmpty()) return new Response("Collection is empty", ResponseType.SUCCESS);
-
-        List<String> movieStrings = Arrays.stream(collection.values()).
-                map(movie -> movie.toString(username))
-                .toList();
-
-        if (isScript) {
-            String test = MessagePainter.ColoredInfoMessage(movieStrings.toString().replace("., ", ",\n"));
-            return new Response(test.substring(1, test.length() - 1), ResponseType.INFO);
-        }
-
-        String message = MessagePainter.ColoredInfoMessage(movieStrings.subList(index, min(index + 20, collection.size())).toString().replace("., ", ",\n"));
-        return new Response(message.substring(1, message.length() - 1), ResponseType.INFO);
+        ArrayList<Movie> lm = Arrays.stream(collection.values()).skip(offset).limit(20).collect(Collectors.toCollection(ArrayList::new));
+        return new Response(Serializer.serialize(lm), ResponseType.INFO);
     }
 }

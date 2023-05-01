@@ -1,6 +1,8 @@
 package itmo.lab8.commands;
 
 import itmo.chunker.Chunker;
+import itmo.lab8.commands.response.Response;
+import itmo.lab8.commands.response.ResponseType;
 import itmo.lab8.server.ServerLogger;
 import itmo.lab8.server.UdpServer;
 import itmo.lab8.utils.serializer.Serializer;
@@ -38,19 +40,21 @@ public class CommandHandler {
     public static void handlePacket(InetSocketAddress sender, byte[] bytes) throws Exception {
         Request request = (Request) Serializer.deserialize(bytes);
         if (request == null) {
-            channel.send(ByteBuffer.wrap("Unable to get request.".getBytes()), sender);
+            Response response = new Response("Unable to get request.", ResponseType.ERROR);
+            channel.send(ByteBuffer.wrap(Serializer.serialize(response)), sender);
             return;
         }
         if (!request.isUserAuthorized() && request.getCommand().getCommandType() != CommandType.SERVICE) {
-            channel.send(ByteBuffer.wrap("You are not authorized to use this command.".getBytes()), sender);
+            Response response = new Response("You are not authorized to use this command.", ResponseType.ERROR);
+            channel.send(ByteBuffer.wrap(Serializer.serialize(response)), sender);
             return;
         }
 
         // Log the command type and sender
         ServerLogger.getLogger().log(Level.INFO, "Received command %s from %s".formatted(request.getCommand().getCommandType(), request.getUserName()));
-
+        Response response = request.getCommand().execute(request.getUserName());
         // Get the output message from the command
-        byte[] output = request.getCommand().execute(request.getUserName()).getMessage().getBytes();
+        byte[] output = Serializer.serialize(response);
         // Create a Chunker object with the output message and the chunk size
         Chunker chunker = new Chunker(output, chunkSize);
         // Create an iterator for the chunks

@@ -1,4 +1,4 @@
-package itmo.lab8.server.response;
+package itmo.lab8.commands.response;
 
 public enum Color {
     GREEN("\u001b[32m"), PURPLE("\u001b[35m"), RED("\u001B[31m"), RESET("\u001B[0m");

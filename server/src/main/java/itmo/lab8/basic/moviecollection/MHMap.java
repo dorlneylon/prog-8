@@ -6,6 +6,8 @@ import itmo.lab8.server.UdpServer;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * The abstract class {@code MHMap} is a wrapper for the {@code HashMap} class.
@@ -250,7 +252,38 @@ public abstract class MHMap<K, V> {
      * @return the map associated with this object
      */
     public HashMap<K, V> getMap() {
-        return this.map;
+        synchronized (this.map) {
+            return this.map;
+        }
+    }
+
+    /**
+     *
+     *   Returns a submap,, with the given offset and limit.
+     *
+     *   @param offset The offset of the submap.
+     *   @param limit The limit of the submap.
+     *   @return A submap of the given map, with the given offset and limit.
+     */
+    public HashMap<K, V> getMap(int offset, int limit) {
+        synchronized (this.map) {
+            return (HashMap<K, V>) getSubMap(this.map, offset, limit);
+        }
+    }
+
+    /**
+     *
+     *   Returns a submap of the given {@code HashMap} with the given offset and limit.
+     *
+     *   @param <K> the type of the keys in the map
+     *   @param <V> the type of the values in the map
+     *   @param map the {@code HashMap} to get the submap from
+     *   @param offset the offset of the submap
+     *   @param limit the limit of the submap
+     *   @return a submap of the given {@code HashMap} with the given offset and limit
+     */
+    private static <K, V> Map<K, V> getSubMap(HashMap<K, V> map, int offset, int limit) {
+        return map.entrySet().stream().skip(offset).limit(limit).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     /**

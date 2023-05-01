@@ -1,14 +1,18 @@
-package itmo.lab8.server.response;
+package itmo.lab8.commands.response;
 
-import java.util.Arrays;
+import java.io.Serial;
+import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 
 /**
  * This class is used to represent server response.
  */
-public class Response {
-    private final String responseMessage;
+public class Response implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1111185098267757690L;
+    private final byte[] responseMessage;
     private final ResponseType responseType;
-    private final Object[] objects;
 
     /**
      * Constructor for Response object
@@ -17,9 +21,7 @@ public class Response {
      * @param responseType    the type of response to be sent
      */
     public Response(String responseMessage, ResponseType responseType) {
-        this.responseMessage = responseMessage;
-        this.responseType = responseType;
-        this.objects = null;
+        this(responseMessage.getBytes(), responseType);
     }
 
     /**
@@ -28,10 +30,9 @@ public class Response {
      * @param objects      An array of objects to be included in the response.
      * @param responseType The type of response.
      */
-    public Response(Object[] objects, ResponseType responseType) {
-        this.responseMessage = (objects == null) ? "" : Arrays.toString(objects);
+    public Response(byte[] objects, ResponseType responseType) {
+        this.responseMessage = objects;
         this.responseType = responseType;
-        this.objects = objects;
     }
 
     /**
@@ -39,14 +40,12 @@ public class Response {
      *
      * @return the response message with the appropriate color
      */
-    public String getMessage() {
-        if (getType() == ResponseType.SUCCESS) {
-            return Color.PURPLE + responseMessage + Color.RESET;
-        }
-        if (getType() == ResponseType.ERROR) {
-            return Color.RED + responseMessage + Color.RESET;
-        }
+    public byte[] getMessage() {
         return responseMessage;
+    }
+
+    public String getStringMessage() {
+        return new String(responseMessage, StandardCharsets.UTF_8);
     }
 
     /**

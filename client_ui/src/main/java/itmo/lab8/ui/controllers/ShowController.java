@@ -4,6 +4,13 @@ import itmo.lab8.basic.baseclasses.Coordinates;
 import itmo.lab8.basic.baseclasses.Movie;
 import itmo.lab8.basic.baseenums.MovieGenre;
 import itmo.lab8.basic.baseenums.MpaaRating;
+import itmo.lab8.basic.utils.serializer.Serializer;
+import itmo.lab8.commands.Command;
+import itmo.lab8.commands.CommandType;
+import itmo.lab8.commands.Request;
+import itmo.lab8.commands.response.Response;
+import itmo.lab8.connection.ConnectorSingleton;
+import itmo.lab8.core.AppCore;
 import itmo.lab8.ui.SceneManager;
 
 import javafx.beans.property.SimpleIntegerProperty;
@@ -17,7 +24,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.lang.reflect.Field;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class ShowController {
@@ -26,7 +35,7 @@ public class ShowController {
     @FXML
     private Label filter_by_label;
     @FXML
-    private ChoiceBox filter_options;
+    private ChoiceBox<String> filter_options;
     @FXML
     private TextField filter_criteria;
     @FXML
@@ -72,12 +81,11 @@ public class ShowController {
     @FXML
     private void initialize() {
         fieldInit();
+        showThread = new ShowThread();
         idColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(Math.toIntExact(cellData.getValue().getId())).asObject());
         nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
         coordinatesColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getCoordinates()));
-        creationDateColumn.setCellValueFactory(cellData ->
-                new SimpleStringProperty(cellData.getValue().getCreationDate()
-                        .format(DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.getDefault()))));
+        creationDateColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCreationDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.getDefault()))));
         oscarsColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(Math.toIntExact(cellData.getValue().getOscars())).asObject());
         genreColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getGenre()));
         mpaaColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getMpaaRating()));
@@ -89,7 +97,7 @@ public class ShowController {
                 if (empty || coordinates == null) {
                     setText(null);
                 } else {
-                    setText(String.format(Locale.getDefault(), "(%.2f, %.2f)", coordinates.getX(), coordinates.getY()));
+                    setText(String.format(Locale.getDefault(), "(%.2f, %d)", coordinates.getX(), coordinates.getY()));
                 }
             }
         });
@@ -99,7 +107,8 @@ public class ShowController {
         for (Field field : getClass().getDeclaredFields()) {
             if (field.isAnnotationPresent(FXML.class) && field.getType().equals(Label.class)) {
                 try {
-                    field.set(this, new Label(resources.getString(field.getName())));
+                    Label label = new Label(resources.getString(field.getName()));
+                    field.set(this, label);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
@@ -120,7 +129,7 @@ public class ShowController {
     }
 
     public void filterByCreationDate(String creationDate) {
-        showTable.setItems(movieList.filtered(movie -> movie.getCreationDate().equals(creationDate)));
+        showTable.setItems(movieList.filtered(movie -> movie.getCreationDate().toString().equals(creationDate)));
     }
 
     public void filterByOscars(int oscars) {
@@ -159,13 +168,40 @@ public class ShowController {
     }
 
     public void updateMovie(Movie movie) {
-        movieList.removeIf(m -> m.getId() == movie.getId());
+        movieList.removeIf(m -> Objects.equals(m.getId(), movie.getId()));
         movieList.add(movie);
         updateMovieList();
     }
 
     public TableView<Movie> getShowTable() {
         return showTable;
+    }
+
+    public class ShowThread extends Thread {
+        public ShowThread() {
+            super(() -> {
+                while (!Thread.currentThread().isInterrupted()) {
+                    try {
+                        ConnectorSingleton.getInstance().send(Serializer.serialize(new Request(new Command(CommandType.SHOW, 0), AppCore.getInstance().getName())));
+                        Response response = ConnectorSingleton.getInstance().receive();
+                        ArrayList<Movie> array = (ArrayList<Movie>) Serializer.deserialize(response.getMessage());
+                        if (array != null) {
+                            movieList.clear();
+                            movieList.addAll(array);
+                            updateMovieList();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+            });
+
+        }
     }
 }
 

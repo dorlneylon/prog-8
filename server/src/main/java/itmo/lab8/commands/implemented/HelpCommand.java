@@ -2,9 +2,9 @@ package itmo.lab8.commands.implemented;
 
 import itmo.lab8.commands.Action;
 import itmo.lab8.commands.CommandType;
-import itmo.lab8.server.response.MessagePainter;
-import itmo.lab8.server.response.Response;
-import itmo.lab8.server.response.ResponseType;
+import itmo.lab8.commands.response.MessagePainter;
+import itmo.lab8.commands.response.Response;
+import itmo.lab8.commands.response.ResponseType;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
