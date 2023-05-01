@@ -73,6 +73,11 @@ public class ShowController {
     private TableColumn<Movie, String> directorNameColumn;
 
     private final SceneManager sceneManager;
+    private ShowThread showThread;
+
+    public ShowThread getMainThread() {
+        return showThread;
+    }
 
     public ShowController(SceneManager sceneManager) {
         this.sceneManager = sceneManager;

@@ -48,7 +48,8 @@ public class Authenticator {
     }
 
     public static boolean login(String login, String password) throws Exception {
-        ConnectorSingleton.getInstance().send(Serializer.serialize(new Request(new Command(CommandType.SERVICE, "sign_in " + login + ":" + password))));
+        var c = Serializer.serialize(new Request(new Command(CommandType.SERVICE, "sign_in " + login + ":" + password)));
+        ConnectorSingleton.getInstance().send(c);
         String response = ConnectorSingleton.getInstance().receive().getStringMessage();
         return response.equals("OK");
     }
