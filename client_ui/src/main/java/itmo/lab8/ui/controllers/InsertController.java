@@ -7,23 +7,22 @@ import itmo.lab8.basic.baseclasses.Person;
 import itmo.lab8.basic.baseenums.Color;
 import itmo.lab8.basic.baseenums.MovieGenre;
 import itmo.lab8.basic.baseenums.MpaaRating;
-import itmo.lab8.basic.utils.serializer.Serializer;
-import itmo.lab8.commands.*;
-import itmo.lab8.connection.ConnectorSingleton;
+import itmo.lab8.commands.Command;
+import itmo.lab8.commands.CommandType;
+import itmo.lab8.commands.response.Response;
+import itmo.lab8.connection.ConnectionManager;
 import itmo.lab8.ui.SceneManager;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.effect.Glow;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import static itmo.lab8.commands.CollectionValidator.checkIfExists;
-import static itmo.lab8.commands.CommandFactory.parseMovie;
 
 public class InsertController {
     private final ResourceBundle resources = ResourceBundle.getBundle("itmo.lab8.locale");
@@ -117,8 +116,7 @@ public class InsertController {
         for (TextField s : Set.of(id_insertion_label, name_insertion_label, coords_insertion_label, creation_date_insertion_label, oscars_count_insertion_label, director_name_insertion_label, birthdate_insertion_label, height_insertion_label, location_insertion_label)) {
             if (s.getText().equals("")) {
                 s.getStyleClass().add("empty-textfield");
-            }
-            else {
+            } else {
                 s.getStyleClass().remove("empty-textfield");
             }
         }
@@ -135,8 +133,7 @@ public class InsertController {
         try {
             if (checkIfExists(Long.parseLong(id))) {
                 id_insertion_label.getStyleClass().add("empty-textfield");
-            }
-            else id_insertion_label.getStyleClass().remove("empty-textfield");
+            } else id_insertion_label.getStyleClass().remove("empty-textfield");
         } catch (Exception e) {
             id_insertion_label.getStyleClass().add("empty-textfield");
         }
@@ -167,9 +164,12 @@ public class InsertController {
         }
 
         try {
-            var a = new Request(new Command(CommandType.INSERT, new Movie(Long.parseLong(id), name, coordinates1, Long.parseLong(oscarsCount), genre, rating, new Person(directorName, new SimpleDateFormat("dd-mm-yyyy").parse(birthdate), Integer.parseInt(height), hairColor, location1))), CommandFactory.getName());
-            ConnectorSingleton.getInstance().send(Serializer.serialize(a));
+            Movie movie = new Movie(Long.parseLong(id), name, coordinates1, Long.parseLong(oscarsCount), genre, rating, new Person(directorName, new SimpleDateFormat("dd-mm-yyyy").parse(birthdate), Integer.parseInt(height), hairColor, location1));
+            long opID = ConnectionManager.getInstance().newOperation(new Command(CommandType.INSERT, movie));
+            Response r = ConnectionManager.getInstance().waitForResponse(opID);
+            System.out.println(new String(r.getMessage()));
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }

@@ -11,6 +11,8 @@ public class Response implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1111185098267757690L;
+
+    private long operationId;
     private final byte[] responseMessage;
     private final ResponseType responseType;
 
@@ -20,8 +22,8 @@ public class Response implements Serializable {
      * @param responseMessage the message to be sent in the response
      * @param responseType    the type of response to be sent
      */
-    public Response(String responseMessage, ResponseType responseType) {
-        this(responseMessage.getBytes(), responseType);
+    public Response(String responseMessage, ResponseType responseType, long operationId) {
+        this(responseMessage.getBytes(), responseType, operationId);
     }
 
     /**
@@ -30,9 +32,10 @@ public class Response implements Serializable {
      * @param objects      An array of objects to be included in the response.
      * @param responseType The type of response.
      */
-    public Response(byte[] objects, ResponseType responseType) {
+    public Response(byte[] objects, ResponseType responseType, long operationId) {
         this.responseMessage = objects;
         this.responseType = responseType;
+        this.operationId = operationId;
     }
 
     /**
@@ -55,5 +58,13 @@ public class Response implements Serializable {
      */
     public ResponseType getType() {
         return responseType;
+    }
+
+    public long getOperationId() {
+        return operationId;
+    }
+
+    public void setOperationId(long operationId) {
+        this.operationId = operationId;
     }
 }

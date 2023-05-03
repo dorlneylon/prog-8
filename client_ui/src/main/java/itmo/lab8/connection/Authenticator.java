@@ -32,7 +32,7 @@ public class Authenticator {
                 continue;
             }
             String login = toSnakeCase(matcher.group(1));
-            connector.send(Serializer.serialize(new Request(new Command(CommandType.SERVICE, requisites))));
+            connector.send(Serializer.serialize(new Request(new Command(CommandType.SERVICE, requisites), null, 0)));
             String response = connector.receive().getStringMessage();
             if (response.equals("OK")) {
                 System.out.printf("Welcome, %s.\n", login);
@@ -43,13 +43,13 @@ public class Authenticator {
     }
 
     public static boolean register(String login, String password) throws Exception {
-        ConnectorSingleton.getInstance().send(Serializer.serialize(new Request(new Command(CommandType.SERVICE, "sign_up " + login + ":" + password))));
+        ConnectorSingleton.getInstance().send(Serializer.serialize(new Request(new Command(CommandType.SERVICE, "sign_up " + login + ":" + password), null, 0)));
         String response = ConnectorSingleton.getInstance().receive().getStringMessage();
         return response.equals("OK") && CommandFactory.setName(login);
     }
 
     public static boolean login(String login, String password) throws Exception {
-        var c = Serializer.serialize(new Request(new Command(CommandType.SERVICE, "sign_in " + login + ":" + password)));
+        var c = Serializer.serialize(new Request(new Command(CommandType.SERVICE, "sign_in " + login + ":" + password), null, 0));
         ConnectorSingleton.getInstance().send(c);
         String response = ConnectorSingleton.getInstance().receive().getStringMessage();
         return response.equals("OK") && CommandFactory.setName(login);

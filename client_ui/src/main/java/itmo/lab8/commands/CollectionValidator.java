@@ -21,12 +21,12 @@ public final class CollectionValidator {
      * 2. Если команда UPDATE или REPLACE_IF_LOWER, то проверяет, существует ли ключ в коллекции. Если не существует, то возвращает false.
      */
     public static Boolean checkIfExists(Long key) throws Exception {
-        connector.send(Serializer.serialize(new Request(new Command(CommandType.SERVICE, "check_id %d".formatted(key)), null)));
+        connector.send(Serializer.serialize(new Request(new Command(CommandType.SERVICE, "check_id %d".formatted(key)), null, 0)));
         return Boolean.parseBoolean(connector.receive().getStringMessage());
     }
 
     public static int getCollectionSize() throws Exception {
-        connector.send(Serializer.serialize(new Request(new Command(CommandType.SERVICE, "get_collection_size"), null)));
+        connector.send(Serializer.serialize(new Request(new Command(CommandType.SERVICE, "get_collection_size"), null, 0)));
         return Integer.parseInt(connector.receive().getStringMessage());
     }
 
@@ -59,7 +59,7 @@ public final class CollectionValidator {
     }
 
     public static boolean isUserCreator(String name, long key) throws Exception {
-        connector.send(Serializer.serialize(new Request(new Command(CommandType.SERVICE, "is_user_creator %d %s".formatted(key, name)))));
+        connector.send(Serializer.serialize(new Request(new Command(CommandType.SERVICE, "is_user_creator %d %s".formatted(key, name)), null, 0)));
         return Boolean.parseBoolean(connector.receive().getStringMessage());
     }
 

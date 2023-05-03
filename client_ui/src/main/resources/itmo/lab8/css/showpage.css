@@ -2,6 +2,11 @@
     -fx-text-fill: #dadada;
 }
 
-TableRow {
+.table-cell {
     -fx-text-fill: #dadada;
+}
+
+.table-row-cell {
+    -fx-border-color: #474747;
+    -fx-table-cell-border-color: #474747;
 }

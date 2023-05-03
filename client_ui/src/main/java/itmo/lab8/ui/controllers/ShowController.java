@@ -9,10 +9,10 @@ import itmo.lab8.commands.Command;
 import itmo.lab8.commands.CommandType;
 import itmo.lab8.commands.Request;
 import itmo.lab8.commands.response.Response;
+import itmo.lab8.connection.ConnectionManager;
 import itmo.lab8.connection.ConnectorSingleton;
 import itmo.lab8.core.AppCore;
 import itmo.lab8.ui.SceneManager;
-
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -20,7 +20,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.lang.reflect.Field;
 import java.time.format.DateTimeFormatter;
@@ -86,6 +85,7 @@ public class ShowController {
     @FXML
     private void initialize() {
         fieldInit();
+        showTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         showThread = new ShowThread();
         showThread.start();
         idColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(Math.toIntExact(cellData.getValue().getId())).asObject());
@@ -161,6 +161,7 @@ public class ShowController {
 
     private void updateMovieList() {
         showTable.setItems(movieList);
+        showTable.sort();
     }
 
     public void addMovie(Movie movie) {
@@ -188,19 +189,32 @@ public class ShowController {
             super(() -> {
                 while (!Thread.currentThread().isInterrupted()) {
                     try {
-                        ConnectorSingleton.getInstance().send(Serializer.serialize(new Request(new Command(CommandType.SHOW, 0), AppCore.getInstance().getName())));
-                        Response response = ConnectorSingleton.getInstance().receive();
+                        long id = ConnectionManager.getInstance().newOperation(new Command(CommandType.SHOW, 0));
+                        Response response = ConnectionManager.getInstance().waitForResponse(id);
                         ArrayList<Movie> array = (ArrayList<Movie>) Serializer.deserialize(response.getMessage());
-                        if (array != null) {
-                            movieList.clear();
-                            movieList.addAll(array);
-                            updateMovieList();
+                        var items = showTable.getItems();
+                        if (array == null) continue;
+                        if (items.size() == 0) {
+                            items.addAll(array);
+                        } else {
+                            for (Movie movie : array) {
+                                boolean flag = false;
+                                for (int i = 0; i < items.size(); i++) {
+                                    if (movie.getId().equals(items.get(i).getId())) {
+                                        flag = true;
+                                        if (!movie.equals(items.get(i))) items.set(i, movie);
+                                        break;
+                                    }
+                                }
+                                if (!flag) items.add(movie);
+                            }
                         }
+                        showTable.refresh();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(2000);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }

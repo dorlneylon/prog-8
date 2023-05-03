@@ -57,12 +57,22 @@
                     </font>
                 </Label>
                 <ListView layoutX="369.0" layoutY="398.0" prefHeight="79.0" prefWidth="223.0" style="-fx-background-color: #363636; -fx-border-color: #474747;" />
-                <Label fx:id="cur_account" layoutX="381.0" layoutY="406.0" prefHeight="23.0" prefWidth="117.0" text="" textFill="WHITE">
+                <Label fx:id="cur_account" layoutX="381.0" layoutY="406.0" prefHeight="23.0" prefWidth="79.0" text="Аккаунт:" textFill="WHITE">
                     <font>
                         <Font name="Helvetica Neue" size="13.0" />
                     </font>
                 </Label>
-                <Label fx:id="cur_lang" layoutX="380.0" layoutY="439.0" prefHeight="23.0" prefWidth="123.0" text="" textFill="WHITE">
+                <Label fx:id="account" layoutX="465.0" layoutY="406.0" prefHeight="23.0" prefWidth="117.0" text="username" textFill="WHITE">
+                    <font>
+                        <Font name="Helvetica Neue" size="13.0" />
+                    </font>
+                </Label>
+                <Label fx:id="cur_lang" layoutX="380.0" layoutY="439.0" prefHeight="23.0" prefWidth="71.0" text="Язык:" textFill="WHITE">
+                    <font>
+                        <Font name="Helvetica Neue" size="13.0" />
+                    </font>
+                </Label>
+                <Label fx:id="lang" layoutX="465.0" layoutY="439.0" prefHeight="23.0" prefWidth="117.0" text="Русский" textFill="WHITE">
                     <font>
                         <Font name="Helvetica Neue" size="13.0" />
                     </font>

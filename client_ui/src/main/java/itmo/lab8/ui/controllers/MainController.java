@@ -2,7 +2,10 @@ package itmo.lab8.ui.controllers;
 
 import itmo.lab8.ClientMain;
 import itmo.lab8.commands.CommandType;
+import itmo.lab8.connection.ConnectionManager;
+import itmo.lab8.core.AppCore;
 import itmo.lab8.ui.SceneManager;
+import itmo.lab8.ui.Variable;
 import itmo.lab8.ui.types.CommandButton;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -16,7 +19,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -32,7 +34,13 @@ public class MainController {
     @FXML
     private Label cur_account;
     @FXML
+    @Variable
+    private Label account;
+    @FXML
     private Label cur_lang;
+    @FXML
+    @Variable
+    private Label lang;
     @FXML
     private Label history;
 
@@ -43,6 +51,7 @@ public class MainController {
     @FXML
     public void initialize() {
         initListView();
+        ConnectionManager.getInstance().start();
         ObservableList<CommandButton> items = commandList.getItems();
         ResourceBundle resources = ResourceBundle.getBundle("itmo.lab8.locale");
         FXMLLoader loader = new FXMLLoader(getClass().getResource("mainpage.fxml"), resources);
@@ -52,7 +61,7 @@ public class MainController {
             items.add(label);
         }
         for (Field field : getClass().getDeclaredFields()) {
-            if (field.isAnnotationPresent(FXML.class) && field.getType() == Label.class) {
+            if (field.isAnnotationPresent(FXML.class) && field.getType() == Label.class && !field.isAnnotationPresent(Variable.class)) {
                 try {
                     Label label = (Label) field.get(this);
                     label.setText(resources.getString(field.getName()));
@@ -61,6 +70,7 @@ public class MainController {
                 }
             }
         }
+        account.setText(AppCore.getInstance().getName());
         commandList.setItems(items);
     }
 
@@ -70,10 +80,7 @@ public class MainController {
                 @Override
                 protected void updateItem(CommandButton item, boolean empty) {
                     super.updateItem(item, empty);
-                    if (empty || item == null) {
-                        setText(null);
-                        setGraphic(null);
-                    } else {
+                    if (!(empty || item == null)) {
                         setText(item.getText());
                     }
                 }
@@ -84,6 +91,7 @@ public class MainController {
 
         commandList.setOnMouseClicked(mouseEvent -> {
             int index = commandList.getSelectionModel().getSelectedIndex();
+            System.out.println(index);
             if (index >= 0) {
                 CommandButton clickedBtn = commandList.getItems().get(index);
                 switch (clickedBtn.getType()) {
@@ -92,6 +100,7 @@ public class MainController {
                     case EXIT -> System.exit(0);
                 }
             }
+            commandList.getSelectionModel().clearSelection();
         });
     }
 
@@ -122,7 +131,7 @@ public class MainController {
             fxmlLoader.setController(new InsertController(sceneManager));
             Scene scene = new Scene(fxmlLoader.load());
             stage.setScene(scene);
-            scene.getStylesheets().add(ClientMain.class.getResource("css/insert.css").toExternalForm());
+            scene.getStylesheets().add(Objects.requireNonNull(ClientMain.class.getResource("css/insert.css")).toExternalForm());
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
