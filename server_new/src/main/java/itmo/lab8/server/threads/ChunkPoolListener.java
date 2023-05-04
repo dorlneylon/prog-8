@@ -1,11 +1,12 @@
 package itmo.lab8.server.threads;
 
+import itmo.lab8.server.ServerLogger;
 import itmo.lab8.server.data.ChunkPool;
 import itmo.lab8.server.handlers.ExecuteHandler;
-import itmo.lab8.shared.Chunk;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
 
 public class ChunkPoolListener extends Thread {
 
@@ -18,30 +19,22 @@ public class ChunkPoolListener extends Thread {
                     for (var operationId : poolMap.get(user).keySet()) {
                         // Checking that the chunk array isn't empty
                         try {
-                            if (poolMap.get(user).get(operationId).isEmpty()) {
+                            if (poolMap.get(user).get(operationId) == null || poolMap.get(user).get(operationId).isEmpty()) {
                                 continue;
                             }
                         } catch (InterruptedException e) {
-                            e.printStackTrace();
-                            continue;
-                        }
-                        // Getting first chunk for getting packet info
-                        Chunk chunk;
-                        try {
-                            chunk = poolMap.get(user).get(operationId).get(0);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                            ServerLogger.getInstance().log(Level.WARNING, e.getMessage());
                             continue;
                         }
                         // if all chunks are received
                         try {
-                            if (chunk.getTotal() == poolMap.get(user).get(operationId).size()) {
+                            if (poolMap.get(user).get(operationId) != null && poolMap.get(user).get(operationId).allReceived()) {
                                 byte[] packet = poolMap.get(user).get(operationId).summarizeChunks();
                                 poolMap.get(user).remove(operationId);
                                 threadPool.submit(new ExecuteHandler(user, packet, operationId));
                             }
                         } catch (InterruptedException e) {
-                            e.printStackTrace();
+                            ServerLogger.getInstance().log(Level.WARNING, e.getMessage());
                         }
                     }
                 }

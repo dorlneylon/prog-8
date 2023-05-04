@@ -10,10 +10,11 @@ public class BlockingChunkList {
     private final List<Chunk> list = new ArrayList<>();
     private final Semaphore semaphore = new Semaphore(1);
 
+    public BlockingChunkList(Chunk chunk) {
+        list.add(chunk);
+    }
+
     public void add(Chunk element) throws InterruptedException {
-        while (!semaphore.tryAcquire()) {
-            Thread.sleep(100);
-        }
         semaphore.acquire();
         try {
             list.add(element);
@@ -23,9 +24,6 @@ public class BlockingChunkList {
     }
 
     public Chunk get(int index) throws InterruptedException {
-        while (!semaphore.tryAcquire()) {
-            Thread.sleep(100);
-        }
         semaphore.acquire();
         try {
             return list.get(index);
@@ -43,10 +41,30 @@ public class BlockingChunkList {
         }
     }
 
-    public int size() throws InterruptedException {
-        semaphore.acquire();
+    public int size() {
+        try {
+            semaphore.acquire();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         try {
             return list.size();
+        } finally {
+            semaphore.release();
+        }
+    }
+
+    public boolean allReceived() {
+        try {
+            semaphore.acquire();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            if (list.size() == 0) {
+                return false;
+            }
+            return list.get(0).getTotal() == list.size();
         } finally {
             semaphore.release();
         }

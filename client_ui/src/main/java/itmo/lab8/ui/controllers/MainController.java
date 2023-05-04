@@ -1,9 +1,18 @@
 package itmo.lab8.ui.controllers;
 
 import itmo.lab8.ClientMain;
+import itmo.lab8.basic.baseclasses.Coordinates;
+import itmo.lab8.basic.baseclasses.Location;
+import itmo.lab8.basic.baseclasses.Movie;
+import itmo.lab8.basic.baseclasses.Person;
+import itmo.lab8.basic.baseenums.Color;
+import itmo.lab8.basic.baseenums.MovieGenre;
+import itmo.lab8.basic.baseenums.MpaaRating;
+import itmo.lab8.commands.Command;
 import itmo.lab8.commands.CommandType;
 import itmo.lab8.connection.ConnectionManager;
 import itmo.lab8.core.AppCore;
+import itmo.lab8.shared.Response;
 import itmo.lab8.ui.SceneManager;
 import itmo.lab8.ui.Variable;
 import itmo.lab8.ui.types.CommandButton;
@@ -19,6 +28,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -51,7 +62,6 @@ public class MainController {
     @FXML
     public void initialize() {
         initListView();
-        ConnectionManager.getInstance().start();
         ObservableList<CommandButton> items = commandList.getItems();
         ResourceBundle resources = ResourceBundle.getBundle("itmo.lab8.locale");
         FXMLLoader loader = new FXMLLoader(getClass().getResource("mainpage.fxml"), resources);
@@ -91,7 +101,6 @@ public class MainController {
 
         commandList.setOnMouseClicked(mouseEvent -> {
             int index = commandList.getSelectionModel().getSelectedIndex();
-            System.out.println(index);
             if (index >= 0) {
                 CommandButton clickedBtn = commandList.getItems().get(index);
                 switch (clickedBtn.getType()) {

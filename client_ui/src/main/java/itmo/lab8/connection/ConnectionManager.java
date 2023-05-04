@@ -8,11 +8,15 @@ import itmo.lab8.shared.Chunk;
 import itmo.lab8.shared.Request;
 import itmo.lab8.shared.Response;
 
+import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class ConnectionManager {
     private static ConnectionManager instance;
+
+    private final AtomicInteger operationId = new AtomicInteger(Short.MIN_VALUE);
 
     private final ConcurrentHashMap<Short, BlockingChunkList> chunkMap = new ConcurrentHashMap<>();
 
@@ -24,44 +28,52 @@ public class ConnectionManager {
         return instance;
     }
 
-    private long generateOperationId() {
-        return System.currentTimeMillis();
+    private short generateOperationId() {
+        if (operationId.get() >= Short.MAX_VALUE) {
+            operationId.set(Short.MIN_VALUE);
+        }
+        return (short) operationId.getAndIncrement();
     }
 
     public void start() {
         ReceiverThread receiverThread = new ReceiverThread();
+        System.out.println("Starting receiver thread");
         receiverThread.start();
     }
 
     public short newOperation(Command command) throws Exception {
         short operationId = generateOperationId();
         Request request = new Request(command, AppCore.getInstance().getName(), operationId);
-        ConnectorSingleton.getInstance().send(Serializer.serialize(request));
+        ConnectorSingleton.getInstance().send(Serializer.serialize(request), operationId);
         return operationId;
     }
 
     public Response waitForResponse(short operationId) {
-        while (!chunkMap.containsKey(operationId)) {
+        while (!chunkMap.containsKey(operationId) || chunkMap.get(operationId) == null || !chunkMap.get(operationId).allReceived()) {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        BlockingChunkList chunks = chunkMap.get(operationId);
+        BlockingChunkList chunks;
+        try {
+            chunks = chunkMap.get(operationId);
+        } catch (Exception e) {
+            // Return null if waited more than 10 sec
+            return null;
+        }
         try {
             byte[] bytes = chunks.summarizeChunks();
             chunkMap.remove(operationId);
+            if (bytes == null) {
+                System.out.println("WTF");
+            }
             return (Response) Serializer.deserialize(bytes);
         } catch (InterruptedException e) {
             return null;
         }
     }
-
-    public Response getResponse(long operationId) {
-        return null;
-    }
-
 
     private class ReceiverThread extends Thread {
         public ReceiverThread() {
@@ -75,13 +87,11 @@ public class ConnectionManager {
                         if (chunkMap.containsKey(chunk.getId())) {
                             chunkMap.get(chunk.getId()).add(chunk);
                         } else {
-                            chunkMap.put(chunk.getId(), new BlockingChunkList());
-                            chunkMap.get(chunk.getId()).add(chunk);
+                            chunkMap.put(chunk.getId(), new BlockingChunkList(chunk));
                         }
                         Thread.sleep(100);
-                    } catch (Exception e) {
-                        System.err.println(e.getMessage());
-                        Thread.currentThread().interrupt();
+                    } catch (IOException | InterruptedException ignored) {
+                        // ignore
                     }
                 }
             });

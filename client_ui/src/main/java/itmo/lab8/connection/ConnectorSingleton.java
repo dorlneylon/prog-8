@@ -1,8 +1,8 @@
 package itmo.lab8.connection;
 
-import itmo.chunker.Chunker;
 import itmo.lab8.basic.utils.terminal.Colors;
 import itmo.lab8.shared.Chunk;
+import itmo.lab8.shared.Chunker;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -24,7 +24,8 @@ public class ConnectorSingleton {
     private DatagramSocket socket;
     private InetAddress address;
     private int port;
-    private int chunkSize;
+    private final int chunkSize = 1030;
+    ;
 
 
     /**
@@ -65,7 +66,6 @@ public class ConnectorSingleton {
     public void setBufferSize(int size) throws SocketException {
         socket.setReceiveBufferSize(size);
         socket.setSendBufferSize(size);
-        chunkSize = 1024;
     }
 
     /**
@@ -74,8 +74,8 @@ public class ConnectorSingleton {
      * @param message string message
      * @throws Exception sending exception
      */
-    public void send(String message) throws Exception {
-        this.send(message.getBytes());
+    public void send(String message, short opId) throws Exception {
+        this.send(message.getBytes(), opId);
     }
 
     /**
@@ -83,8 +83,8 @@ public class ConnectorSingleton {
      *
      * @throws Exception sending exceptions
      */
-    public void send(byte[] dataBytes) throws Exception {
-        Chunker dataChunker = new Chunker(dataBytes, chunkSize);
+    public void send(byte[] dataBytes, short opId) throws Exception {
+        Chunker dataChunker = new Chunker(dataBytes, opId);
         var chunkIterator = dataChunker.newIterator();
         short totalChunks = (short) ((int) Math.ceil((double) dataBytes.length / (double) this.chunkSize));
         int c = 0;
@@ -102,6 +102,7 @@ public class ConnectorSingleton {
     public Chunk receive() throws IOException {
         byte[] buffer = new byte[1030];
         DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+        socket.setSoTimeout(socketTimeout);
         socket.receive(packet);
         return new Chunk(Arrays.copyOf(packet.getData(), packet.getLength()));
     }

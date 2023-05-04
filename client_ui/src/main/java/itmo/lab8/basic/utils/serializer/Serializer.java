@@ -50,7 +50,7 @@ public final class Serializer {
             ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
             ObjectInputStream ois = new ObjectInputStream(bis);
             return ois.readObject();
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException | NullPointerException e) {
             System.err.println("Unable to deserialize: " + e);
             return null;
         }

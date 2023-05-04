@@ -21,9 +21,9 @@ public class Chunk implements Comparable<Chunk> {
         // Parsing meta-data of the chunk
         ByteBuffer chunkInfoBuffer = ByteBuffer.wrap(chunkInfoBytes);
         chunkInfoBuffer.position(0);
-        index = chunkInfoBuffer.getShort(1);
-        total = chunkInfoBuffer.getShort(2);
-        id = chunkInfoBuffer.getShort(3);
+        index = chunkInfoBuffer.getShort();
+        total = chunkInfoBuffer.getShort();
+        id = chunkInfoBuffer.getShort();
     }
 
     public byte[] getChunk() {

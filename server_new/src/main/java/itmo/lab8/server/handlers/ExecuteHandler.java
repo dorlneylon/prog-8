@@ -1,6 +1,6 @@
 package itmo.lab8.server.handlers;
 
-import itmo.chunker.Chunker;
+import itmo.lab8.shared.Chunker;
 import itmo.lab8.commands.CommandType;
 import itmo.lab8.server.Server;
 import itmo.lab8.server.ServerLogger;

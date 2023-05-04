@@ -1,5 +1,6 @@
 package itmo.lab8;
 
+import itmo.lab8.connection.ConnectionManager;
 import itmo.lab8.core.AppCore;
 import itmo.lab8.ui.SceneManager;
 import itmo.lab8.ui.controllers.AuthController;
@@ -40,6 +41,7 @@ public class ClientMain extends Application {
     public void start(Stage stage) throws Exception {
         Locale.setDefault(new Locale("ru"));
         AppCore.newInstance(serverAddress, serverPort);
+        ConnectionManager.getInstance().start();
         SceneManager sceneManager = new SceneManager();
         sceneManager.setStage(stage);
         FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("loginpage.fxml"));

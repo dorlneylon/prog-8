@@ -186,7 +186,7 @@ public class ShowController {
             super(() -> {
                 while (!Thread.currentThread().isInterrupted()) {
                     try {
-                        long id = ConnectionManager.getInstance().newOperation(new Command(CommandType.SHOW, 0));
+                        short id = ConnectionManager.getInstance().newOperation(new Command(CommandType.SHOW, 0));
                         Response response = ConnectionManager.getInstance().waitForResponse(id);
                         ArrayList<Movie> array = (ArrayList<Movie>) Serializer.deserialize(response.getMessage());
                         var items = showTable.getItems();
@@ -216,6 +216,7 @@ public class ShowController {
                         Thread.currentThread().interrupt();
                     }
                 }
+                System.out.println("Thread is interrupted");
             });
         }
     }

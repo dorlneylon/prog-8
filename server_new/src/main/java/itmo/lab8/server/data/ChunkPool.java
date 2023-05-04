@@ -1,10 +1,12 @@
 package itmo.lab8.server.data;
 
+import itmo.lab8.server.ServerLogger;
 import itmo.lab8.shared.BlockingChunkList;
 import itmo.lab8.shared.Chunk;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 
 /**
  * ChunkPool class is responsible for storing chunks in a concurrent hash map.
@@ -42,19 +44,18 @@ public class ChunkPool {
      */
     public void addChunk(InetSocketAddress address, byte[] chunk) {
         Chunk chunkObject = new Chunk(chunk);
-        chunkPoolMap.put(address, new ConcurrentHashMap<>());
-        if (chunkPoolMap.get(address).containsKey(chunkObject.getId())) {
-            try {
-                chunkPoolMap.get(address).get(chunkObject.getId()).add(chunkObject);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        synchronized (chunkPoolMap) {
+            if (!chunkPoolMap.containsKey(address)) {
+                chunkPoolMap.put(address, new ConcurrentHashMap<>());
             }
-        } else {
-            chunkPoolMap.get(address).put(chunkObject.getId(), new BlockingChunkList());
-            try {
-                chunkPoolMap.get(address).get(chunkObject.getId()).add(chunkObject);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            if (chunkPoolMap.get(address).containsKey(chunkObject.getId())) {
+                try {
+                    chunkPoolMap.get(address).get(chunkObject.getId()).add(chunkObject);
+                } catch (InterruptedException e) {
+                    ServerLogger.getInstance().log(Level.INFO, "ChunkPool", e.getMessage());
+                }
+            } else {
+                chunkPoolMap.get(address).put(chunkObject.getId(), new BlockingChunkList(chunkObject));
             }
         }
     }

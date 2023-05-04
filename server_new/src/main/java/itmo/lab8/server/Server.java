@@ -9,6 +9,7 @@ import itmo.lab8.server.threads.ExitThread;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.StandardSocketOptions;
+import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -109,7 +110,9 @@ public class Server {
                         continue;
                     }
                     if (key.isReadable()) {
-                        threadPool.submit(new ReceiveHandler(key));
+                        ByteBuffer buffer = ByteBuffer.allocate(1030);
+                        InetSocketAddress address = (InetSocketAddress) ((DatagramChannel) key.channel()).receive(buffer);
+                        threadPool.submit(new ReceiveHandler(address, buffer));
                     }
 
                 }
