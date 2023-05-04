@@ -68,7 +68,9 @@ public class Server {
      * @return the Database object associated with this instance
      */
     public Database getDatabase() {
-        return database;
+        synchronized (this.database) {
+            return database;
+        }
     }
 
     // TODO: Не знаю, будет так работать или нет, но попробовать стоит

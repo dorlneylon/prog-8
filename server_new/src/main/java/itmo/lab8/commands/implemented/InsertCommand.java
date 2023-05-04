@@ -2,11 +2,9 @@ package itmo.lab8.commands.implemented;
 
 import itmo.lab8.basic.baseclasses.Movie;
 import itmo.lab8.commands.Action;
-import itmo.lab8.commands.response.Response;
-import itmo.lab8.commands.response.ResponseType;
-import itmo.lab8.server.UdpServer;
-
-import static itmo.lab8.server.UdpServer.collection;
+import itmo.lab8.server.Server;
+import itmo.lab8.shared.Response;
+import itmo.lab8.shared.ResponseType;
 
 /**
  * InsertCommand class implements Action interface and is used to insert a movie into the collection.
@@ -30,10 +28,10 @@ public final class InsertCommand implements Action {
      */
     @Override
     public Response run(String username) {
-        if (collection.insert(movie)) {
-            UdpServer.getDatabase().insertToCollection(username, movie);
-            return new Response("Insert was completed successfully", ResponseType.INFO);
+        if (Server.getInstance().getCollection().insert(movie)) {
+            Server.getInstance().getDatabase().insertToCollection(username, movie);
+            return new Response("Insert was completed successfully", ResponseType.OK);
         }
-        return new Response("Insertion failed due to indices collision", ResponseType.INFO);
+        return new Response("Insertion failed due to indices collision", ResponseType.ERROR);
     }
 }

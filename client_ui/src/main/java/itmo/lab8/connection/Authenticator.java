@@ -4,7 +4,6 @@ import itmo.lab8.basic.utils.serializer.Serializer;
 import itmo.lab8.commands.Command;
 import itmo.lab8.commands.CommandFactory;
 import itmo.lab8.commands.CommandType;
-import itmo.lab8.commands.Request;
 
 import java.util.List;
 import java.util.Scanner;
@@ -32,7 +31,8 @@ public class Authenticator {
                 continue;
             }
             String login = toSnakeCase(matcher.group(1));
-            connector.send(Serializer.serialize(new Request(new Command(CommandType.SERVICE, requisites), null, 0)));
+            short v = ConnectionManager.getInstance().newOperation(new Command(CommandType.SERVICE, requisites));
+            Response resp = ConnectionManager.getInstance().waitForResponse;
             String response = connector.receive().getStringMessage();
             if (response.equals("OK")) {
                 System.out.printf("Welcome, %s.\n", login);

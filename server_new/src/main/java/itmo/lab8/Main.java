@@ -24,8 +24,8 @@ public class Main {
             System.exit(1);
         }
         try {
-            port = Integer.parseInt(Objects.requireNonNull(Config.get("port")));
-        } catch (NumberFormatException e) {
+            port = Integer.parseInt(Objects.requireNonNull(Config.get("server_port")));
+        } catch (NumberFormatException | NullPointerException e) {
             ServerLogger.getInstance().log(Level.WARNING, "Bad port", e);
             ServerLogger.getInstance().log(Level.WARNING, "Using default port: 5050");
             port = 5050;

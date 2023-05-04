@@ -3,8 +3,7 @@ package itmo.lab8.basic.baseclasses;
 import itmo.lab8.basic.baseclasses.builders.annotations.Generated;
 import itmo.lab8.basic.baseenums.MovieGenre;
 import itmo.lab8.basic.baseenums.MpaaRating;
-import itmo.lab8.commands.response.Color;
-import itmo.lab8.server.UdpServer;
+import itmo.lab8.server.Server;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -316,24 +315,10 @@ public class Movie implements Comparable<Movie>, Serializable {
 
     @Override
     public String toString() {
-        return id + ".\n"
-                + "Film's title: " + name + ",\n"
-                + "Film's coords: " + coordinates + ",\n"
-                + "Creation Date: " + creationDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) + ",\n"
-                + "Number of Oscars: " + oscarsCount + ",\n"
-                + "Genre: " + genre + ",\n"
-                + "Mpaa rating: " + mpaaRating + ",\n"
-                + director.toString();
+        return id + ".\n" + "Film's title: " + name + ",\n" + "Film's coords: " + coordinates + ",\n" + "Creation Date: " + creationDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) + ",\n" + "Number of Oscars: " + oscarsCount + ",\n" + "Genre: " + genre + ",\n" + "Mpaa rating: " + mpaaRating + ",\n" + director.toString();
     }
 
     public String toString(String username) {
-        return id + ". " + (UdpServer.getDatabase().isUserEditor(username, Math.toIntExact(id)) ? Color.GREEN + "[modifiable]" + Color.RESET : "") + "\n"
-                + "Film's title: " + name + ",\n"
-                + "Film's coords: " + coordinates + ",\n"
-                + "Creation Date: " + creationDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) + ",\n"
-                + "Number of Oscars: " + oscarsCount + ",\n"
-                + "Genre: " + genre + ",\n"
-                + "Mpaa rating: " + mpaaRating + ",\n"
-                + director.toString();
+        return id + ". " + (Server.getInstance().getDatabase().isUserEditor(username, Math.toIntExact(id)) ? "[modifiable]" : "") + "\n" + "Film's title: " + name + ",\n" + "Film's coords: " + coordinates + ",\n" + "Creation Date: " + creationDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) + ",\n" + "Number of Oscars: " + oscarsCount + ",\n" + "Genre: " + genre + ",\n" + "Mpaa rating: " + mpaaRating + ",\n" + director.toString();
     }
 }

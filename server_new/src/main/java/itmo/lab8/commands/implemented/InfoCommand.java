@@ -1,10 +1,9 @@
 package itmo.lab8.commands.implemented;
 
 import itmo.lab8.commands.Action;
-import itmo.lab8.commands.response.MessagePainter;
-import itmo.lab8.commands.response.Response;
-import itmo.lab8.commands.response.ResponseType;
-import itmo.lab8.server.UdpServer;
+import itmo.lab8.server.Server;
+import itmo.lab8.shared.Response;
+import itmo.lab8.shared.ResponseType;
 
 /**
  * InfoCommand class implements Action interface and is used to return information about the collection.
@@ -16,6 +15,6 @@ public final class InfoCommand implements Action {
      */
     @Override
     public Response run(String username) {
-        return new Response(MessagePainter.ColoredInfoMessage(UdpServer.collection.info()), ResponseType.INFO);
+        return new Response(Server.getInstance().getCollection().info(), ResponseType.OK);
     }
 }

@@ -1,16 +1,10 @@
 package itmo.lab8.commands.implemented;
 
-import itmo.lab8.basic.baseclasses.Movie;
 import itmo.lab8.commands.Action;
-import itmo.lab8.commands.response.Response;
-import itmo.lab8.commands.response.ResponseType;
-import itmo.lab8.server.UdpServer;
+import itmo.lab8.server.Server;
+import itmo.lab8.shared.Response;
+import itmo.lab8.shared.ResponseType;
 
-/**
- * This class implements the {@link Action} interface and is used to remove a {@link Movie} from the {@link UdpServer#collection}.
- *
- * @author Yurii Shyrma
- */
 public final class RemoveKeyCommand implements Action {
     private final Long key;
 
@@ -30,9 +24,9 @@ public final class RemoveKeyCommand implements Action {
      */
     @Override
     public Response run(String username) {
-        if (UdpServer.collection.removeByKey(key)) {
-            UdpServer.getDatabase().removeByKey(key, username);
-            return new Response("Movie with key %d deleted successfully".formatted(key), ResponseType.SUCCESS);
+        if (Server.getInstance().getCollection().removeByKey(key)) {
+            Server.getInstance().getDatabase().removeByKey(key, username);
+            return new Response("Movie with key %d deleted successfully".formatted(key), ResponseType.OK);
         }
         return new Response("It is not possible to delete a Movie with key=%d, because there is no Movie with this key.".formatted(key), ResponseType.ERROR);
     }

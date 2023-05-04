@@ -2,11 +2,9 @@ package itmo.lab8.commands.implemented;
 
 import itmo.lab8.basic.baseclasses.Movie;
 import itmo.lab8.commands.Action;
-import itmo.lab8.commands.response.Response;
-import itmo.lab8.commands.response.ResponseType;
-import itmo.lab8.server.UdpServer;
-
-import static itmo.lab8.server.UdpServer.collection;
+import itmo.lab8.server.Server;
+import itmo.lab8.shared.Response;
+import itmo.lab8.shared.ResponseType;
 
 /**
  * This class implements the Action interface and is used to update a movie in the collection.
@@ -30,12 +28,12 @@ public class UpdateCommand implements Action {
      */
     @Override
     public Response run(String username) {
-        if (!collection.isKeyPresented(movie.getId()))
+        if (!Server.getInstance().getCollection().isKeyPresented(movie.getId()))
             return new Response("Collection does not contain such a key", ResponseType.ERROR);
 
-        collection.update(movie);
-        UdpServer.getDatabase().updateById(username, Math.toIntExact(movie.getId()), movie);
+        Server.getInstance().getCollection().update(movie);
+        Server.getInstance().getDatabase().updateById(username, Math.toIntExact(movie.getId()), movie);
 
-        return new Response("Update was completed successfully", ResponseType.SUCCESS);
+        return new Response("Update was completed successfully", ResponseType.OK);
     }
 }

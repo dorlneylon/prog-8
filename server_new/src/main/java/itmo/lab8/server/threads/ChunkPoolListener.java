@@ -1,8 +1,8 @@
 package itmo.lab8.server.threads;
 
-import itmo.lab8.server.data.Chunk;
 import itmo.lab8.server.data.ChunkPool;
 import itmo.lab8.server.handlers.ExecuteHandler;
+import itmo.lab8.shared.Chunk;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -37,7 +37,8 @@ public class ChunkPoolListener extends Thread {
                         try {
                             if (chunk.getTotal() == poolMap.get(user).get(operationId).size()) {
                                 byte[] packet = poolMap.get(user).get(operationId).summarizeChunks();
-                                threadPool.submit(new ExecuteHandler(user, packet));
+                                poolMap.get(user).remove(operationId);
+                                threadPool.submit(new ExecuteHandler(user, packet, operationId));
                             }
                         } catch (InterruptedException e) {
                             e.printStackTrace();

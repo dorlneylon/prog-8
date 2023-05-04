@@ -1,13 +1,14 @@
 package itmo.lab8.commands;
 
-import itmo.lab8.commands.response.Response;
-import itmo.lab8.commands.response.ResponseType;
 import itmo.lab8.server.ServerLogger;
+import itmo.lab8.shared.Response;
+import itmo.lab8.shared.ResponseType;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
 
 
 /**
@@ -67,7 +68,7 @@ public final class Command implements Serializable {
             return ((Action) instance).run(username);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
                  NoSuchMethodException e) {
-            ServerLogger.getLogger().warning("Unable to execute command: " + e);
+            ServerLogger.getInstance().log(Level.WARNING, "Unable to execute command: " + e);
             return new Response("Unable to execute command: " + e, ResponseType.ERROR);
         }
     }

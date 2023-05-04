@@ -1,6 +1,6 @@
-package itmo.lab8.commands;
+package itmo.lab8.shared;
 
-import itmo.lab8.server.UdpServer;
+import itmo.lab8.commands.Command;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -28,9 +28,5 @@ public class Request implements Serializable {
 
     public long getOperationId() {
         return operationId;
-    }
-
-    public boolean isUserAuthorized() {
-        return UdpServer.getDatabase().isUserExist(login);
     }
 }

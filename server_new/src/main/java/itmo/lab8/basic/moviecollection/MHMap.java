@@ -1,13 +1,14 @@
 package itmo.lab8.basic.moviecollection;
 
+import itmo.lab8.server.Server;
 import itmo.lab8.server.ServerLogger;
-import itmo.lab8.server.UdpServer;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 
 /**
  * The abstract class {@code MHMap} is a wrapper for the {@code HashMap} class.
@@ -150,8 +151,8 @@ public abstract class MHMap<K, V> {
     public void update(K key, V value) {
         if (isKeyPresented(key)) {
             this.map.put(key, value);
-            ServerLogger.getLogger().info("Element with key " + key + " was successfully updated");
-        } else ServerLogger.getLogger().info("No such element with key " + key);
+            ServerLogger.getInstance().info("Element with key " + key + " was successfully updated");
+        } else ServerLogger.getInstance().info("No such element with key " + key);
     }
 
 
@@ -181,7 +182,7 @@ public abstract class MHMap<K, V> {
      */
     public void clear(String user) {
         for (K key : this.map.keySet()) {
-            if (UdpServer.getDatabase().isUserEditor(user, Math.toIntExact((Long) key))) {
+            if (Server.getInstance().getDatabase().isUserEditor(user, Math.toIntExact((Long) key))) {
                 this.map.remove(key);
             }
         }

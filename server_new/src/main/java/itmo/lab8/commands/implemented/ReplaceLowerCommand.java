@@ -2,11 +2,10 @@ package itmo.lab8.commands.implemented;
 
 import itmo.lab8.basic.baseclasses.Movie;
 import itmo.lab8.commands.Action;
-import itmo.lab8.commands.response.Response;
-import itmo.lab8.commands.response.ResponseType;
-import itmo.lab8.server.UdpServer;
+import itmo.lab8.server.Server;
+import itmo.lab8.shared.Response;
+import itmo.lab8.shared.ResponseType;
 
-import static itmo.lab8.server.UdpServer.collection;
 
 /**
  * This class implements the {@link Action} interface and is used to replace an element in the collection with a lower number of Oscars.
@@ -30,8 +29,8 @@ public final class ReplaceLowerCommand implements Action {
      */
     @Override
     public Response run(String username) {
-        if (collection.replaceLower(movie.getId(), movie) && UdpServer.getDatabase().replaceLower(Math.toIntExact(movie.getId()), movie, username))
-            return new Response("Element has been successfully replaced", ResponseType.SUCCESS);
-        return new Response("Element either doesn't exist or has less oscars.", ResponseType.SUCCESS);
+        if (Server.getInstance().getCollection().replaceLower(movie.getId(), movie) && Server.getInstance().getDatabase().replaceLower(Math.toIntExact(movie.getId()), movie, username))
+            return new Response("Element has been successfully replaced", ResponseType.OK);
+        return new Response("Element either doesn't exist or has less oscars.", ResponseType.FINE);
     }
 }

@@ -1,5 +1,8 @@
 package itmo.lab8.server.data;
 
+import itmo.lab8.shared.BlockingChunkList;
+import itmo.lab8.shared.Chunk;
+
 import java.net.InetSocketAddress;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -8,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ChunkPool {
     private static ChunkPool instance;
-    private final ConcurrentHashMap<InetSocketAddress, ConcurrentHashMap<Short, BlockingChunkList<Chunk>>> chunkPoolMap;
+    private final ConcurrentHashMap<InetSocketAddress, ConcurrentHashMap<Short, BlockingChunkList>> chunkPoolMap;
 
 
     public ChunkPool() {
@@ -27,7 +30,7 @@ public class ChunkPool {
         return instance;
     }
 
-    public ConcurrentHashMap<InetSocketAddress, ConcurrentHashMap<Short, BlockingChunkList<Chunk>>> getChunkPoolMap() {
+    public ConcurrentHashMap<InetSocketAddress, ConcurrentHashMap<Short, BlockingChunkList>> getChunkPoolMap() {
         return chunkPoolMap;
     }
 
@@ -47,7 +50,7 @@ public class ChunkPool {
                 e.printStackTrace();
             }
         } else {
-            chunkPoolMap.get(address).put(chunkObject.getId(), new BlockingChunkList<>());
+            chunkPoolMap.get(address).put(chunkObject.getId(), new BlockingChunkList());
             try {
                 chunkPoolMap.get(address).get(chunkObject.getId()).add(chunkObject);
             } catch (InterruptedException e) {

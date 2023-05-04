@@ -2,9 +2,11 @@ package itmo.lab8.connection;
 
 import itmo.lab8.basic.utils.serializer.Serializer;
 import itmo.lab8.commands.Command;
-import itmo.lab8.commands.Request;
-import itmo.lab8.commands.response.Response;
 import itmo.lab8.core.AppCore;
+import itmo.lab8.shared.BlockingChunkList;
+import itmo.lab8.shared.Chunk;
+import itmo.lab8.shared.Request;
+import itmo.lab8.shared.Response;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -12,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ConnectionManager {
     private static ConnectionManager instance;
 
-    private ConcurrentHashMap<Long, Response> responseQueue = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Short, BlockingChunkList> chunkMap = new ConcurrentHashMap<>();
 
 
     public static ConnectionManager getInstance() {
@@ -31,24 +33,29 @@ public class ConnectionManager {
         receiverThread.start();
     }
 
-    public long newOperation(Command command) throws Exception {
-        long operationId = generateOperationId();
+    public short newOperation(Command command) throws Exception {
+        short operationId = generateOperationId();
         Request request = new Request(command, AppCore.getInstance().getName(), operationId);
         ConnectorSingleton.getInstance().send(Serializer.serialize(request));
         return operationId;
     }
 
-    public Response waitForResponse(long operationId) {
-        while (!responseQueue.containsKey(operationId)) {
+    public Response waitForResponse(short operationId) {
+        while (!chunkMap.containsKey(operationId)) {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        Response response = responseQueue.get(operationId);
-        responseQueue.remove(operationId);
-        return response;
+        BlockingChunkList chunks = chunkMap.get(operationId);
+        try {
+            byte[] bytes = chunks.summarizeChunks();
+            chunkMap.remove(operationId);
+            return (Response) Serializer.deserialize(bytes);
+        } catch (InterruptedException e) {
+            return null;
+        }
     }
 
     public Response getResponse(long operationId) {
@@ -61,9 +68,15 @@ public class ConnectionManager {
             super(() -> {
                 while (!Thread.currentThread().isInterrupted()) {
                     try {
-                        Response response = ConnectorSingleton.getInstance().receive();
-                        if (response != null) {
-                            responseQueue.put(response.getOperationId(), response);
+                        Chunk chunk = ConnectorSingleton.getInstance().receive();
+                        if (chunk == null) {
+                            continue;
+                        }
+                        if (chunkMap.containsKey(chunk.getId())) {
+                            chunkMap.get(chunk.getId()).add(chunk);
+                        } else {
+                            chunkMap.put(chunk.getId(), new BlockingChunkList());
+                            chunkMap.get(chunk.getId()).add(chunk);
                         }
                         Thread.sleep(100);
                     } catch (Exception e) {

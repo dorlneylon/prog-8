@@ -2,10 +2,11 @@ package itmo.lab8.commands.implemented;
 
 import itmo.lab8.commands.Action;
 import itmo.lab8.commands.Command;
-import itmo.lab8.commands.response.Response;
-import itmo.lab8.commands.response.ResponseType;
+import itmo.lab8.shared.Response;
+import itmo.lab8.shared.ResponseType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * ExecuteScriptCommand is a class that implements the Action interface.
@@ -37,8 +38,8 @@ public final class ExecuteScriptCommand implements Action {
         }
         StringBuilder output = new StringBuilder();
         for (Command command : commandQueue) {
-            output.append(command.execute(username).getMessage()).append("\n");
+            output.append(Arrays.toString(command.execute(username).getMessage())).append("\n");
         }
-        return new Response(output.toString().trim(), ResponseType.INFO);
+        return new Response(output.toString().trim(), ResponseType.FINE);
     }
 }

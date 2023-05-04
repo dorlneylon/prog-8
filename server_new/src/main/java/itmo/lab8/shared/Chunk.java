@@ -1,4 +1,4 @@
-package itmo.lab8.server.data;
+package itmo.lab8.shared;
 
 
 import java.nio.ByteBuffer;
@@ -6,13 +6,19 @@ import java.util.Arrays;
 
 public class Chunk implements Comparable<Chunk> {
     private final byte[] chunk;
-    private short id;
-    private short index;
-    private short total;
+    private final short id;
+    private final short index;
+    private final short total;
 
+    /**
+     * Constructor for Chunk.
+     *
+     * @param chunk The byte array containing the chunk data.
+     */
     public Chunk(byte[] chunk) {
         this.chunk = Arrays.copyOfRange(chunk, 0, chunk.length - 6);
         byte[] chunkInfoBytes = Arrays.copyOfRange(chunk, chunk.length - 6, chunk.length);
+        // Parsing meta-data of the chunk
         ByteBuffer chunkInfoBuffer = ByteBuffer.wrap(chunkInfoBytes);
         chunkInfoBuffer.position(0);
         index = chunkInfoBuffer.getShort(1);
@@ -54,13 +60,4 @@ public class Chunk implements Comparable<Chunk> {
         }
         return Short.compare(this.index, chunk.index);
     }
-
-    // TODO: DELETE THIS COMMENT SECTION:
-//        public static void main(String[] args) {
-//            long timestamp = System.currentTimeMillis();
-//            short value = (short) ((timestamp - new Date(0).getTime()) / 1000);
-//            short value1 = (short) ((timestamp - new Date(0).getTime()) / 1000);
-//            System.out.println(value1);
-//            System.out.println(value);
-//        }
 }

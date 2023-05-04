@@ -1,4 +1,4 @@
-package itmo.lab8.commands.response;
+package itmo.lab8.shared;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -10,10 +10,9 @@ import java.nio.charset.StandardCharsets;
 public class Response implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 1111185098267757690L;
+    private static final long serialVersionUID = -7046677758944234009L;
 
-    private long operationId;
-    private final byte[] responseMessage;
+    private final byte[] content;
     private final ResponseType responseType;
 
     /**
@@ -22,28 +21,20 @@ public class Response implements Serializable {
      * @param responseMessage the message to be sent in the response
      * @param responseType    the type of response to be sent
      */
-    public Response(String responseMessage, ResponseType responseType, long operationId) {
-        this(responseMessage.getBytes(), responseType, operationId);
-    }
-
     public Response(String responseMessage, ResponseType responseType) {
-        this(responseMessage.getBytes(), responseType, 0);
+        this(responseMessage.getBytes(), responseType);
     }
 
-    public Response(byte[] responseMessage, ResponseType responseType) {
-        this(responseMessage, responseType, 0);
-    }
 
     /**
      * Constructor for Response class.
      *
-     * @param objects      An array of objects to be included in the response.
+     * @param objectBytes  An array of objectBytes to be included in the response.
      * @param responseType The type of response.
      */
-    public Response(byte[] objects, ResponseType responseType, long operationId) {
-        this.responseMessage = objects;
+    public Response(byte[] objectBytes, ResponseType responseType) {
+        this.content = objectBytes;
         this.responseType = responseType;
-        this.operationId = operationId;
     }
 
     /**
@@ -52,11 +43,11 @@ public class Response implements Serializable {
      * @return the response message with the appropriate color
      */
     public byte[] getMessage() {
-        return responseMessage;
+        return content;
     }
 
     public String getStringMessage() {
-        return new String(responseMessage, StandardCharsets.UTF_8);
+        return new String(content, StandardCharsets.UTF_8);
     }
 
     /**
@@ -66,13 +57,5 @@ public class Response implements Serializable {
      */
     public ResponseType getType() {
         return responseType;
-    }
-
-    public long getOperationId() {
-        return operationId;
-    }
-
-    public void setOperationId(long operationId) {
-        this.operationId = operationId;
     }
 }

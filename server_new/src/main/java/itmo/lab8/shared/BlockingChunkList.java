@@ -1,4 +1,4 @@
-package itmo.lab8.server.data;
+package itmo.lab8.shared;
 
 import java.util.ArrayList;
 import java.util.Collections;

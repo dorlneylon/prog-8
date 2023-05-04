@@ -9,7 +9,7 @@ import itmo.lab8.basic.baseenums.MovieGenre;
 import itmo.lab8.basic.baseenums.MpaaRating;
 import itmo.lab8.commands.Command;
 import itmo.lab8.commands.CommandType;
-import itmo.lab8.commands.response.Response;
+import itmo.lab8.shared.Response;
 import itmo.lab8.connection.ConnectionManager;
 import itmo.lab8.ui.SceneManager;
 import javafx.fxml.FXML;
@@ -166,7 +166,7 @@ public class InsertController {
         try {
             Movie movie = new Movie(Long.parseLong(id), name, coordinates1, Long.parseLong(oscarsCount), genre, rating, new Person(directorName, new SimpleDateFormat("dd-mm-yyyy").parse(birthdate), Integer.parseInt(height), hairColor, location1));
             long opID = ConnectionManager.getInstance().newOperation(new Command(CommandType.INSERT, movie));
-            Response r = ConnectionManager.getInstance().waitForResponse(opID);
+            // Response r = ConnectionManager.getInstance().waitForResponse(opID);
             System.out.println(new String(r.getMessage()));
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,15 +1,12 @@
 package itmo.lab8.commands.implemented;
 
 import itmo.lab8.commands.Action;
-import itmo.lab8.commands.response.Response;
-import itmo.lab8.commands.response.ResponseType;
-import itmo.lab8.server.UdpServer;
+import itmo.lab8.server.Server;
+import itmo.lab8.shared.Response;
+import itmo.lab8.shared.ResponseType;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static itmo.lab8.server.UdpServer.collection;
-import static itmo.lab8.server.UdpServer.getDatabase;
 
 /**
  * This class is used to execute commands from the service.
@@ -43,35 +40,36 @@ public final class ServiceCommand implements Action {
             case "check_id" -> {
                 assert arg != null;
                 Long id = Long.parseLong(arg);
-                boolean isPresented = collection.isKeyPresented(id);
-                yield new Response(Boolean.toString(isPresented), ResponseType.INFO);
+                boolean isPresented = Server.getInstance().getCollection().isKeyPresented(id);
+                yield new Response(Boolean.toString(isPresented), ResponseType.OK);
             }
-            case "get_collection_size" -> new Response(Integer.toString(collection.size()), ResponseType.INFO);
+            case "get_collection_size" ->
+                    new Response(Integer.toString(Server.getInstance().getCollection().size()), ResponseType.OK);
             case "sign_up" -> {
                 assert arg != null;
                 Matcher matcher = Pattern.compile("(.*):(.*)$").matcher(arg);
                 if (!matcher.find()) {
-                    yield new Response("Wrong format of the command", ResponseType.INFO);
+                    yield new Response("Wrong format of the command", ResponseType.OK);
                 }
 
-                yield getDatabase().addNewUser(matcher.group(1), matcher.group(2)) ?
-                        new Response("OK", ResponseType.INFO) :
-                        new Response("Something happened during signing. Try again", ResponseType.INFO);
+                yield Server.getInstance().getDatabase().addNewUser(matcher.group(1), matcher.group(2)) ?
+                        new Response("OK", ResponseType.OK) :
+                        new Response("Something happened during signing. Try again", ResponseType.ERROR);
             }
             case "sign_in" -> {
                 assert arg != null;
                 Matcher matcher = Pattern.compile("(.*):(.*)$").matcher(arg);
                 if (!matcher.find()) {
-                    yield new Response("Wrong format of the command", ResponseType.INFO);
+                    yield new Response("Wrong format of the command", ResponseType.ERROR);
                 }
 
-                yield getDatabase().userSignIn(matcher.group(1), matcher.group(2)) ?
-                        new Response("OK", ResponseType.INFO) :
-                        new Response("Something happened during signing. Try again", ResponseType.INFO);
+                yield Server.getInstance().getDatabase().userSignIn(matcher.group(1), matcher.group(2)) ?
+                        new Response("OK", ResponseType.OK) :
+                        new Response("Something happened during signing. Try again", ResponseType.ERROR);
             }
             case "is_user_creator" ->
-                    new Response(Boolean.toString(UdpServer.getDatabase().isUserEditor(splitCommand[2], Integer.parseInt(arg))), ResponseType.INFO);
-            default -> new Response("", ResponseType.INFO);
+                    new Response(Boolean.toString(Server.getInstance().getDatabase().isUserEditor(splitCommand[2], Integer.parseInt(arg))), ResponseType.OK);
+            default -> new Response("", ResponseType.ERROR);
         };
     }
 }

@@ -1,10 +1,8 @@
 package itmo.lab8.connection;
 
-import itmo.chunker.ChuckReceiver;
 import itmo.chunker.Chunker;
-import itmo.lab8.basic.utils.serializer.Serializer;
 import itmo.lab8.basic.utils.terminal.Colors;
-import itmo.lab8.commands.response.Response;
+import itmo.lab8.shared.Chunk;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -101,20 +99,10 @@ public class ConnectorSingleton {
         }
     }
 
-    /**
-     * Receives bytes from remote server and transforms them into string
-     *
-     * @return string message
-     * @throws IOException Receiving exception
-     */
-    public Response receive() throws IOException {
-        ChuckReceiver receiver = new ChuckReceiver();
-        byte[] buffer = new byte[chunkSize + 4];
+    public Chunk receive() throws IOException {
+        byte[] buffer = new byte[1030];
         DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-        do {
-            socket.receive(packet);
-            receiver.add(Arrays.copyOf(packet.getData(), packet.getLength()));
-        } while (!receiver.isReceived());
-        return (Response) Serializer.deserialize(receiver.getAllChunks());
+        socket.receive(packet);
+        return new Chunk(Arrays.copyOf(packet.getData(), packet.getLength()));
     }
 }

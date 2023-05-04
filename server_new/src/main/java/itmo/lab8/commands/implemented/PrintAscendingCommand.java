@@ -1,14 +1,14 @@
 package itmo.lab8.commands.implemented;
 
 import itmo.lab8.commands.Action;
-import itmo.lab8.commands.response.MessagePainter;
-import itmo.lab8.commands.response.Response;
-import itmo.lab8.commands.response.ResponseType;
+import itmo.lab8.server.Server;
+import itmo.lab8.shared.Response;
+import itmo.lab8.shared.ResponseType;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static itmo.lab8.server.UdpServer.collection;
+import static java.lang.Math.min;
 
 /**
  * PrintAscendingCommand class implements Action interface and is used to print movies in the collection in ascending order.
@@ -48,22 +48,18 @@ public final class PrintAscendingCommand implements Action {
     // Override the run method from the Command interface
     public Response run(String username) {
         // If the collection size is 0, return a success response
-        if (collection.size() == 0)
-            return new Response("Collection is empty", ResponseType.SUCCESS);
+        if (Server.getInstance().getCollection().size() == 0)
+            return new Response("Collection is empty", ResponseType.OK);
 
-        List<String> movieStrings = Arrays.stream(collection.getSortedMovies(false)).
-                map(movie -> movie.toString(username))
-                .toList();
+        List<String> movieStrings = Arrays.stream(Server.getInstance().getCollection().getSortedMovies(false)).map(movie -> movie.toString(username)).toList();
 
         if (isScript) {
-            String test = MessagePainter.ColoredInfoMessage(movieStrings.toString().replace("., ", ",\n"));
-            return new Response(test.substring(1, test.length() - 1), ResponseType.INFO);
+            String test = movieStrings.toString().replace("., ", ",\n");
+            return new Response(test.substring(1, test.length() - 1), ResponseType.OK);
         }
 
-        String message = MessagePainter.ColoredInfoMessage(movieStrings
-                .subList(index, min(index + 20, collection.size())).toString()
-                .replace("., ", ",\n"));
+        String message = movieStrings.subList(index, min(index + 20, Server.getInstance().getCollection().size())).toString().replace("., ", ",\n");
 
-        return new Response(message.substring(1, message.length() - 1), ResponseType.INFO);
+        return new Response(message.substring(1, message.length() - 1), ResponseType.OK);
     }
 }

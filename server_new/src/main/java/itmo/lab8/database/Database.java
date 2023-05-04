@@ -4,7 +4,7 @@ import itmo.lab8.basic.baseclasses.Movie;
 import itmo.lab8.basic.baseenums.MpaaRating;
 import itmo.lab8.basic.moviecollection.MovieCollection;
 import itmo.lab8.server.ServerLogger;
-import itmo.lab8.utils.serializer.Serializer;
+import itmo.lab8.utils.Serializer;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -68,7 +68,7 @@ public class Database {
             if (historyStatement.executeUpdate() > 0) flags |= 2;
         } catch (SQLException e) {
             // Log any errors that occur
-            ServerLogger.getLogger().log(Level.INFO, "Unable to add new user " + e.getMessage());
+            ServerLogger.getInstance().log(Level.INFO, "Unable to add new user " + e.getMessage());
         } finally {
             try {
                 // If both flags are not set, delete the user from the users table
@@ -80,7 +80,7 @@ public class Database {
                 }
             } catch (Exception finalException) {
                 // Log any errors that occur
-                ServerLogger.getLogger().log(Level.INFO, "Unable to delete user " + finalException.getMessage());
+                ServerLogger.getInstance().log(Level.INFO, "Unable to delete user " + finalException.getMessage());
             }
         }
         // Return true if both flags are set, false otherwise
@@ -102,7 +102,7 @@ public class Database {
             return pre.executeQuery().next();
         } catch (SQLException e) {
             // Log any errors that occur
-            ServerLogger.getLogger().log(Level.INFO, "Unable to check user " + e.getMessage());
+            ServerLogger.getInstance().log(Level.INFO, "Unable to check user " + e.getMessage());
         }
         return false;
     }
@@ -133,7 +133,7 @@ public class Database {
             return pre.executeUpdate() > 0;
         } catch (SQLException e) {
             // Log any errors that occur
-            ServerLogger.getLogger().log(Level.INFO, "Unable to add command to history " + e.getMessage());
+            ServerLogger.getInstance().log(Level.INFO, "Unable to add command to history " + e.getMessage());
         }
         return false;
     }
@@ -153,7 +153,7 @@ public class Database {
             if (result.next()) return (String[]) result.getArray(1).getArray();
         } catch (SQLException e) {
             // Log any errors that occur
-            ServerLogger.getLogger().log(Level.INFO, "Unable to get command history " + e.getMessage());
+            ServerLogger.getInstance().log(Level.INFO, "Unable to get command history " + e.getMessage());
         }
         return new String[0];
     }
@@ -176,7 +176,7 @@ public class Database {
             if (result.next()) return true;
         } catch (SQLException e) {
             // Log any errors that occur
-            ServerLogger.getLogger().log(Level.INFO, "Unable to check user " + e.getMessage());
+            ServerLogger.getInstance().log(Level.INFO, "Unable to check user " + e.getMessage());
         }
         return false;
     }
@@ -199,7 +199,7 @@ public class Database {
             return pre.executeUpdate() > 0;
         } catch (SQLException e) {
             // Log any errors that occur
-            ServerLogger.getLogger().log(Level.INFO, "Unable to insert to collection " + e.getMessage());
+            ServerLogger.getInstance().log(Level.INFO, "Unable to insert to collection " + e.getMessage());
         }
         return false;
     }
@@ -220,7 +220,7 @@ public class Database {
             return pre.executeUpdate() > 0;
         } catch (SQLException e) {
             // Log any errors that occur
-            ServerLogger.getLogger().log(Level.INFO, "Unable to remove by key " + e.getMessage());
+            ServerLogger.getInstance().log(Level.INFO, "Unable to remove by key " + e.getMessage());
         }
         return false;
     }
@@ -239,7 +239,7 @@ public class Database {
             return pre.executeUpdate() > 0;
         } catch (SQLException e) {
             // Log any errors that occur
-            ServerLogger.getLogger().log(Level.INFO, "Unable to clear collection " + e.getMessage());
+            ServerLogger.getInstance().log(Level.INFO, "Unable to clear collection " + e.getMessage());
         }
         return false;
     }
@@ -272,7 +272,7 @@ public class Database {
                 }
             }
         } catch (SQLException e) {
-            ServerLogger.getLogger().log(Level.INFO, "Unable to remove by mpaa rating " + e.getMessage());
+            ServerLogger.getInstance().log(Level.INFO, "Unable to remove by mpaa rating " + e.getMessage());
         }
     }
 
@@ -290,7 +290,7 @@ public class Database {
             return true;
         } catch (SQLException e) {
             // Log any errors that occur
-            ServerLogger.getLogger().log(Level.INFO, "Unable to replace lower " + e.getMessage());
+            ServerLogger.getInstance().log(Level.INFO, "Unable to replace lower " + e.getMessage());
         }
         return false;
     }
@@ -303,13 +303,12 @@ public class Database {
             ResultSet resultSet = pre.executeQuery();
             for (int id = 0; resultSet.next(); id = resultSet.getInt(1)) {
                 Movie movie = getMovieById(username, id);
-                if (movie != null && movie.getOscarsInt() > key)
-                    removeByKey(movie.getId(), username);
+                if (movie != null && movie.getOscarsInt() > key) removeByKey(movie.getId(), username);
             }
             return true;
         } catch (SQLException e) {
             // Log any errors that occur
-            ServerLogger.getLogger().log(Level.INFO, "Unable to remove greater " + e.getMessage());
+            ServerLogger.getInstance().log(Level.INFO, "Unable to remove greater " + e.getMessage());
         }
         return false;
     }
@@ -345,7 +344,7 @@ public class Database {
             return true;
         } catch (SQLException sqle) {
             // Log any errors that occur
-            ServerLogger.getLogger().log(Level.INFO, "Unable to update by id " + sqle.getMessage());
+            ServerLogger.getInstance().log(Level.INFO, "Unable to update by id " + sqle.getMessage());
         }
         return false;
     }
@@ -360,7 +359,7 @@ public class Database {
             return result.next();
         } catch (SQLException e) {
             // Log any errors that occur
-            ServerLogger.getLogger().warning("Unable to check editor " + e.getMessage());
+            ServerLogger.getInstance().warning("Unable to check editor " + e.getMessage());
         }
         return false;
     }
@@ -397,7 +396,7 @@ public class Database {
 
         } catch (SQLException e) {
             // Log any errors that occur
-            ServerLogger.getLogger().log(Level.INFO, "Unable to get collection " + e.getMessage());
+            ServerLogger.getInstance().log(Level.INFO, "Unable to get collection " + e.getMessage());
         }
         return null;
     }
