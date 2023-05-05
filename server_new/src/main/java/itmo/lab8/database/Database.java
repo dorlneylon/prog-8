@@ -364,6 +364,22 @@ public class Database {
         return false;
     }
 
+    public String getColorOfMovie(Long id) {
+        try {
+            String sql = "select color from \"collection\" inner join \"user\" on login = editor where id=?";
+            PreparedStatement pre = connection.prepareStatement(sql);
+            pre.setLong(1, id);
+            ResultSet result = pre.executeQuery();
+            if (result.next()) {
+                return result.getString("color");
+            }
+        } catch (SQLException e) {
+            // Log any errors that occur
+            ServerLogger.getInstance().warning("Unable to get color of movie " + e.getMessage());
+        }
+        return null;
+    }
+
     /**
      * Retrieves the collection of movies from the database.
      *

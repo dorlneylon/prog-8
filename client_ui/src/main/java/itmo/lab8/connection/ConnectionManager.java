@@ -49,13 +49,20 @@ public class ConnectionManager {
     }
 
     public Response waitForResponse(short operationId) {
+        long startTime = System.currentTimeMillis();
+        long elapsedTime = 0;
         while (!chunkMap.containsKey(operationId) || chunkMap.get(operationId) == null || !chunkMap.get(operationId).allReceived()) {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                // ignore
+            }
+            elapsedTime = System.currentTimeMillis() - startTime;
+            if (elapsedTime >= 10000) {
+                break;
             }
         }
+
         BlockingChunkList chunks;
         try {
             chunks = chunkMap.get(operationId);
@@ -66,9 +73,6 @@ public class ConnectionManager {
         try {
             byte[] bytes = chunks.summarizeChunks();
             chunkMap.remove(operationId);
-            if (bytes == null) {
-                System.out.println("WTF");
-            }
             return (Response) Serializer.deserialize(bytes);
         } catch (InterruptedException e) {
             return null;

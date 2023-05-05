@@ -1,5 +1,6 @@
 package itmo.lab8.ui.controllers;
 
+import itmo.lab8.ClientMain;
 import itmo.lab8.basic.baseclasses.Coordinates;
 import itmo.lab8.basic.baseclasses.Movie;
 import itmo.lab8.basic.baseenums.MovieGenre;
@@ -7,8 +8,9 @@ import itmo.lab8.basic.baseenums.MpaaRating;
 import itmo.lab8.basic.utils.serializer.Serializer;
 import itmo.lab8.commands.Command;
 import itmo.lab8.commands.CommandType;
-import itmo.lab8.shared.Response;
 import itmo.lab8.connection.ConnectionManager;
+import itmo.lab8.shared.Response;
+import itmo.lab8.ui.ItemCanvas;
 import itmo.lab8.ui.SceneManager;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -16,8 +18,14 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -27,7 +35,8 @@ import java.util.ResourceBundle;
 
 public class ShowController {
     private final ResourceBundle resources = ResourceBundle.getBundle("itmo.lab8.locale");
-
+    private final SceneManager sceneManager;
+    private ViewController viewController;
     @FXML
     private Label filter_by_label;
     @FXML
@@ -38,45 +47,33 @@ public class ShowController {
     private Button apply_button;
     @FXML
     private Button visualise_button;
-
     @FXML
     private TableView<Movie> showTable;
-
     private ObservableList<Movie> movieList = FXCollections.observableArrayList();
-
     @FXML
     private TableColumn<Movie, Integer> idColumn;
-
     @FXML
     private TableColumn<Movie, String> nameColumn;
-
     @FXML
     private TableColumn<Movie, Coordinates> coordinatesColumn;
-
     @FXML
     private TableColumn<Movie, String> creationDateColumn;
-
     @FXML
     private TableColumn<Movie, Integer> oscarsColumn;
-
     @FXML
     private TableColumn<Movie, MovieGenre> genreColumn;
-
     @FXML
     private TableColumn<Movie, MpaaRating> mpaaColumn;
-
     @FXML
     private TableColumn<Movie, String> directorNameColumn;
-
-    private final SceneManager sceneManager;
     private ShowThread showThread;
-
-    public ShowThread getMainThread() {
-        return showThread;
-    }
 
     public ShowController(SceneManager sceneManager) {
         this.sceneManager = sceneManager;
+    }
+
+    public ShowThread getMainThread() {
+        return showThread;
     }
 
     @FXML
@@ -107,17 +104,8 @@ public class ShowController {
             }
         });
 
-        filter_options.getItems().addAll(
-                resources.getString("none_filter_option"),
-                resources.getString("id_filter_option"),
-                resources.getString("name_filter_option"),
-                resources.getString("coordinates_filter_option"),
-                resources.getString("creation_date_filter_option"),
-                resources.getString("oscars_filter_option"),
-                resources.getString("genre_filter_option"),
-                resources.getString("mpaa_rating_filter_option"),
-                resources.getString("director_name_filter_option")
-        );
+        filter_options.getItems().addAll(resources.getString("none_filter_option"), resources.getString("id_filter_option"), resources.getString("name_filter_option"), resources.getString("coordinates_filter_option"), resources.getString("creation_date_filter_option"), resources.getString("oscars_filter_option"), resources.getString("genre_filter_option"), resources.getString("mpaa_rating_filter_option"), resources.getString("director_name_filter_option"));
+        filter_options.setValue(filter_options.getItems().get(0));
     }
 
     public void fieldInit() {
@@ -142,6 +130,7 @@ public class ShowController {
         if (filterOption == null || filterCriteria == null) {
             return;
         }
+
 
         if (filterOption.equals(resources.getString("id_filter_option"))) {
             try {
@@ -204,11 +193,14 @@ public class ShowController {
 
         if (filterOption.equals(resources.getString("none_filter_option"))) {
             showTable.setItems(movieList);
-            showThread.start();
+            if (showThread.isInterrupted()) {
+                showThread = new ShowThread();
+                showThread.start();
+            }
             return;
         }
 
-        showThread.stop();
+        showThread.interrupt();
     }
 
     private void filterById(int id) {
@@ -271,6 +263,45 @@ public class ShowController {
 
     public TableView<Movie> getShowTable() {
         return showTable;
+    }
+
+    @FXML
+    public void onViewButtonClick() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("viewpage.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("View");
+            ViewController controller = new ViewController();
+            this.viewController = controller;
+            fxmlLoader.setController(controller);
+            Pane root = fxmlLoader.load();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            updateView();
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateView() {
+        if (viewController != null) {
+            for (Movie movie : movieList) {
+                short opId;
+                try {
+                    opId = ConnectionManager.getInstance().newOperation(new Command(CommandType.SERVICE, "movie_color %d".formatted(movie.getId())));
+                } catch (Exception e) {
+                    continue;
+                }
+                Response response = ConnectionManager.getInstance().waitForResponse(opId);
+                String responseText = response.getStringMessage();
+                Canvas canvas = new ItemCanvas(movie.getId(), responseText);
+                double randomX = Math.random() * (617 - 50);
+                double randomY = Math.random() * (995 - 50);
+                canvas.relocate(randomX, randomY);
+                viewController.getCanvasPane().getChildren().add(canvas);
+            }
+        }
     }
 
     public class ShowThread extends Thread {

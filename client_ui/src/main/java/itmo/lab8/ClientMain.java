@@ -15,9 +15,9 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class ClientMain extends Application {
-    public static System.Logger log = System.getLogger(ClientMain.class.getName());
     private static final InetAddress serverAddress;
     private static final int serverPort = 5050;
+    public static System.Logger log = System.getLogger(ClientMain.class.getName());
 
     static {
         try {

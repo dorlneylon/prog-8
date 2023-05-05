@@ -1,8 +1,8 @@
 package itmo.lab8.basic.baseclasses;
 
 
-import itmo.lab8.basic.baseenums.Color;
 import itmo.lab8.basic.auxiliary.Randomness;
+import itmo.lab8.basic.baseenums.Color;
 
 import java.io.Serial;
 import java.io.Serializable;

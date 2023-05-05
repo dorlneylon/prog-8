@@ -32,14 +32,6 @@ public enum CommandType implements Serializable {
         this.description = description;
     }
 
-    public Class<? extends Action> getExecutableClass() {
-        return executableClass;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
     public static ArrayList<CommandType> getCommands() {
         ArrayList<CommandType> commands = new ArrayList<>();
         commands.add(SHOW);
@@ -52,6 +44,14 @@ public enum CommandType implements Serializable {
         commands.add(REMOVE_KEY);
         commands.add(EXIT);
         return commands;
+    }
+
+    public Class<? extends Action> getExecutableClass() {
+        return executableClass;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
 }

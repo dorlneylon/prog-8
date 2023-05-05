@@ -4,9 +4,9 @@ package itmo.lab8.basic.types.builders;
 import itmo.lab8.basic.baseclasses.Coordinates;
 import itmo.lab8.basic.baseclasses.Movie;
 import itmo.lab8.basic.baseclasses.Person;
+import itmo.lab8.basic.baseenums.MovieGenre;
 import itmo.lab8.basic.baseenums.MpaaRating;
 import itmo.lab8.basic.types.builders.annotations.Generated;
-import itmo.lab8.basic.baseenums.MovieGenre;
 import itmo.lab8.basic.types.builders.annotations.NotNull;
 import itmo.lab8.basic.types.builders.annotations.Value;
 

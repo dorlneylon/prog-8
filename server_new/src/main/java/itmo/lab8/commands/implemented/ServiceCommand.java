@@ -43,6 +43,11 @@ public final class ServiceCommand implements Action {
                 boolean isPresented = Server.getInstance().getCollection().isKeyPresented(id);
                 yield new Response(Boolean.toString(isPresented), ResponseType.OK);
             }
+            case "movie_color" -> {
+                assert arg != null;
+                Long id = Long.parseLong(arg);
+                yield new Response(Server.getInstance().getDatabase().getColorOfMovie(id), ResponseType.OK);
+            }
             case "get_collection_size" ->
                     new Response(Integer.toString(Server.getInstance().getCollection().size()), ResponseType.OK);
             case "sign_up" -> {

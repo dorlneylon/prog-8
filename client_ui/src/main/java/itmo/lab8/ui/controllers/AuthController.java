@@ -16,6 +16,7 @@ import java.util.ResourceBundle;
 
 public class AuthController {
     private final ResourceBundle resources = ResourceBundle.getBundle("itmo.lab8.locale");
+    private final SceneManager sceneManager;
     @FXML
     private TextField loginField;
     @FXML
@@ -24,8 +25,6 @@ public class AuthController {
     private Label statusLabel;
     @FXML
     private Label login_upper_label;
-
-    private final SceneManager sceneManager;
 
     public AuthController(SceneManager sceneManager) {
         this.sceneManager = sceneManager;

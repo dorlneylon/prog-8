@@ -162,15 +162,13 @@ public class InsertController {
         } catch (Exception e) {
             location_insertion_label.getStyleClass().add("empty-textfield");
         }
-
         try {
             Movie movie = new Movie(Long.parseLong(id), name, coordinates1, Long.parseLong(oscarsCount), genre, rating, new Person(directorName, new SimpleDateFormat("dd-mm-yyyy").parse(birthdate), Integer.parseInt(height), hairColor, location1));
             short opID = ConnectionManager.getInstance().newOperation(new Command(CommandType.INSERT, movie));
-            Response r = ConnectionManager.getInstance().waitForResponse(opID);
-            System.out.println(new String(r.getMessage()));
+            Response response = ConnectionManager.getInstance().waitForResponse(opID);
+            System.out.println(new String(response.getMessage()));
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+            System.err.println(e.getMessage());
         }
     }
 }

@@ -1,7 +1,6 @@
 package itmo.lab8.ui;
 
 import itmo.lab8.ClientMain;
-import itmo.lab8.core.AppCore;
 import itmo.lab8.ui.controllers.AuthController;
 import itmo.lab8.ui.controllers.MainController;
 import javafx.fxml.FXMLLoader;

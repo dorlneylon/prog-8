@@ -1,8 +1,8 @@
 package itmo.lab8.basic.utils.parser;
 
 
-import itmo.lab8.basic.types.builders.annotations.Generated;
 import itmo.lab8.basic.types.builders.Builder;
+import itmo.lab8.basic.types.builders.annotations.Generated;
 import itmo.lab8.basic.types.builders.annotations.NotNull;
 import itmo.lab8.basic.types.builders.annotations.Value;
 import itmo.lab8.basic.utils.generators.IdGenerator;

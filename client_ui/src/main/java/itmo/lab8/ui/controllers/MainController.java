@@ -1,18 +1,8 @@
 package itmo.lab8.ui.controllers;
 
 import itmo.lab8.ClientMain;
-import itmo.lab8.basic.baseclasses.Coordinates;
-import itmo.lab8.basic.baseclasses.Location;
-import itmo.lab8.basic.baseclasses.Movie;
-import itmo.lab8.basic.baseclasses.Person;
-import itmo.lab8.basic.baseenums.Color;
-import itmo.lab8.basic.baseenums.MovieGenre;
-import itmo.lab8.basic.baseenums.MpaaRating;
-import itmo.lab8.commands.Command;
 import itmo.lab8.commands.CommandType;
-import itmo.lab8.connection.ConnectionManager;
 import itmo.lab8.core.AppCore;
-import itmo.lab8.shared.Response;
 import itmo.lab8.ui.SceneManager;
 import itmo.lab8.ui.Variable;
 import itmo.lab8.ui.types.CommandButton;
@@ -28,8 +18,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -54,6 +43,8 @@ public class MainController {
     private Label lang;
     @FXML
     private Label history;
+
+    private final ArrayList<Object> controllers = new ArrayList<>();
 
     public MainController(SceneManager sceneManager) {
         this.sceneManager = sceneManager;
@@ -104,14 +95,28 @@ public class MainController {
             if (index >= 0) {
                 CommandButton clickedBtn = commandList.getItems().get(index);
                 switch (clickedBtn.getType()) {
-                    case SHOW -> showHandler();
-                    case INSERT -> insertHandler();
+                    case SHOW -> {
+                        if (isControllerNotPresented(ShowController.class)) showHandler();
+                    }
+                    case INSERT -> {
+                        if (isControllerNotPresented(InsertController.class)) insertHandler();
+                    }
                     case EXIT -> System.exit(0);
                 }
             }
             commandList.getSelectionModel().clearSelection();
         });
     }
+
+    private boolean isControllerNotPresented(Class<?> instance) {
+        for (Object c : controllers) {
+            if (c.getClass().equals(instance)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     private void showHandler() {
         try {
@@ -120,11 +125,13 @@ public class MainController {
             stage.setTitle("Show");
             ShowController controller = new ShowController(sceneManager);
             fxmlLoader.setController(controller);
+            controllers.add(controller);
             Scene scene = new Scene(fxmlLoader.load());
             stage.setScene(scene);
             scene.getStylesheets().add(Objects.requireNonNull(ClientMain.class.getResource("css/showpage.css")).toExternalForm());
             stage.setOnCloseRequest(event -> {
-                controller.getMainThread().interrupt();
+                controllers.stream().filter(c -> c.getClass().equals(ShowController.class)).forEach(c -> ((ShowController) c).getMainThread().interrupt());
+                controllers.removeIf(c -> c.getClass().equals(ShowController.class));
             });
             stage.setResizable(false);
             stage.show();
@@ -138,9 +145,14 @@ public class MainController {
             FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("insert.fxml"));
             Stage stage = new Stage();
             stage.setTitle("Insert");
-            fxmlLoader.setController(new InsertController(sceneManager));
+            InsertController controller = new InsertController(sceneManager);
+            fxmlLoader.setController(controller);
+            controllers.add(controller);
             Scene scene = new Scene(fxmlLoader.load());
             stage.setScene(scene);
+            stage.setOnCloseRequest(event -> {
+                controllers.removeIf(c -> c.getClass().equals(InsertController.class));
+            });
             scene.getStylesheets().add(Objects.requireNonNull(ClientMain.class.getResource("css/insert.css")).toExternalForm());
             stage.show();
         } catch (IOException e) {
@@ -148,4 +160,3 @@ public class MainController {
         }
     }
 }
-

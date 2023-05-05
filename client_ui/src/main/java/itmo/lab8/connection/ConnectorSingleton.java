@@ -16,30 +16,15 @@ import java.util.Arrays;
  */
 public class ConnectorSingleton {
 
-    private static ConnectorSingleton instance;
     private final static int socketTimeout = 16000;
+    private static ConnectorSingleton instance;
+    private final int chunkSize = 1030;
     /**
      * Socket for UDP connection
      */
     private DatagramSocket socket;
     private InetAddress address;
     private int port;
-    private final int chunkSize = 1030;
-    ;
-
-
-    /**
-     * Connector constructor with specified server port
-     *
-     * @param port server port
-     * @throws Exception Socket exception
-     */
-    public void setConnectorValues(InetAddress address, int port) throws Exception {
-        socket = new DatagramSocket();
-        socket.setSoTimeout(socketTimeout);
-        this.address = address;
-        this.port = port;
-    }
 
     public static ConnectorSingleton newInstance(InetAddress address, int port) throws Exception {
         instance = new ConnectorSingleton();
@@ -52,6 +37,19 @@ public class ConnectorSingleton {
             instance = new ConnectorSingleton();
         }
         return instance;
+    }
+
+    /**
+     * Connector constructor with specified server port
+     *
+     * @param port server port
+     * @throws Exception Socket exception
+     */
+    public void setConnectorValues(InetAddress address, int port) throws Exception {
+        socket = new DatagramSocket();
+        socket.setSoTimeout(socketTimeout);
+        this.address = address;
+        this.port = port;
     }
 
     /**
