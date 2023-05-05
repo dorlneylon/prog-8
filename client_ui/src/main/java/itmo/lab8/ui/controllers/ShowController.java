@@ -31,7 +31,7 @@ public class ShowController {
     @FXML
     private Label filter_by_label;
     @FXML
-    private ChoiceBox<String> filter_options;
+    private ComboBox<String> filter_options;
     @FXML
     private TextField filter_criteria;
     @FXML
@@ -85,6 +85,8 @@ public class ShowController {
         showTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         showThread = new ShowThread();
         showThread.start();
+        showTable.fixedCellSizeProperty().setValue(20);
+        showTable.setEditable(false);
         idColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(Math.toIntExact(cellData.getValue().getId())).asObject());
         nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
         coordinatesColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getCoordinates()));
@@ -104,6 +106,18 @@ public class ShowController {
                 }
             }
         });
+
+        filter_options.getItems().addAll(
+                resources.getString("none_filter_option"),
+                resources.getString("id_filter_option"),
+                resources.getString("name_filter_option"),
+                resources.getString("coordinates_filter_option"),
+                resources.getString("creation_date_filter_option"),
+                resources.getString("oscars_filter_option"),
+                resources.getString("genre_filter_option"),
+                resources.getString("mpaa_rating_filter_option"),
+                resources.getString("director_name_filter_option")
+        );
     }
 
     public void fieldInit() {
@@ -119,15 +133,93 @@ public class ShowController {
         }
     }
 
-    public void filterById(int id) {
-        showTable.setItems(movieList.filtered(movie -> movie.getId() > id));
+    @FXML
+    public void onFilterButtonClick() {
+        // take filter option from combobox and filter criteria from textfield. try to parse the type of filter criteria and hang to other method.
+        String filterOption = filter_options.getValue();
+        String filterCriteria = filter_criteria.getText();
+
+        if (filterOption == null || filterCriteria == null) {
+            return;
+        }
+
+        if (filterOption.equals(resources.getString("id_filter_option"))) {
+            try {
+                int id = Integer.parseInt(filterCriteria);
+                filterById(id);
+            } catch (NumberFormatException e) {
+                // smt
+            }
+        }
+
+        if (filterOption.equals(resources.getString("name_filter_option"))) {
+            filterByName(filterCriteria);
+        }
+
+        if (filterOption.equals(resources.getString("coordinates_filter_option"))) {
+            try {
+                String[] coordinates = filterCriteria.split(" ");
+                float x = Float.parseFloat(coordinates[0]);
+                Integer y = Integer.parseInt(coordinates[1]);
+                filterByCoordinates(new Coordinates(x, y));
+            } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                // smt
+            }
+        }
+
+        if (filterOption.equals(resources.getString("creation_date_filter_option"))) {
+            filterByCreationDate(filterCriteria);
+        }
+
+        if (filterOption.equals(resources.getString("oscars_filter_option"))) {
+            try {
+                int oscars = Integer.parseInt(filterCriteria);
+                filterByOscars(oscars);
+            } catch (NumberFormatException e) {
+                // smt
+            }
+        }
+
+        if (filterOption.equals(resources.getString("genre_filter_option"))) {
+            try {
+                MovieGenre genre = MovieGenre.valueOf(filterCriteria.toUpperCase());
+                filterByGenre(genre);
+            } catch (IllegalArgumentException e) {
+                // smt
+            }
+        }
+
+        if (filterOption.equals(resources.getString("mpaa_rating_filter_option"))) {
+            try {
+                MpaaRating mpaaRating = MpaaRating.valueOf(filterCriteria.toUpperCase());
+                filterByMpaaRating(mpaaRating);
+            } catch (IllegalArgumentException e) {
+                // smt
+            }
+        }
+
+        if (filterOption.equals(resources.getString("director_name_filter_option"))) {
+            filterByDirectorName(filterCriteria);
+        }
+
+        if (filterOption.equals(resources.getString("none_filter_option"))) {
+            showTable.setItems(movieList);
+            showThread.start();
+            return;
+        }
+
+        showThread.stop();
     }
 
-    public void filterByName(String name) {
+    private void filterById(int id) {
+        showTable.setItems(movieList.filtered(movie -> movie.getId() == id));
+    }
+
+    private void filterByName(String name) {
         showTable.setItems(movieList.filtered(movie -> movie.getName().contains(name)));
     }
 
-    public void filterByCoordinates(Coordinates coordinates) {
+    private void filterByCoordinates(Coordinates coordinates) {
         showTable.setItems(movieList.filtered(movie -> movie.getCoordinates().equals(coordinates)));
     }
 
@@ -135,23 +227,23 @@ public class ShowController {
         showTable.setItems(movieList.filtered(movie -> movie.getCreationDate().toString().equals(creationDate)));
     }
 
-    public void filterByOscars(int oscars) {
+    private void filterByOscars(int oscars) {
         showTable.setItems(movieList.filtered(movie -> movie.getOscarsInt() > oscars));
     }
 
-    public void filterByGenre(MovieGenre genre) {
+    private void filterByGenre(MovieGenre genre) {
         showTable.setItems(movieList.filtered(movie -> movie.getGenre().equals(genre)));
     }
 
-    public void filterByMpaaRating(MpaaRating mpaaRating) {
+    private void filterByMpaaRating(MpaaRating mpaaRating) {
         showTable.setItems(movieList.filtered(movie -> movie.getRating().equals(mpaaRating)));
     }
 
-    public void filterByDirectorName(String directorName) {
+    private void filterByDirectorName(String directorName) {
         showTable.setItems(movieList.filtered(movie -> movie.getDirector().getName().contains(directorName)));
     }
 
-    public void setMovieList(ObservableList<Movie> movieList) {
+    private void setMovieList(ObservableList<Movie> movieList) {
         this.movieList = movieList;
         showTable.setItems(movieList);
     }
@@ -161,17 +253,17 @@ public class ShowController {
         showTable.sort();
     }
 
-    public void addMovie(Movie movie) {
+    private void addMovie(Movie movie) {
         movieList.add(movie);
         updateMovieList();
     }
 
-    public void removeMovie(Movie movie) {
+    private void removeMovie(Movie movie) {
         movieList.remove(movie);
         updateMovieList();
     }
 
-    public void updateMovie(Movie movie) {
+    private void updateMovie(Movie movie) {
         movieList.removeIf(m -> Objects.equals(m.getId(), movie.getId()));
         movieList.add(movie);
         updateMovieList();
@@ -190,6 +282,7 @@ public class ShowController {
                         Response response = ConnectionManager.getInstance().waitForResponse(id);
                         ArrayList<Movie> array = (ArrayList<Movie>) Serializer.deserialize(response.getMessage());
                         var items = showTable.getItems();
+                        movieList = showTable.getItems();
                         if (array == null) continue;
                         if (items.size() == 0) {
                             items.addAll(array);
@@ -199,11 +292,17 @@ public class ShowController {
                                 for (int i = 0; i < items.size(); i++) {
                                     if (movie.getId().equals(items.get(i).getId())) {
                                         flag = true;
-                                        if (!movie.equals(items.get(i))) items.set(i, movie);
+                                        if (!movie.equals(items.get(i))) {
+                                            items.set(i, movie);
+                                            movieList.set(i, movie);
+                                        }
                                         break;
                                     }
                                 }
-                                if (!flag) items.add(movie);
+                                if (!flag) {
+                                    items.add(movie);
+                                    movieList.add(movie);
+                                }
                             }
                         }
                         showTable.refresh();

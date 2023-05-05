@@ -42,6 +42,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.ComboBox?>
 <VBox prefHeight="617.0" prefWidth="995.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
   <children>
     <TableView id="showTable" fx:id="showTable" prefHeight="644.0" prefWidth="1063.0" style="-fx-background-color: #363636;">
@@ -59,14 +60,14 @@
       <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: #474747; -fx-padding: 5px;">
          <children>
             <Label fx:id="filter_by_label" prefHeight="28.0" prefWidth="79.0" text="Фильтр по" textFill="#dadada" />
-            <ChoiceBox fx:id="filter_options" prefWidth="150.0" style="-fx-background-color: #555555;" />
+            <ComboBox fx:id="filter_options" prefWidth="150.0" style="-fx-background-color: #555555;" />
             <Label prefHeight="37.0" prefWidth="19.0" text="   :" textFill="WHITE" />
             <TextField fx:id="filter_criteria" style="-fx-background-color: #555555;">
                <HBox.margin>
                   <Insets right="10.0" />
                </HBox.margin>
             </TextField>
-            <Button fx:id="apply_button" mnemonicParsing="false" style="-fx-background-color: #555555;" text="Применить" textFill="#dadada">
+            <Button fx:id="apply_button" onAction="#onFilterButtonClick" mnemonicParsing="false" style="-fx-background-color: #555555;" text="Применить" textFill="#dadada">
                <HBox.margin>
                   <Insets right="10.0" />
                </HBox.margin>

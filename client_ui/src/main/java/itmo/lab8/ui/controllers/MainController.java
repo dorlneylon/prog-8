@@ -126,6 +126,7 @@ public class MainController {
             stage.setOnCloseRequest(event -> {
                 controller.getMainThread().interrupt();
             });
+            stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
