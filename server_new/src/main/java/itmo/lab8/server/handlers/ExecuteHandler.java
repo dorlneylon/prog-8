@@ -47,7 +47,7 @@ public class ExecuteHandler implements Runnable {
 
         byte[] serializedResponse = Serializer.serialize(response);
         boolean sentSuccessfully = send(serializedResponse);
-        if (sentSuccessfully && CollectionValidator.isValidHistoryInput(request.getCommand())) {
+        if (sentSuccessfully && CollectionValidator.isValidHistoryInput(request.getCommand()) && !request.getCommand().getCommandType().equals(CommandType.HISTORY)) {
             Server.getInstance().getDatabase().addCommandToHistory(request.getUserName(), request.getCommand().getCommandType().name());
         }
     }

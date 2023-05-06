@@ -40,7 +40,7 @@
 
 <VBox alignment="TOP_CENTER" prefHeight="240.0" prefWidth="221.0" style="-fx-background-color: #363636;"
       xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
-   <Label text="Смена языка" textAlignment="CENTER" textFill="#dadada">
+   <Label fx:id="LANGUAGE" textAlignment="CENTER" textFill="#dadada">
       <font>
          <Font name="Helvetica Neue" size="15.0"/>
       </font>
@@ -52,13 +52,15 @@
       <VBox.margin>
          <Insets top="15.0"/>
       </VBox.margin>
-      <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false"
-              style="-fx-background-color: #474747;" text="Русский" textFill="#dadada"/>
-      <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false"
-              style="-fx-background-color: #474747;" text="Финский" textFill="#dadada"/>
-      <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false"
-              style="-fx-background-color: #474747;" text="Каталанский" textFill="#dadada"/>
-      <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false"
-              style="-fx-background-color: #474747;" text="Испанский" textFill="#dadada"/>
+      <Button fx:id="ru_lang" onAction="#onRuButtonClick" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false"
+              style="-fx-background-color: #474747;" textFill="#dadada"/>
+      <Button fx:id="fin_lang" onAction="#onFinButtonClick" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false"
+              style="-fx-background-color: #474747;" textFill="#dadada"/>
+      <Button fx:id="cat_lang" onAction="#onCatButtonClick" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false"
+              style="-fx-background-color: #474747;" textFill="#dadada"/>
+      <Button fx:id="esp_lang" onAction="#onEspButtonClick" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false"
+              style="-fx-background-color: #474747;" textFill="#dadada"/>
+      <Button fx:id="go_back" onAction="#onGoBackButtonClick" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false"
+              style="-fx-background-color: #474747;" textFill="#dadada"/>
    </VBox>
 </VBox>

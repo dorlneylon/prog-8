@@ -6,6 +6,7 @@ import itmo.lab8.ui.SceneManager;
 import itmo.lab8.ui.controllers.AuthController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -29,12 +30,6 @@ public class ClientMain extends Application {
 
     public static void main(String[] args) {
         launch();
-//        ClientCore core = new ClientCore(serverAddress, serverPort);
-//        try {
-//            core.run();
-//        } catch (NoSuchElementException e) {
-//            System.out.println("Ctrl-D detected.\n Shutting the client down...");
-//        }
     }
 
     @Override

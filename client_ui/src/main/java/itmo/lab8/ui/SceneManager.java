@@ -27,7 +27,7 @@ public class SceneManager {
 
     public void showMainScene() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("mainpage.fxml"));
-        fxmlLoader.setController(new MainController(this));
+        fxmlLoader.setController(new MainController(this, stage));
         Scene scene = new Scene(fxmlLoader.load());
         scene.getStylesheets().add(ClientMain.class.getResource("css/mainpage.css").toExternalForm());
         stage.setTitle("Main page");

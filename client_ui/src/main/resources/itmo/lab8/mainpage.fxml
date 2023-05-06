@@ -32,60 +32,51 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
-<VBox prefHeight="538.0" prefWidth="635.0" style="-fx-background-color: #363636;"
-      xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="538.0" prefWidth="635.0" style="-fx-background-color: #363636;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="502.0" prefWidth="635.0" VBox.vgrow="ALWAYS">
-        <Label fx:id="commands_list" layoutX="76.0" layoutY="48.0" prefHeight="30.0" prefWidth="191.0" text="fdsaf"
-               textFill="WHITE">
+        <Label fx:id="commands_list" layoutX="76.0" layoutY="48.0" prefHeight="30.0" prefWidth="191.0" textFill="WHITE">
             <font>
-                <Font name="Helvetica Neue" size="20.0"/>
+                <Font name="Helvetica Neue" size="20.0" />
             </font>
         </Label>
-        <Label fx:id="history" layoutX="417.0" layoutY="49.0" prefHeight="25.0" prefWidth="117.0" text=""
-               textFill="WHITE">
+        <Label fx:id="history" layoutX="417.0" layoutY="49.0" prefHeight="25.0" prefWidth="117.0" textFill="WHITE">
             <font>
-                <Font name="Helvetica Neue" size="20.0"/>
+                <Font name="Helvetica Neue" size="20.0" />
             </font>
         </Label>
-        <ListView layoutX="371.0" layoutY="93.0" prefHeight="209.0" prefWidth="214.0"
-                  style="-fx-background-color: #363636; -fx-border-color: #474747;"/>
-        <Label fx:id="details" layoutX="440.0" layoutY="355.0" prefHeight="26.0" prefWidth="71.0" text=""
-               textAlignment="CENTER" textFill="WHITE">
+        <ListView fx:id="historyList" layoutX="371.0" layoutY="93.0" prefHeight="174.0" prefWidth="214.0" style="-fx-background-color: #363636; -fx-border-color: #474747;" />
+        <Label fx:id="details" layoutX="440.0" layoutY="355.0" prefHeight="26.0" prefWidth="71.0" textAlignment="CENTER" textFill="WHITE">
             <font>
-                <Font name="Helvetica Neue" size="20.0"/>
+                <Font name="Helvetica Neue" size="20.0" />
             </font>
         </Label>
-        <ListView layoutX="369.0" layoutY="398.0" prefHeight="79.0" prefWidth="223.0"
-                  style="-fx-background-color: #363636; -fx-border-color: #474747;"/>
-        <Label fx:id="cur_account" layoutX="381.0" layoutY="406.0" prefHeight="23.0" prefWidth="79.0"
-               text="Аккаунт:" textFill="WHITE">
+        <ListView layoutX="369.0" layoutY="398.0" prefHeight="79.0" prefWidth="223.0" style="-fx-background-color: #363636; -fx-border-color: #474747;" />
+        <Label fx:id="cur_account" layoutX="381.0" layoutY="406.0" prefHeight="23.0" prefWidth="79.0" textFill="WHITE">
             <font>
-                <Font name="Helvetica Neue" size="13.0"/>
+                <Font name="Helvetica Neue" size="13.0" />
             </font>
         </Label>
-        <Label fx:id="account" layoutX="465.0" layoutY="406.0" prefHeight="23.0" prefWidth="117.0" text="username"
-               textFill="WHITE">
+        <Label fx:id="account" layoutX="465.0" layoutY="406.0" prefHeight="23.0" prefWidth="117.0" textFill="WHITE">
             <font>
-                <Font name="Helvetica Neue" size="13.0"/>
+                <Font name="Helvetica Neue" size="13.0" />
             </font>
         </Label>
-        <Label fx:id="cur_lang" layoutX="380.0" layoutY="439.0" prefHeight="23.0" prefWidth="71.0" text="Язык:"
-               textFill="WHITE">
+        <Label fx:id="cur_lang" layoutX="380.0" layoutY="439.0" prefHeight="23.0" prefWidth="71.0" textFill="WHITE">
             <font>
-                <Font name="Helvetica Neue" size="13.0"/>
+                <Font name="Helvetica Neue" size="13.0" />
             </font>
         </Label>
-        <Label fx:id="lang" layoutX="465.0" layoutY="439.0" prefHeight="23.0" prefWidth="117.0" text="Русский"
-               textFill="WHITE">
+        <Label fx:id="lang" layoutX="465.0" layoutY="439.0" prefHeight="23.0" prefWidth="117.0" textFill="WHITE">
             <font>
-                <Font name="Helvetica Neue" size="13.0"/>
+                <Font name="Helvetica Neue" size="13.0" />
             </font>
         </Label>
-        <ListView fx:id="commandList" layoutX="27.0" layoutY="88.0" prefHeight="400.0" prefWidth="280.0"
-                  style="-fx-background-color: #363636; -fx-border-color: #474747;" stylesheets="@css/listview.css"
-                  AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="88.0"/>
+        <ListView fx:id="commandList" layoutX="27.0" layoutY="88.0" prefHeight="400.0" prefWidth="280.0" style="-fx-background-color: #363636; -fx-border-color: #474747;" stylesheets="@css/listview.css" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="88.0" />
     </AnchorPane>
 </VBox>
