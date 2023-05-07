@@ -1,9 +1,9 @@
 package itmo.lab8.server.handlers;
 
-import itmo.lab8.shared.Chunker;
 import itmo.lab8.commands.CommandType;
 import itmo.lab8.server.Server;
 import itmo.lab8.server.ServerLogger;
+import itmo.lab8.shared.Chunker;
 import itmo.lab8.shared.Request;
 import itmo.lab8.shared.Response;
 import itmo.lab8.shared.ResponseType;
@@ -47,7 +47,7 @@ public class ExecuteHandler implements Runnable {
 
         byte[] serializedResponse = Serializer.serialize(response);
         boolean sentSuccessfully = send(serializedResponse);
-        if (sentSuccessfully && CollectionValidator.isValidHistoryInput(request.getCommand()) && !request.getCommand().getCommandType().equals(CommandType.HISTORY)) {
+        if (sentSuccessfully && CollectionValidator.isValidHistoryInput(request.getCommand()) && !request.getCommand().getCommandType().equals(CommandType.HISTORY) && !request.getCommand().getCommandType().equals(CommandType.SHOW)) {
             Server.getInstance().getDatabase().addCommandToHistory(request.getUserName(), request.getCommand().getCommandType().name());
         }
     }

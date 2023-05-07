@@ -45,9 +45,11 @@ public class ClientMain extends Application {
         Scene scene = new Scene(fxmlLoader.load());
         scene.getStylesheets().add(Objects.requireNonNull(ClientMain.class.getResource("css/loginpage.css")).toExternalForm());
         sceneManager.showLoginScene();
-
         stage.setTitle("Authentication");
         stage.setScene(scene);
+        stage.setOnCloseRequest(event -> {
+            System.exit(0);
+        });
         stage.setResizable(false);
         stage.show();
     }

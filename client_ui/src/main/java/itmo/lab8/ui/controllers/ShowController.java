@@ -103,9 +103,18 @@ public class ShowController {
                 }
             }
         });
-
-        filter_options.getItems().addAll(resources.getString("none_filter_option"), resources.getString("id_filter_option"), resources.getString("name_filter_option"), resources.getString("coordinates_filter_option"), resources.getString("creation_date_filter_option"), resources.getString("oscars_filter_option"), resources.getString("genre_filter_option"), resources.getString("mpaa_rating_filter_option"), resources.getString("director_name_filter_option"));
-        filter_options.setValue(filter_options.getItems().get(0));
+        showTable.setRowFactory(tv -> {
+            TableRow<Movie> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (!row.isEmpty())) {
+                    Movie movie = row.getItem();
+                    showMovieRow(movie);
+                }
+            });
+            filter_options.getItems().addAll(resources.getString("none_filter_option"), resources.getString("id_filter_option"), resources.getString("name_filter_option"), resources.getString("coordinates_filter_option"), resources.getString("creation_date_filter_option"), resources.getString("oscars_filter_option"), resources.getString("genre_filter_option"), resources.getString("mpaa_rating_filter_option"), resources.getString("director_name_filter_option"));
+            filter_options.setValue(filter_options.getItems().get(0));
+            return row;
+        });
     }
 
     public void fieldInit() {
@@ -265,6 +274,23 @@ public class ShowController {
         return showTable;
     }
 
+    private void showMovieRow(Movie movie) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("itemshow.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle(movie.getName());
+            ShowItemController controller = new ShowItemController(movie);
+            fxmlLoader.setController(controller);
+            Pane root = fxmlLoader.load();
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(Objects.requireNonNull(ClientMain.class.getResource("css/insert.css")).toExternalForm());
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @FXML
     public void onViewButtonClick() {
         try {
@@ -315,27 +341,8 @@ public class ShowController {
                         var items = showTable.getItems();
                         movieList = showTable.getItems();
                         if (array == null) continue;
-                        if (items.size() == 0) {
-                            items.addAll(array);
-                        } else {
-                            for (Movie movie : array) {
-                                boolean flag = false;
-                                for (int i = 0; i < items.size(); i++) {
-                                    if (movie.getId().equals(items.get(i).getId())) {
-                                        flag = true;
-                                        if (!movie.equals(items.get(i))) {
-                                            items.set(i, movie);
-                                            movieList.set(i, movie);
-                                        }
-                                        break;
-                                    }
-                                }
-                                if (!flag) {
-                                    items.add(movie);
-                                    movieList.add(movie);
-                                }
-                            }
-                        }
+                        movieList.clear();
+                        movieList.addAll(array);
                         showTable.refresh();
                     } catch (Exception e) {
                         e.printStackTrace();

@@ -3,7 +3,6 @@ package itmo.lab8.ui.controllers;
 import itmo.lab8.ClientMain;
 import itmo.lab8.basic.utils.serializer.Serializer;
 import itmo.lab8.commands.Command;
-import itmo.lab8.commands.CommandFactory;
 import itmo.lab8.commands.CommandType;
 import itmo.lab8.connection.ConnectionManager;
 import itmo.lab8.core.AppCore;
@@ -24,8 +23,10 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.ResourceBundle;
 
 public class MainController {
 
@@ -212,6 +213,7 @@ public class MainController {
             stage.setOnCloseRequest(event -> {
                 controllers.removeIf(c -> c.getClass().equals(LanguageController.class));
             });
+            scene.getStylesheets().add(Objects.requireNonNull(ClientMain.class.getResource("css/mainpage.css")).toExternalForm());
             stage.show();
             // close the scene
             currentStage.getScene().getWindow().hide();
@@ -263,10 +265,15 @@ public class MainController {
 
                     Response response = ConnectionManager.getInstance().waitForResponse(id);
                     var otvet = Serializer.deserialize(response.getMessage());
-                    String[] clientHistory = (String[])otvet;
+                    String[] clientHistory = (String[]) otvet;
                     Platform.runLater(() -> {
                         setHistoryList(clientHistory);
                     });
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
         }

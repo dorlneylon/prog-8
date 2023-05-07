@@ -4,6 +4,8 @@ import itmo.lab8.commands.Command;
 import itmo.lab8.commands.CommandFactory;
 import itmo.lab8.commands.CommandType;
 import itmo.lab8.connection.ConnectionManager;
+import itmo.lab8.core.AppCore;
+import itmo.lab8.shared.Response;
 import itmo.lab8.ui.SceneManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -35,19 +37,17 @@ public class RemoveByKeyController {
     private void initialize() {
         for (Field field : getClass().getDeclaredFields()) {
             if (!field.isAnnotationPresent(FXML.class)) continue;
-
             if (field.getType().equals(Label.class)) {
                 try {
-                    Label label = (Label)field.get(this);
+                    Label label = (Label) field.get(this);
                     label.setText(resources.getString(field.getName()));
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
             }
-
             if (field.getType().equals(Button.class)) {
                 try {
-                    Button button = (Button)field.get(this);
+                    Button button = (Button) field.get(this);
                     button.setText(resources.getString(field.getName()));
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();

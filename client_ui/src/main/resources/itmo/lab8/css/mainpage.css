@@ -1,3 +1,7 @@
+.active-button {
+    -fx-font-weight: bold;
+}
+
 Button {
     -fx-background-color: #474747 !important;
     -fx-text-fill: #FFFFFF !important;
