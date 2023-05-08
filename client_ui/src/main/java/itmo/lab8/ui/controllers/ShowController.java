@@ -121,7 +121,7 @@ public class ShowController {
         for (Field field : getClass().getDeclaredFields()) {
             if (field.isAnnotationPresent(FXML.class) && field.getType().equals(Label.class)) {
                 try {
-                    Label label = (Label)field.get(this);
+                    Label label = (Label) field.get(this);
                     label.setText(resources.getString(label.getId()));
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
@@ -130,7 +130,7 @@ public class ShowController {
 
             if (field.isAnnotationPresent(FXML.class) && field.getType().equals(Button.class)) {
                 try {
-                    Button button = (Button)field.get(this);
+                    Button button = (Button) field.get(this);
                     button.setText(resources.getString(button.getId()));
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
@@ -346,6 +346,7 @@ public class ShowController {
                     try {
                         short id = ConnectionManager.getInstance().newOperation(new Command(CommandType.SHOW, 0));
                         Response response = ConnectionManager.getInstance().waitForResponse(id);
+                        if (response == null) System.err.println("Response is null");
                         ArrayList<Movie> array = (ArrayList<Movie>) Serializer.deserialize(response.getMessage());
                         var items = showTable.getItems();
                         movieList = showTable.getItems();

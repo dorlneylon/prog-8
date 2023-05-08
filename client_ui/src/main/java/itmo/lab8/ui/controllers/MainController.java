@@ -5,7 +5,6 @@ import itmo.lab8.basic.utils.files.ScriptExecutor;
 import itmo.lab8.basic.utils.serializer.Serializer;
 import itmo.lab8.commands.Command;
 import itmo.lab8.commands.CommandType;
-import itmo.lab8.connection.Authenticator;
 import itmo.lab8.connection.ConnectionManager;
 import itmo.lab8.core.AppCore;
 import itmo.lab8.shared.Response;
@@ -15,7 +14,6 @@ import itmo.lab8.ui.Variable;
 import itmo.lab8.ui.types.CommandButton;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -30,7 +28,10 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.ResourceBundle;
 
 public class MainController {
 
@@ -138,25 +139,24 @@ public class MainController {
                         File file = fileChooser.showOpenDialog(currentStage);
 
                         ScriptExecutor scriptExecutor = new ScriptExecutor(file);
+                        if (file == null) return;
                         ScriptExecutor scrExc = scriptExecutor.readScript();
                         ArrayList<Command> commandsList = scrExc.getCommandList();
 
                         try {
                             short opId = ConnectionManager.getInstance().newOperation(new Command(CommandType.EXECUTE_SCRIPT, commandsList));
                             Response response = ConnectionManager.getInstance().waitForResponse(opId);
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
                             if (response.getType().equals(ResponseType.ERROR)) {
-                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
                                 alert.setTitle("Error");
                                 alert.setHeaderText(null);
-                                alert.setContentText(response.getMessage().toString());
-                                alert.showAndWait();
+                                alert.setContentText(response.getStringMessage());
                             } else {
-                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
                                 alert.setTitle("OK");
                                 alert.setHeaderText(null);
                                 alert.setContentText("OK");
-                                alert.showAndWait();
                             }
+                            alert.showAndWait();
                         } catch (Exception e) {
 
                         }
@@ -181,7 +181,7 @@ public class MainController {
                                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                                     alert.setTitle("Error");
                                     alert.setHeaderText(null);
-                                    alert.setContentText(response.getMessage().toString());
+                                    alert.setContentText(response.getStringMessage());
                                     alert.showAndWait();
                                 } else {
                                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -477,6 +477,9 @@ public class MainController {
                     }
 
                     Response response = ConnectionManager.getInstance().waitForResponse(id);
+                    if (response == null) {
+                        continue;
+                    }
                     var otvet = Serializer.deserialize(response.getMessage());
                     String[] clientHistory = (String[]) otvet;
                     Platform.runLater(() -> {

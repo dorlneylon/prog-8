@@ -76,6 +76,9 @@ public class ConnectionManager {
             return null;
         }
         try {
+            if (chunks == null) {
+                return null;
+            }
             byte[] bytes = chunks.summarizeChunks();
             chunkMap.remove(operationId);
             return (Response) Serializer.deserialize(bytes);
