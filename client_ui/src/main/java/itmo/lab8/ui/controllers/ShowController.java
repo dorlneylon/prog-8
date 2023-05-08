@@ -121,8 +121,17 @@ public class ShowController {
         for (Field field : getClass().getDeclaredFields()) {
             if (field.isAnnotationPresent(FXML.class) && field.getType().equals(Label.class)) {
                 try {
-                    Label label = new Label(resources.getString(field.getName()));
-                    field.set(this, label);
+                    Label label = (Label)field.get(this);
+                    label.setText(resources.getString(label.getId()));
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (field.isAnnotationPresent(FXML.class) && field.getType().equals(Button.class)) {
+                try {
+                    Button button = (Button)field.get(this);
+                    button.setText(resources.getString(button.getId()));
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }

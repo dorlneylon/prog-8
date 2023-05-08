@@ -57,7 +57,7 @@ public final class ServiceCommand implements Action {
                     keyType = "undefined";
                     collectionType = "undefined";
                 }
-                String size = Integer.toString(Server.getInstance().getCollection().size());
+                String size = Integer.toString(Server.getInstance().getDatabase().getMovies().size());
                 String lastInitTime = Server.getInstance().getCollection().getInitDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"));
                 yield new Response(Arrays.toString(new String[]{keyType,collectionType,size,lastInitTime}), ResponseType.OK);
             }

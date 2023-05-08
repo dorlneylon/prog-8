@@ -47,6 +47,7 @@ public enum CommandType implements Serializable {
         commands.add(REMOVE_KEY);
         commands.add(LANGUAGE);
         commands.add(ACCOUNT);
+        commands.add(CLEAR);
         commands.add(EXIT);
         return commands;
     }

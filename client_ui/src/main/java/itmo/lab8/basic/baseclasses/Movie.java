@@ -127,6 +127,19 @@ public class Movie implements Comparable<Movie>, Serializable {
         this.creationDate = java.time.ZonedDateTime.now();
     }
 
+    public Movie(Long id, java.time.ZonedDateTime date, String name, Coordinates coordinates, Long oscarsCount, MovieGenre genre, MpaaRating mpaaRating, Person director) {
+        if (name == null || name.isEmpty() || coordinates == null || oscarsCount == null || oscarsCount < 0 || genre == null || mpaaRating == null || director == null)
+            throw new IllegalArgumentException("The fields can't be null or empty sequences.");
+        this.id = id;
+        this.name = name;
+        this.coordinates = coordinates;
+        this.oscarsCount = oscarsCount;
+        this.genre = genre;
+        this.mpaaRating = mpaaRating;
+        this.director = director;
+        this.creationDate = date;
+    }
+
     /**
      * Constructs a `Movie` instance with the specified ID, name, coordinates, creation date,
      * number of Oscars, genre, MPAA rating, and director.

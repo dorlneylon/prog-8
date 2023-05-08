@@ -1,32 +1,36 @@
 package itmo.lab8.ui.controllers;
 
 import itmo.lab8.ClientMain;
+import itmo.lab8.basic.utils.files.ScriptExecutor;
 import itmo.lab8.basic.utils.serializer.Serializer;
 import itmo.lab8.commands.Command;
 import itmo.lab8.commands.CommandType;
+import itmo.lab8.connection.Authenticator;
 import itmo.lab8.connection.ConnectionManager;
 import itmo.lab8.core.AppCore;
 import itmo.lab8.shared.Response;
+import itmo.lab8.shared.ResponseType;
 import itmo.lab8.ui.SceneManager;
 import itmo.lab8.ui.Variable;
 import itmo.lab8.ui.types.CommandButton;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class MainController {
 
@@ -128,6 +132,36 @@ public class MainController {
                     case SHOW -> {
                         if (isControllerNotPresented(ShowController.class)) showHandler();
                     }
+                    case EXECUTE_SCRIPT -> {
+                        FileChooser fileChooser = new FileChooser();
+                        fileChooser.setTitle("Execute Script");
+                        File file = fileChooser.showOpenDialog(currentStage);
+
+                        ScriptExecutor scriptExecutor = new ScriptExecutor(file);
+                        ScriptExecutor scrExc = scriptExecutor.readScript();
+                        ArrayList<Command> commandsList = scrExc.getCommandList();
+
+                        try {
+                            short opId = ConnectionManager.getInstance().newOperation(new Command(CommandType.EXECUTE_SCRIPT, commandsList));
+                            Response response = ConnectionManager.getInstance().waitForResponse(opId);
+                            if (response.getType().equals(ResponseType.ERROR)) {
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                alert.setTitle("Error");
+                                alert.setHeaderText(null);
+                                alert.setContentText(response.getMessage().toString());
+                                alert.showAndWait();
+                            } else {
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                alert.setTitle("OK");
+                                alert.setHeaderText(null);
+                                alert.setContentText("OK");
+                                alert.showAndWait();
+                            }
+                        } catch (Exception e) {
+
+                        }
+//                        if (isControllerNotPresented(ExecuteScriptController.class) && file != null) executeScriptHandler(file);
+                    }
                     case INSERT -> {
                         if (isControllerNotPresented(InsertController.class)) insertHandler();
                     }
@@ -136,6 +170,30 @@ public class MainController {
                     }
                     case INFO -> {
                         if (isControllerNotPresented(InfoController.class)) infoHandler();
+                    }
+                    case CLEAR -> {
+                        try {
+                            short opId = ConnectionManager.getInstance().newOperation(new Command(CommandType.CLEAR));
+
+                            Response response = ConnectionManager.getInstance().waitForResponse(opId);
+                            Platform.runLater(() -> {
+                                if (response.getType().equals(ResponseType.ERROR)) {
+                                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                    alert.setTitle("Error");
+                                    alert.setHeaderText(null);
+                                    alert.setContentText(response.getMessage().toString());
+                                    alert.showAndWait();
+                                } else {
+                                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                    alert.setTitle("OK");
+                                    alert.setHeaderText(null);
+                                    alert.setContentText("OK");
+                                    alert.showAndWait();
+                                }
+                            });
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                     case REMOVE_ALL_BY_MPAA_RATING -> {
                         if (isControllerNotPresented(RemoveByMpaaController.class)) removeByMpaaHandler();
@@ -186,6 +244,26 @@ public class MainController {
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void executeScriptHandler(File file) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("execute_script.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("Execute Script");
+            ExecuteScriptController controller = new ExecuteScriptController(sceneManager, file, stage);
+            fxmlLoader.setController(controller);
+            controllers.add(controller);
+            Scene scene = new Scene(fxmlLoader.load());
+            stage.setScene(scene);
+            scene.getStylesheets().add(ClientMain.class.getResource("css/execute_script.css").toExternalForm());
+            stage.setOnCloseRequest(event -> {
+                controllers.removeIf(c -> c.getClass().equals(ExecuteScriptController.class));
+            });
+            stage.show();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

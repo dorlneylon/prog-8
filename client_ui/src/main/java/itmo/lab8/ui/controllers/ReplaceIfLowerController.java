@@ -19,7 +19,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 import java.lang.reflect.Field;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -110,6 +117,11 @@ public class ReplaceIfLowerController {
                 }
             }
         }
+
+        String creationDate  = creation_date_insertion_label.getPromptText() + " (" + resources.getString("date_pattern") + ")";
+        String birthDate     = birthdate_insertion_label.getPromptText() + " (" + resources.getString("date_pattern") + ")";
+        creation_date_insertion_label.setPromptText(creationDate);
+        birthdate_insertion_label.setPromptText(birthDate);
     }
 
     private void initBoxes() {
@@ -132,8 +144,11 @@ public class ReplaceIfLowerController {
         String height = height_insertion_label.getText();
         String location = location_insertion_label.getText();
         Color hairColor = haircolor_choicebox.getValue();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(resources.getString("date_pattern"));
         Coordinates coordinates1 = null;
         Location location1 = null;
+        ZonedDateTime date = null;
+        Date directorBirthdate = null;
 
         for (TextField s : Set.of(id_insertion_label, name_insertion_label, coords_insertion_label, creation_date_insertion_label, oscars_count_insertion_label, director_name_insertion_label, birthdate_insertion_label, height_insertion_label, location_insertion_label)) {
             if (s.getText().equals("")) {
@@ -143,13 +158,17 @@ public class ReplaceIfLowerController {
             }
         }
 
-        for (TextField f : Set.of(id_insertion_label, oscars_count_insertion_label, height_insertion_label)) {
-            try {
-                Integer.parseInt(f.getText());
-                f.getStyleClass().remove("empty-textfield");
-            } catch (NumberFormatException e) {
-                f.getStyleClass().add("empty-textfield");
-            }
+        try {
+            LocalDate date1 = LocalDate.parse(creationDate, formatter);
+            date = date1.atStartOfDay(ZoneId.systemDefault()).withZoneSameInstant(ZoneId.systemDefault());
+        } catch (Exception e) {
+            creation_date_insertion_label.getStyleClass().add("empty-textfield");
+        }
+
+        try {
+            directorBirthdate = Date.from(LocalDate.parse(birthdate, formatter).atStartOfDay(ZoneId.systemDefault()).toInstant());
+        } catch (Exception e) {
+            birthdate_insertion_label.getStyleClass().add("empty-textfield");
         }
 
         try {
@@ -160,13 +179,17 @@ public class ReplaceIfLowerController {
             id_insertion_label.getStyleClass().add("empty-textfield");
         }
 
-        for (TextField f : Set.of(creation_date_insertion_label, birthdate_insertion_label)) {
-            try {
-                new SimpleDateFormat("dd-MM-yyyy").parse(f.getText());
-                f.getStyleClass().remove("empty-textfield");
-            } catch (Exception e) {
-                f.getStyleClass().add("empty-textfield");
-            }
+        try {
+            LocalDate date1 = LocalDate.parse(creationDate, formatter);
+            date = date1.atStartOfDay(ZoneId.systemDefault()).withZoneSameInstant(ZoneId.systemDefault());
+        } catch (Exception e) {
+            creation_date_insertion_label.getStyleClass().add("empty-textfield");
+        }
+
+        try {
+            directorBirthdate = Date.from(LocalDate.parse(birthdate, formatter).atStartOfDay(ZoneId.systemDefault()).toInstant());
+        } catch (Exception e) {
+            birthdate_insertion_label.getStyleClass().add("empty-textfield");
         }
 
         try {
@@ -197,7 +220,7 @@ public class ReplaceIfLowerController {
         }
 
         try {
-            Movie movie = new Movie(Long.parseLong(id), name, coordinates1, Long.parseLong(oscarsCount), genre, rating, new Person(directorName, new SimpleDateFormat("dd-mm-yyyy").parse(birthdate), Integer.parseInt(height), hairColor, location1));
+            Movie movie = new Movie(Long.parseLong(id), date, name, coordinates1, Long.parseLong(oscarsCount), genre, rating, new Person(directorName, directorBirthdate, Integer.parseInt(height), hairColor, location1));
             short opID = ConnectionManager.getInstance().newOperation(new Command(CommandType.UPDATE, movie));
             Response response = ConnectionManager.getInstance().waitForResponse(opID);
             System.out.println(new String(response.getMessage()));

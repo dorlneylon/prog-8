@@ -77,6 +77,6 @@
                 <Font name="Helvetica Neue" size="13.0" />
             </font>
         </Label>
-        <ListView fx:id="commandList" layoutX="27.0" layoutY="88.0" prefHeight="400.0" prefWidth="280.0" style="-fx-background-color: #363636; -fx-border-color: #474747;" stylesheets="@css/listview.css" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="88.0" />
+        <ListView fx:id="commandList" layoutX="27.0" layoutY="88.0" prefHeight="424.0" prefWidth="280.0" style="-fx-background-color: #363636; -fx-border-color: #474747;" stylesheets="@css/listview.css" AnchorPane.bottomAnchor="26.0" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="88.0" />
     </AnchorPane>
 </VBox>
