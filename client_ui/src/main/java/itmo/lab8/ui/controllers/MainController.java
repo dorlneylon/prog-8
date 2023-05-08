@@ -134,11 +134,24 @@ public class MainController {
                     case LANGUAGE -> {
                         if (isControllerNotPresented(LanguageController.class)) languageHandler();
                     }
-                    case ACCOUNT -> {
-//                        if (isControllerNotPresented(AccountController.class)) accountHandler();
+                    case INFO -> {
+                        if (isControllerNotPresented(InfoController.class)) infoHandler();
+                    }
+                    case REMOVE_ALL_BY_MPAA_RATING -> {
+                        if (isControllerNotPresented(RemoveByMpaaController.class)) removeByMpaaHandler();
+                    }
+                    case ACCOUNT -> accountHandler();
+                    case REMOVE_GREATER -> {
+                        if (isControllerNotPresented(RemoveGreaterController.class)) removeGreaterHandler();
                     }
                     case REMOVE_KEY -> {
                         if (isControllerNotPresented(RemoveByKeyController.class)) removeKeyHandler();
+                    }
+                    case UPDATE -> {
+                        if (isControllerNotPresented(UpdateController.class)) updateHandler();
+                    }
+                    case REPLACE_IF_LOWER -> {
+                        if (isControllerNotPresented(ReplaceIfLowerController.class)) replaceIfLowerHandler();
                     }
                     case EXIT -> System.exit(0);
                 }
@@ -156,6 +169,45 @@ public class MainController {
         return true;
     }
 
+    private void removeByMpaaHandler() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("remove_mpaa.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("Remove by MPAA rating");
+            RemoveByMpaaController controller = new RemoveByMpaaController(sceneManager);
+            fxmlLoader.setController(controller);
+            controllers.add(controller);
+            Scene scene = new Scene(fxmlLoader.load());
+            stage.setScene(scene);
+            scene.getStylesheets().add(ClientMain.class.getResource("css/remove_mpaa.css").toExternalForm());
+            stage.setOnCloseRequest(event -> {
+                controllers.removeIf(c -> c.getClass().equals(RemoveByMpaaController.class));
+            });
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void removeGreaterHandler() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("remove_greater.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("Remove Greater");
+            RemoveGreaterController controller = new RemoveGreaterController(sceneManager);
+            fxmlLoader.setController(controller);
+            controllers.add(controller);
+            Scene scene = new Scene(fxmlLoader.load());
+            stage.setScene(scene);
+            scene.getStylesheets().add(ClientMain.class.getResource("css/remove_greater.css").toExternalForm());
+            stage.setOnCloseRequest(event -> {
+                controllers.removeIf(c -> c.getClass().equals(RemoveGreaterController.class));
+            });
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private void showHandler() {
         try {
@@ -175,6 +227,69 @@ public class MainController {
             stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void accountHandler() {
+        try {
+            currentStage.close();
+            Stage stage = new Stage();
+            ConnectionManager.getInstance().close();
+            ConnectionManager.getInstance().start();
+            SceneManager sceneManager = new SceneManager();
+            sceneManager.setStage(stage);
+            FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("loginpage.fxml"));
+            AuthController authController = new AuthController(sceneManager);
+            fxmlLoader.setController(authController);
+            Scene scene = new Scene(fxmlLoader.load());
+            scene.getStylesheets().add(Objects.requireNonNull(ClientMain.class.getResource("css/loginpage.css")).toExternalForm());
+            sceneManager.showLoginScene();
+            stage.setTitle("Authentication");
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void replaceIfLowerHandler() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("replacelower.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("Replace if lower");
+            ReplaceIfLowerController controller = new ReplaceIfLowerController(sceneManager);
+            fxmlLoader.setController(controller);
+            controllers.add(controller);
+            Scene scene = new Scene(fxmlLoader.load());
+            stage.setScene(scene);
+            stage.setOnCloseRequest(event -> {
+                controllers.removeIf(c -> c.getClass().equals(ReplaceIfLowerController.class));
+            });
+            stage.getScene().getStylesheets().add(Objects.requireNonNull(ClientMain.class.getResource("css/replacelower.css")).toExternalForm());
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void infoHandler() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("info.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("info");
+            InfoController controller = new InfoController(sceneManager);
+            fxmlLoader.setController(controller);
+            controllers.add(controller);
+            Scene scene = new Scene(fxmlLoader.load());
+            stage.setScene(scene);
+            stage.setOnCloseRequest(event -> {
+                controllers.removeIf(c -> c.getClass().equals(InfoController.class));
+            });
+            scene.getStylesheets().add(Objects.requireNonNull(ClientMain.class.getResource("css/info.css")).toExternalForm());
+            stage.show();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -228,6 +343,26 @@ public class MainController {
 
         for (String historyItem : historyArray) {
             historyList.getItems().add(historyItem);
+        }
+    }
+
+    private void updateHandler() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("update.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("Update");
+            UpdateController controller = new UpdateController(sceneManager);
+            fxmlLoader.setController(controller);
+            controllers.add(controller);
+            Scene scene = new Scene(fxmlLoader.load());
+            stage.setScene(scene);
+            stage.setOnCloseRequest(event -> {
+                controllers.removeIf(c -> c.getClass().equals(UpdateController.class));
+            });
+            stage.show();
+            scene.getStylesheets().add(Objects.requireNonNull(ClientMain.class.getResource("css/update.css")).toExternalForm());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

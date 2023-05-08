@@ -47,9 +47,6 @@ public class ClientMain extends Application {
         sceneManager.showLoginScene();
         stage.setTitle("Authentication");
         stage.setScene(scene);
-        stage.setOnCloseRequest(event -> {
-            System.exit(0);
-        });
         stage.setResizable(false);
         stage.show();
     }

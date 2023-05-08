@@ -6,6 +6,7 @@ import itmo.lab8.basic.moviecollection.MovieCollection;
 import itmo.lab8.server.ServerLogger;
 import itmo.lab8.utils.Serializer;
 
+import java.nio.ByteBuffer;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -105,6 +106,22 @@ public class Database {
             ServerLogger.getInstance().log(Level.INFO, "Unable to check user " + e.getMessage());
         }
         return false;
+    }
+
+    public ArrayList<Movie> getMovies() {
+        ArrayList<Movie> movies = new ArrayList<>();
+        try {
+            String sql = "SELECT movie FROM \"collection\"";
+            PreparedStatement pre = connection.prepareStatement(sql);
+            ResultSet result = pre.executeQuery();
+            while (result.next()) {
+                movies.add((Movie)Serializer.deserialize(result.getBytes("movie")));
+            }
+        } catch (SQLException e) {
+            // Log any errors that occur
+            ServerLogger.getInstance().log(Level.INFO, "Unable to get movies " + e.getMessage());
+        }
+        return movies;
     }
 
     /**

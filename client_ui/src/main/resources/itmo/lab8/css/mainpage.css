@@ -14,3 +14,8 @@ Button:hover {
 Button:pressed {
     -fx-background-color: #252525 !important;
 }
+
+#historyList .list-cell {
+    -fx-background-color: #363636 !important;
+    -fx-text-fill: #dadada !important;
+}

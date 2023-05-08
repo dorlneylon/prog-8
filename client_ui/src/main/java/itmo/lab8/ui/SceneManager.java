@@ -23,6 +23,7 @@ public class SceneManager {
         Scene scene = new Scene(fxmlLoader.load());
         scene.getStylesheets().add(ClientMain.class.getResource("css/loginpage.css").toExternalForm());
         stage.setScene(scene);
+        stage.setResizable(false);
     }
 
     public void showMainScene() throws IOException {

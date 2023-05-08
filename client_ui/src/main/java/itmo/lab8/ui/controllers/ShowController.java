@@ -111,10 +111,10 @@ public class ShowController {
                     showMovieRow(movie);
                 }
             });
-            filter_options.getItems().addAll(resources.getString("none_filter_option"), resources.getString("id_filter_option"), resources.getString("name_filter_option"), resources.getString("coordinates_filter_option"), resources.getString("creation_date_filter_option"), resources.getString("oscars_filter_option"), resources.getString("genre_filter_option"), resources.getString("mpaa_rating_filter_option"), resources.getString("director_name_filter_option"));
-            filter_options.setValue(filter_options.getItems().get(0));
             return row;
         });
+        filter_options.getItems().addAll(resources.getString("none_filter_option"), resources.getString("id_filter_option"), resources.getString("name_filter_option"), resources.getString("coordinates_filter_option"), resources.getString("creation_date_filter_option"), resources.getString("oscars_filter_option"), resources.getString("genre_filter_option"), resources.getString("mpaa_rating_filter_option"), resources.getString("director_name_filter_option"));
+        filter_options.setValue(filter_options.getItems().get(0));
     }
 
     public void fieldInit() {

@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ConnectionManager {
     private static ConnectionManager instance;
+    private ReceiverThread receiverThread;
 
     private final AtomicInteger operationId = new AtomicInteger(Short.MIN_VALUE);
 
@@ -36,9 +37,13 @@ public class ConnectionManager {
     }
 
     public void start() {
-        ReceiverThread receiverThread = new ReceiverThread();
+        receiverThread = new ReceiverThread();
         System.out.println("Starting receiver thread");
         receiverThread.start();
+    }
+
+    public void close() {
+        receiverThread.interrupt();
     }
 
     public short newOperation(Command command) throws Exception {

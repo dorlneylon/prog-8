@@ -236,7 +236,7 @@
       <VBox.margin>
          <Insets top="20.0" />
       </VBox.margin>
-      <Button mnemonicParsing="false" onAction="#onInsertButtonClick" prefHeight="23.0" prefWidth="98.0" style="-fx-background-color: #474747;" text="Вставить" textFill="#dadada">
+      <Button fx:id="insert_button_label" mnemonicParsing="false" onAction="#onInsertButtonClick" prefHeight="23.0" prefWidth="98.0" style="-fx-background-color: #474747;" text="Вставить" textFill="#dadada">
          <font>
             <Font name="Helvetica Neue" size="13.0" />
          </font>

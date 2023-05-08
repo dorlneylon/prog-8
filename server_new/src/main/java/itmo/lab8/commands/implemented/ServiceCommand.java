@@ -5,6 +5,10 @@ import itmo.lab8.server.Server;
 import itmo.lab8.shared.Response;
 import itmo.lab8.shared.ResponseType;
 
+import javax.swing.text.DateFormatter;
+import java.text.DateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,6 +46,25 @@ public final class ServiceCommand implements Action {
                 Long id = Long.parseLong(arg);
                 boolean isPresented = Server.getInstance().getCollection().isKeyPresented(id);
                 yield new Response(Boolean.toString(isPresented), ResponseType.OK);
+            }
+            case "info" -> {
+                String keyType;
+                String collectionType;
+                try {
+                    keyType = Server.getInstance().getCollection().values()[0].getId().getClass().getSimpleName();
+                    collectionType = Server.getInstance().getCollection().values()[0].getClass().getSimpleName();
+                } catch (Exception e) {
+                    keyType = "undefined";
+                    collectionType = "undefined";
+                }
+                String size = Integer.toString(Server.getInstance().getCollection().size());
+                String lastInitTime = Server.getInstance().getCollection().getInitDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"));
+                yield new Response(Arrays.toString(new String[]{keyType,collectionType,size,lastInitTime}), ResponseType.OK);
+            }
+            case "get_oscars" -> {
+                assert arg != null;
+                Long id = Long.parseLong(arg);
+                yield new Response(String.valueOf(Server.getInstance().getDatabase().getCollection().get(id).getOscarsInt()), ResponseType.OK);
             }
             case "movie_color" -> {
                 assert arg != null;

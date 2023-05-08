@@ -13,6 +13,7 @@ import itmo.lab8.connection.ConnectionManager;
 import itmo.lab8.shared.Response;
 import itmo.lab8.ui.SceneManager;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -30,6 +31,8 @@ public class InsertController {
 
     @FXML
     private TextField id_insertion_label;
+    @FXML
+    private Button insert_button_label;
     @FXML
     private Label insert_upper_label;
     @FXML
@@ -84,16 +87,30 @@ public class InsertController {
                     e.printStackTrace();
                 }
             }
+            if (field.getType().equals(Button.class)) {
+                try {
+                    Button button = (Button) field.get(this);
+                    button.setText(resources.getString(field.getName()));
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (field.getType().equals(ComboBox.class)) {
+                try {
+                    ComboBox comboBox = (ComboBox) field.get(this);
+                    comboBox.setPromptText(resources.getString(field.getName()));
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
     private void initChoiceBoxes() {
         genre_choicebox.getItems().addAll(MovieGenre.values());
-        genre_choicebox.setValue(MovieGenre.ACTION);
         rating_choicebox.getItems().addAll(MpaaRating.values());
-        rating_choicebox.setValue(MpaaRating.PG);
         haircolor_choicebox.getItems().addAll(Color.values());
-        haircolor_choicebox.setValue(Color.BLACK);
     }
 
     @FXML
@@ -167,6 +184,8 @@ public class InsertController {
             short opID = ConnectionManager.getInstance().newOperation(new Command(CommandType.INSERT, movie));
             Response response = ConnectionManager.getInstance().waitForResponse(opID);
             System.out.println(new String(response.getMessage()));
+            id_insertion_label.getStyleClass().remove("empty-textfield");
+            insert_button_label.setText(resources.getString("success"));
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
