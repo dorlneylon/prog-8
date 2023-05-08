@@ -9,8 +9,10 @@ import itmo.lab8.connection.ConnectionManager;
 import itmo.lab8.core.AppCore;
 import itmo.lab8.shared.Response;
 import itmo.lab8.shared.ResponseType;
-import itmo.lab8.ui.SceneManager;
+import itmo.lab8.ui.Controller;
+import itmo.lab8.ui.LocaleManager;
 import itmo.lab8.ui.Variable;
+import itmo.lab8.ui.WindowManager;
 import itmo.lab8.ui.types.CommandButton;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -31,12 +33,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.ResourceBundle;
 
-public class MainController {
-
-    private final SceneManager sceneManager;
-    private final Stage currentStage;
+public class MainController extends Controller {
     @FXML
     private ListView<CommandButton> commandList;
     @FXML
@@ -59,12 +57,6 @@ public class MainController {
     private ListView<String> historyList;
 
     private final ArrayList<Object> controllers = new ArrayList<>();
-    private final ResourceBundle resources = ResourceBundle.getBundle("itmo.lab8.locale");
-
-    public MainController(SceneManager sceneManager, Stage currentStage) {
-        this.sceneManager = sceneManager;
-        this.currentStage = currentStage;
-    }
 
     // todo: в команде надо добавить параметр "добавлять в историю команд или нет, т. к. иначе SHOW каждую секунду обновляет список"
     @FXML
@@ -73,10 +65,9 @@ public class MainController {
         HistoryThread thread = new HistoryThread();
         thread.start();
         ObservableList<CommandButton> items = commandList.getItems();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("mainpage.fxml"), resources);
         for (CommandType type : CommandType.getCommands()) {
             CommandButton label = new CommandButton(type);
-            label.setText(resources.getString(type.name()));
+            label.setText(LocaleManager.getInstance().getResource(type.name()));
             items.add(label);
         }
 
@@ -84,7 +75,7 @@ public class MainController {
             if (field.isAnnotationPresent(FXML.class) && field.getType() == Label.class && !field.isAnnotationPresent(Variable.class)) {
                 try {
                     Label label = (Label) field.get(this);
-                    label.setText(resources.getString(field.getName()));
+                    label.setText(LocaleManager.getInstance().getResource(field.getName()));
                 } catch (IllegalAccessException e) {
                     ClientMain.log.log(System.Logger.Level.ERROR, "Error while initializing labels: " + e.getMessage());
                 }
@@ -131,85 +122,112 @@ public class MainController {
                 CommandButton clickedBtn = commandList.getItems().get(index);
                 switch (clickedBtn.getType()) {
                     case SHOW -> {
-                        if (isControllerNotPresented(ShowController.class)) showHandler();
+                        try {
+                            WindowManager.getInstance().newShowWindow();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                     case EXECUTE_SCRIPT -> {
                         FileChooser fileChooser = new FileChooser();
                         fileChooser.setTitle("Execute Script");
-                        File file = fileChooser.showOpenDialog(currentStage);
-
+                        File file = fileChooser.showOpenDialog(WindowManager.getInstance().getWindowList().get(0).getStage());
                         ScriptExecutor scriptExecutor = new ScriptExecutor(file);
                         if (file == null) return;
                         ScriptExecutor scrExc = scriptExecutor.readScript();
                         ArrayList<Command> commandsList = scrExc.getCommandList();
 
                         try {
-                            short opId = ConnectionManager.getInstance().newOperation(new Command(CommandType.EXECUTE_SCRIPT, commandsList));
-                            Response response = ConnectionManager.getInstance().waitForResponse(opId);
+                            ConnectionManager.getInstance().newOperation(new Command(CommandType.EXECUTE_SCRIPT, commandsList));
                             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                            if (response.getType().equals(ResponseType.ERROR)) {
-                                alert.setTitle("Error");
-                                alert.setHeaderText(null);
-                                alert.setContentText(response.getStringMessage());
-                            } else {
-                                alert.setTitle("OK");
-                                alert.setHeaderText(null);
-                                alert.setContentText("OK");
-                            }
+                            alert.setTitle("OK");
+                            alert.setHeaderText(null);
+                            alert.setContentText("OK");
                             alert.showAndWait();
                         } catch (Exception e) {
-
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setTitle("Error");
+                            alert.setHeaderText(null);
+                            alert.setContentText("Connection error...");
+                            alert.showAndWait();
                         }
-//                        if (isControllerNotPresented(ExecuteScriptController.class) && file != null) executeScriptHandler(file);
                     }
                     case INSERT -> {
-                        if (isControllerNotPresented(InsertController.class)) insertHandler();
+                        try {
+                            WindowManager.getInstance().newInsertWindow();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                     case LANGUAGE -> {
-                        if (isControllerNotPresented(LanguageController.class)) languageHandler();
+                        try {
+                            WindowManager.getInstance().newLanguageWindow();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                     case INFO -> {
-                        if (isControllerNotPresented(InfoController.class)) infoHandler();
+                        try {
+                            WindowManager.getInstance().newInfoWindow();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                     case CLEAR -> {
                         try {
                             short opId = ConnectionManager.getInstance().newOperation(new Command(CommandType.CLEAR));
-
                             Response response = ConnectionManager.getInstance().waitForResponse(opId);
                             Platform.runLater(() -> {
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
                                 if (response.getType().equals(ResponseType.ERROR)) {
-                                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
                                     alert.setTitle("Error");
                                     alert.setHeaderText(null);
                                     alert.setContentText(response.getStringMessage());
-                                    alert.showAndWait();
                                 } else {
-                                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
                                     alert.setTitle("OK");
                                     alert.setHeaderText(null);
                                     alert.setContentText("OK");
-                                    alert.showAndWait();
                                 }
+                                alert.showAndWait();
                             });
                         } catch (Exception e) {
-                            throw new RuntimeException(e);
+                            e.printStackTrace();
                         }
                     }
                     case REMOVE_ALL_BY_MPAA_RATING -> {
-                        if (isControllerNotPresented(RemoveByMpaaController.class)) removeByMpaaHandler();
+                        try {
+                            WindowManager.getInstance().newRemoveByMpaaWindow();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
-                    case ACCOUNT -> accountHandler();
+                    case ACCOUNT -> {
+                        WindowManager.getInstance().closeAllWindows();
+                        AppCore.getInstance().setName(null);
+                        try {
+                            WindowManager.getInstance().newAuthWindow();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
                     case REMOVE_GREATER -> {
-                        if (isControllerNotPresented(RemoveGreaterController.class)) removeGreaterHandler();
+                        try {
+                            WindowManager.getInstance().newRemoveGreaterWindow();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                     case REMOVE_KEY -> {
-                        if (isControllerNotPresented(RemoveByKeyController.class)) removeKeyHandler();
                     }
                     case UPDATE -> {
                         if (isControllerNotPresented(UpdateController.class)) updateHandler();
                     }
                     case REPLACE_IF_LOWER -> {
-                        if (isControllerNotPresented(ReplaceIfLowerController.class)) replaceIfLowerHandler();
+                        try {
+                            WindowManager.getInstance().newReplaceIfLowerWindow();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                     case EXIT -> System.exit(0);
                 }
@@ -227,194 +245,26 @@ public class MainController {
         return true;
     }
 
-    private void removeByMpaaHandler() {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("remove_mpaa.fxml"));
-            Stage stage = new Stage();
-            stage.setTitle("Remove by MPAA rating");
-            RemoveByMpaaController controller = new RemoveByMpaaController(sceneManager);
-            fxmlLoader.setController(controller);
-            controllers.add(controller);
-            Scene scene = new Scene(fxmlLoader.load());
-            stage.setScene(scene);
-            scene.getStylesheets().add(ClientMain.class.getResource("css/remove_mpaa.css").toExternalForm());
-            stage.setOnCloseRequest(event -> {
-                controllers.removeIf(c -> c.getClass().equals(RemoveByMpaaController.class));
-            });
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    private void executeScriptHandler(File file) {
+//        try {
+//            FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("execute_script.fxml"));
+//            Stage stage = new Stage();
+//            stage.setTitle("Execute Script");
+//            ExecuteScriptController controller = new ExecuteScriptController(sceneManager, file, stage);
+//            fxmlLoader.setController(controller);
+//            controllers.add(controller);
+//            Scene scene = new Scene(fxmlLoader.load());
+//            stage.setScene(scene);
+//            scene.getStylesheets().add(ClientMain.class.getResource("css/execute_script.css").toExternalForm());
+//            stage.setOnCloseRequest(event -> {
+//                controllers.removeIf(c -> c.getClass().equals(ExecuteScriptController.class));
+//            });
+//            stage.show();
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
-    private void executeScriptHandler(File file) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("execute_script.fxml"));
-            Stage stage = new Stage();
-            stage.setTitle("Execute Script");
-            ExecuteScriptController controller = new ExecuteScriptController(sceneManager, file, stage);
-            fxmlLoader.setController(controller);
-            controllers.add(controller);
-            Scene scene = new Scene(fxmlLoader.load());
-            stage.setScene(scene);
-            scene.getStylesheets().add(ClientMain.class.getResource("css/execute_script.css").toExternalForm());
-            stage.setOnCloseRequest(event -> {
-                controllers.removeIf(c -> c.getClass().equals(ExecuteScriptController.class));
-            });
-            stage.show();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void removeGreaterHandler() {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("remove_greater.fxml"));
-            Stage stage = new Stage();
-            stage.setTitle("Remove Greater");
-            RemoveGreaterController controller = new RemoveGreaterController(sceneManager);
-            fxmlLoader.setController(controller);
-            controllers.add(controller);
-            Scene scene = new Scene(fxmlLoader.load());
-            stage.setScene(scene);
-            scene.getStylesheets().add(ClientMain.class.getResource("css/remove_greater.css").toExternalForm());
-            stage.setOnCloseRequest(event -> {
-                controllers.removeIf(c -> c.getClass().equals(RemoveGreaterController.class));
-            });
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void showHandler() {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("showpage.fxml"));
-            Stage stage = new Stage();
-            stage.setTitle("Show");
-            ShowController controller = new ShowController(sceneManager);
-            fxmlLoader.setController(controller);
-            controllers.add(controller);
-            Scene scene = new Scene(fxmlLoader.load());
-            stage.setScene(scene);
-            scene.getStylesheets().add(Objects.requireNonNull(ClientMain.class.getResource("css/showpage.css")).toExternalForm());
-            stage.setOnCloseRequest(event -> {
-                controllers.stream().filter(c -> c.getClass().equals(ShowController.class)).forEach(c -> ((ShowController) c).getMainThread().interrupt());
-                controllers.removeIf(c -> c.getClass().equals(ShowController.class));
-            });
-            stage.setResizable(false);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void accountHandler() {
-        try {
-            currentStage.close();
-            Stage stage = new Stage();
-            ConnectionManager.getInstance().close();
-            ConnectionManager.getInstance().start();
-            SceneManager sceneManager = new SceneManager();
-            sceneManager.setStage(stage);
-            FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("loginpage.fxml"));
-            AuthController authController = new AuthController(sceneManager);
-            fxmlLoader.setController(authController);
-            Scene scene = new Scene(fxmlLoader.load());
-            scene.getStylesheets().add(Objects.requireNonNull(ClientMain.class.getResource("css/loginpage.css")).toExternalForm());
-            sceneManager.showLoginScene();
-            stage.setTitle("Authentication");
-            stage.setScene(scene);
-            stage.setResizable(false);
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void replaceIfLowerHandler() {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("replacelower.fxml"));
-            Stage stage = new Stage();
-            stage.setTitle("Replace if lower");
-            ReplaceIfLowerController controller = new ReplaceIfLowerController(sceneManager);
-            fxmlLoader.setController(controller);
-            controllers.add(controller);
-            Scene scene = new Scene(fxmlLoader.load());
-            stage.setScene(scene);
-            stage.setOnCloseRequest(event -> {
-                controllers.removeIf(c -> c.getClass().equals(ReplaceIfLowerController.class));
-            });
-            stage.getScene().getStylesheets().add(Objects.requireNonNull(ClientMain.class.getResource("css/replacelower.css")).toExternalForm());
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void infoHandler() {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("info.fxml"));
-            Stage stage = new Stage();
-            stage.setTitle("info");
-            InfoController controller = new InfoController(sceneManager);
-            fxmlLoader.setController(controller);
-            controllers.add(controller);
-            Scene scene = new Scene(fxmlLoader.load());
-            stage.setScene(scene);
-            stage.setOnCloseRequest(event -> {
-                controllers.removeIf(c -> c.getClass().equals(InfoController.class));
-            });
-            scene.getStylesheets().add(Objects.requireNonNull(ClientMain.class.getResource("css/info.css")).toExternalForm());
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void insertHandler() {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("insert.fxml"));
-            Stage stage = new Stage();
-            stage.setTitle("Insert");
-            InsertController controller = new InsertController(sceneManager);
-            fxmlLoader.setController(controller);
-            controllers.add(controller);
-            Scene scene = new Scene(fxmlLoader.load());
-            stage.setScene(scene);
-            stage.setOnCloseRequest(event -> {
-                controllers.removeIf(c -> c.getClass().equals(InsertController.class));
-            });
-            scene.getStylesheets().add(Objects.requireNonNull(ClientMain.class.getResource("css/insert.css")).toExternalForm());
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    private void languageHandler() {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("language.fxml"));
-            Stage stage = new Stage();
-            stage.setTitle("Language");
-            LanguageController controller = new LanguageController(sceneManager, stage);
-            fxmlLoader.setController(controller);
-            controllers.add(controller);
-            Scene scene = new Scene(fxmlLoader.load());
-            stage.setScene(scene);
-            stage.setOnCloseRequest(event -> {
-                controllers.removeIf(c -> c.getClass().equals(LanguageController.class));
-            });
-            scene.getStylesheets().add(Objects.requireNonNull(ClientMain.class.getResource("css/mainpage.css")).toExternalForm());
-            stage.show();
-            // close the scene
-            currentStage.getScene().getWindow().hide();
-            controllers.remove(controller);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private void setHistoryList(String[] historyArray) {
         historyList.getItems().clear();
@@ -424,12 +274,14 @@ public class MainController {
         }
     }
 
+    @Deprecated
     private void updateHandler() {
+        // TODO: REMOVE!
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("update.fxml"));
             Stage stage = new Stage();
             stage.setTitle("Update");
-            UpdateController controller = new UpdateController(sceneManager);
+            UpdateController controller = new UpdateController();
             fxmlLoader.setController(controller);
             controllers.add(controller);
             Scene scene = new Scene(fxmlLoader.load());
@@ -444,31 +296,11 @@ public class MainController {
         }
     }
 
-    private void removeKeyHandler() {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("removepage.fxml"));
-            Stage stage = new Stage();
-            stage.setTitle("Remove By ID");
-            RemoveByKeyController controller = new RemoveByKeyController(sceneManager);
-            fxmlLoader.setController(controller);
-            controllers.add(controller);
-            Scene scene = new Scene(fxmlLoader.load());
-            stage.setScene(scene);
-            stage.setOnCloseRequest(event -> {
-                controllers.removeIf(c -> c.getClass().equals(RemoveByKeyController.class));
-            });
-            scene.getStylesheets().add(Objects.requireNonNull(ClientMain.class.getResource("css/remove.css")).toExternalForm());
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public class HistoryThread extends Thread {
         public HistoryThread() {
             super(() -> {
                 while (!Thread.currentThread().isInterrupted()) {
-                    short id = 0;
+                    short id;
                     try {
                         Command command = new Command(CommandType.HISTORY);
                         id = ConnectionManager.getInstance().newOperation(command);

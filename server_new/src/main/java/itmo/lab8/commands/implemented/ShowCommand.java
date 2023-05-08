@@ -50,8 +50,8 @@ public class ShowCommand implements Action {
     @Override
     public Response run(String username) {
         // request to database for movies
-        ArrayList<Movie> lm = Server.getInstance().getDatabase().getMovies();
-//        ArrayList<Movie> lm = Arrays.stream(Server.getInstance().getCollection().values()).skip(offset).limit(20).collect(Collectors.toCollection(ArrayList::new));
+        // ArrayList<Movie> lm = Server.getInstance().getDatabase().getMovies(offset, 20);
+        ArrayList<Movie> lm = Arrays.stream(Server.getInstance().getCollection().values()).skip(offset).limit(20).collect(Collectors.toCollection(ArrayList::new));
         return new Response(Serializer.serialize(lm), ResponseType.OK);
     }
 }

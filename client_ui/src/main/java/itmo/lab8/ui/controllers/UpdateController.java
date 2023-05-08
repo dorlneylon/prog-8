@@ -11,7 +11,7 @@ import itmo.lab8.commands.Command;
 import itmo.lab8.commands.CommandType;
 import itmo.lab8.connection.ConnectionManager;
 import itmo.lab8.shared.Response;
-import itmo.lab8.ui.SceneManager;
+import itmo.lab8.ui.Controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -19,24 +19,19 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 import java.lang.reflect.Field;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
 
 import static itmo.lab8.commands.CollectionValidator.checkIfExists;
 import static itmo.lab8.commands.CollectionValidator.isUserCreator;
 
-public class UpdateController {
+public class UpdateController extends Controller {
     private final ResourceBundle resources = ResourceBundle.getBundle("itmo.lab8.locale");
-    private final SceneManager sceneManager;
-
     @FXML
     private TextField id_insertion_label;
     @FXML
@@ -70,14 +65,10 @@ public class UpdateController {
     @FXML
     private ComboBox<Color> haircolor_choicebox;
 
-    public UpdateController(SceneManager sceneManager) {
-        this.sceneManager = sceneManager;
-    }
-
+    @Override
     @FXML
-    private void initialize() {
+    public void initialize() {
         initBoxes();
-
         for (Field field : getClass().getDeclaredFields()) {
             if (!field.isAnnotationPresent(FXML.class)) continue;
 
@@ -118,8 +109,8 @@ public class UpdateController {
             }
         }
 
-        String creationDate  = creation_date_insertion_label.getPromptText() + " (" + resources.getString("date_pattern") + ")";
-        String birthDate     = birthdate_insertion_label.getPromptText() + " (" + resources.getString("date_pattern") + ")";
+        String creationDate = creation_date_insertion_label.getPromptText() + " (" + resources.getString("date_pattern") + ")";
+        String birthDate = birthdate_insertion_label.getPromptText() + " (" + resources.getString("date_pattern") + ")";
         creation_date_insertion_label.setPromptText(creationDate);
         birthdate_insertion_label.setPromptText(birthDate);
     }

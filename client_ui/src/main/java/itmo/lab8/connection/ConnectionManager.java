@@ -63,8 +63,8 @@ public class ConnectionManager {
                 // ignore
             }
             elapsedTime = System.currentTimeMillis() - startTime;
-            if (elapsedTime >= 10000) {
-                break;
+            if (elapsedTime >= 15000) {
+                return null;
             }
         }
 

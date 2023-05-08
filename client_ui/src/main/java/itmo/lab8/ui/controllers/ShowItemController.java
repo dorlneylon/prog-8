@@ -13,6 +13,7 @@ import itmo.lab8.commands.CommandType;
 import itmo.lab8.connection.ConnectionManager;
 import itmo.lab8.core.AppCore;
 import itmo.lab8.shared.Response;
+import itmo.lab8.ui.Controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -25,7 +26,7 @@ import java.util.Set;
 
 import static itmo.lab8.commands.CollectionValidator.checkIfExists;
 
-public class ShowItemController {
+public class ShowItemController extends Controller {
     public ShowItemController(Movie movie) {
         this.movie = movie;
     }
@@ -66,7 +67,6 @@ public class ShowItemController {
 
     @FXML
     public void initialize() {
-        id_insertion_label.setEditable(false);
         boolean isUserCreator;
         try {
             isUserCreator = CollectionValidator.isUserCreator(AppCore.getInstance().getName(), movie.getId());
@@ -74,15 +74,6 @@ public class ShowItemController {
             System.err.println(e.getMessage());
             return;
         }
-        genre_choicebox.getItems().addAll(MovieGenre.values());
-        genre_choicebox.setValue(movie.getGenre());
-        genre_choicebox.setEditable(isUserCreator);
-        rating_choicebox.getItems().addAll(MpaaRating.values());
-        rating_choicebox.setValue(movie.getRating());
-        rating_choicebox.setEditable(isUserCreator);
-        haircolor_choicebox.getItems().addAll(Color.values());
-        haircolor_choicebox.setValue(movie.getDirector().getHairColor());
-        haircolor_choicebox.setEditable(isUserCreator);
         for (Field field : getClass().getDeclaredFields()) {
             if (!field.isAnnotationPresent(FXML.class)) continue;
             if (field.getType().equals(Label.class)) {
@@ -103,6 +94,7 @@ public class ShowItemController {
                 }
             }
         }
+        id_insertion_label.setEditable(false);
 
         id_insertion_label.setText(String.valueOf(movie.getId()));
         name_insertion_label.setText(movie.getName());
@@ -121,6 +113,13 @@ public class ShowItemController {
         height_insertion_label.setText(String.valueOf(movie.getDirector().getHeight()));
 
         location_insertion_label.setText(movie.getDirector().getLocation().toString());
+
+        genre_choicebox.getItems().addAll(MovieGenre.values());
+        genre_choicebox.setValue(movie.getGenre());
+        rating_choicebox.getItems().addAll(MpaaRating.values());
+        rating_choicebox.setValue(movie.getRating());
+        haircolor_choicebox.getItems().addAll(Color.values());
+        haircolor_choicebox.setValue(movie.getDirector().getHairColor());
     }
 
     @FXML

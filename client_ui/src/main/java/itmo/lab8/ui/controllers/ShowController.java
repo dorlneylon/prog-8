@@ -10,8 +10,8 @@ import itmo.lab8.commands.Command;
 import itmo.lab8.commands.CommandType;
 import itmo.lab8.connection.ConnectionManager;
 import itmo.lab8.shared.Response;
+import itmo.lab8.ui.Controller;
 import itmo.lab8.ui.ItemCanvas;
-import itmo.lab8.ui.SceneManager;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -33,9 +33,9 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-public class ShowController {
+public class ShowController extends Controller {
+    private Integer offset = 0;
     private final ResourceBundle resources = ResourceBundle.getBundle("itmo.lab8.locale");
-    private final SceneManager sceneManager;
     private ViewController viewController;
     @FXML
     private Label filter_by_label;
@@ -68,16 +68,23 @@ public class ShowController {
     private TableColumn<Movie, String> directorNameColumn;
     private ShowThread showThread;
 
-    public ShowController(SceneManager sceneManager) {
-        this.sceneManager = sceneManager;
+    public void nextPage() {
+        this.offset += 20;
     }
+
+    public void previousPage() {
+        if (this.offset > 0) {
+            this.offset -= 20;
+        }
+    }
+
 
     public ShowThread getMainThread() {
         return showThread;
     }
 
     @FXML
-    private void initialize() {
+    public void initialize() {
         fieldInit();
         showTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         showThread = new ShowThread();
@@ -321,20 +328,22 @@ public class ShowController {
 
     private void updateView() {
         if (viewController != null) {
-            for (Movie movie : movieList) {
-                short opId;
-                try {
-                    opId = ConnectionManager.getInstance().newOperation(new Command(CommandType.SERVICE, "movie_color %d".formatted(movie.getId())));
-                } catch (Exception e) {
-                    continue;
+            synchronized (movieList) {
+                for (Movie movie : movieList) {
+                    short opId;
+                    try {
+                        opId = ConnectionManager.getInstance().newOperation(new Command(CommandType.SERVICE, "movie_color %d".formatted(movie.getId())));
+                    } catch (Exception e) {
+                        continue;
+                    }
+                    Response response = ConnectionManager.getInstance().waitForResponse(opId);
+                    String responseText = response.getStringMessage();
+                    Canvas canvas = new ItemCanvas(movie.getId(), responseText);
+                    double randomX = Math.random() * (617 - 50);
+                    double randomY = Math.random() * (995 - 50);
+                    canvas.relocate(randomX, randomY);
+                    viewController.getCanvasPane().getChildren().add(canvas);
                 }
-                Response response = ConnectionManager.getInstance().waitForResponse(opId);
-                String responseText = response.getStringMessage();
-                Canvas canvas = new ItemCanvas(movie.getId(), responseText);
-                double randomX = Math.random() * (617 - 50);
-                double randomY = Math.random() * (995 - 50);
-                canvas.relocate(randomX, randomY);
-                viewController.getCanvasPane().getChildren().add(canvas);
             }
         }
     }
@@ -344,9 +353,9 @@ public class ShowController {
             super(() -> {
                 while (!Thread.currentThread().isInterrupted()) {
                     try {
-                        short id = ConnectionManager.getInstance().newOperation(new Command(CommandType.SHOW, 0));
+                        short id = ConnectionManager.getInstance().newOperation(new Command(CommandType.SHOW, offset));
                         Response response = ConnectionManager.getInstance().waitForResponse(id);
-                        if (response == null) System.err.println("Response is null");
+                        if (response == null) continue;
                         ArrayList<Movie> array = (ArrayList<Movie>) Serializer.deserialize(response.getMessage());
                         var items = showTable.getItems();
                         movieList = showTable.getItems();

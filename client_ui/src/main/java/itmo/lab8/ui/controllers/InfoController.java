@@ -4,16 +4,11 @@ import itmo.lab8.commands.Command;
 import itmo.lab8.commands.CommandType;
 import itmo.lab8.connection.ConnectionManager;
 import itmo.lab8.shared.Response;
-import itmo.lab8.ui.SceneManager;
+import itmo.lab8.ui.Controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-import java.lang.reflect.Field;
-import java.util.ResourceBundle;
-
-public class InfoController {
-    private final SceneManager sceneManager;
-    private ResourceBundle resources = ResourceBundle.getBundle("itmo.lab8.locale");
+public class InfoController extends Controller {
     @FXML
     private Label key_info_label;
     @FXML
@@ -32,33 +27,21 @@ public class InfoController {
     private Label date_info;
 
 
-    public InfoController(SceneManager sceneManager) {
-        this.sceneManager = sceneManager;
-    }
-
     @FXML
-    private void initialize() {
-        for (Field field : getClass().getDeclaredFields()) {
-            if (!field.isAnnotationPresent(FXML.class) || !field.getName().contains("label")) continue;
-            try {
-                Label label = (Label) field.get(this);
-                label.setText(resources.getString(field.getName()));
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
+    public void initialize() {
+        super.initialize();
         try {
             short opId = ConnectionManager.getInstance().newOperation(new Command(CommandType.SERVICE, "info"));
             Response response = ConnectionManager.getInstance().waitForResponse(opId);
+            if (response == null) return;
             String info = new String(response.getMessage());
-            String[] infoParts = info.substring(1, info.length()-1).split(", ");
+            String[] infoParts = info.substring(1, info.length() - 1).split(", ");
             key_info.setText(infoParts[0]);
             element_info.setText(infoParts[1]);
             amount_info.setText(infoParts[2]);
             date_info.setText(infoParts[3]);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
 
     }

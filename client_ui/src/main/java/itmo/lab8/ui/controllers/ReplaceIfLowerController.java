@@ -11,7 +11,8 @@ import itmo.lab8.commands.Command;
 import itmo.lab8.commands.CommandType;
 import itmo.lab8.connection.ConnectionManager;
 import itmo.lab8.shared.Response;
-import itmo.lab8.ui.SceneManager;
+import itmo.lab8.ui.Controller;
+import itmo.lab8.ui.LocaleManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -19,23 +20,17 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 import java.lang.reflect.Field;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.Locale;
-import java.util.ResourceBundle;
 import java.util.Set;
 
 import static itmo.lab8.commands.CollectionValidator.checkIfExists;
 import static itmo.lab8.commands.CollectionValidator.isUserCreator;
 
-public class ReplaceIfLowerController {
-    private final ResourceBundle resources = ResourceBundle.getBundle("itmo.lab8.locale");
-    private final SceneManager sceneManager;
+public class ReplaceIfLowerController extends Controller {
 
     @FXML
     private TextField id_insertion_label;
@@ -70,21 +65,19 @@ public class ReplaceIfLowerController {
     @FXML
     private ComboBox<Color> haircolor_choicebox;
 
-    public ReplaceIfLowerController(SceneManager sceneManager) {
-        this.sceneManager = sceneManager;
-    }
-
+    @Override
     @FXML
-    private void initialize() {
+    public void initialize() {
         initBoxes();
 
+        // TODO: FIX THIS LATER
         for (Field field : getClass().getDeclaredFields()) {
             if (!field.isAnnotationPresent(FXML.class)) continue;
 
             if (field.getType().equals(Label.class)) {
                 try {
                     Label label = (Label) field.get(this);
-                    label.setText(resources.getString(label.getId()));
+                    label.setText(LocaleManager.getInstance().getResource(label.getId()));
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
@@ -93,7 +86,7 @@ public class ReplaceIfLowerController {
             if (field.getType().equals(TextField.class)) {
                 try {
                     TextField textField = (TextField) field.get(this);
-                    textField.setPromptText(resources.getString(textField.getId()));
+                    textField.setPromptText(LocaleManager.getInstance().getResource(textField.getId()));
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
@@ -102,7 +95,7 @@ public class ReplaceIfLowerController {
             if (field.getType().equals(ComboBox.class)) {
                 try {
                     ComboBox comboBox = (ComboBox) field.get(this);
-                    comboBox.setPromptText(resources.getString(comboBox.getId()));
+                    comboBox.setPromptText(LocaleManager.getInstance().getResource(comboBox.getId()));
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
@@ -111,15 +104,15 @@ public class ReplaceIfLowerController {
             if (field.getType().equals(Button.class)) {
                 try {
                     Button button = (Button) field.get(this);
-                    button.setText(resources.getString(field.getName()));
+                    button.setText(LocaleManager.getInstance().getResource(field.getName()));
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
             }
         }
 
-        String creationDate  = creation_date_insertion_label.getPromptText() + " (" + resources.getString("date_pattern") + ")";
-        String birthDate     = birthdate_insertion_label.getPromptText() + " (" + resources.getString("date_pattern") + ")";
+        String creationDate = creation_date_insertion_label.getPromptText() + " (" + LocaleManager.getInstance().getResource("date_pattern") + ")";
+        String birthDate = birthdate_insertion_label.getPromptText() + " (" + LocaleManager.getInstance().getResource("date_pattern") + ")";
         creation_date_insertion_label.setPromptText(creationDate);
         birthdate_insertion_label.setPromptText(birthDate);
     }
@@ -144,7 +137,7 @@ public class ReplaceIfLowerController {
         String height = height_insertion_label.getText();
         String location = location_insertion_label.getText();
         Color hairColor = haircolor_choicebox.getValue();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(resources.getString("date_pattern"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(LocaleManager.getInstance().getResource("date_pattern"));
         Coordinates coordinates1 = null;
         Location location1 = null;
         ZonedDateTime date = null;
@@ -225,7 +218,7 @@ public class ReplaceIfLowerController {
             Response response = ConnectionManager.getInstance().waitForResponse(opID);
             System.out.println(new String(response.getMessage()));
             id_insertion_label.getStyleClass().remove("empty-textfield");
-            update_button_label.setText(resources.getString("success"));
+            update_button_label.setText(LocaleManager.getInstance().getResource("success"));
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }

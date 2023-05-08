@@ -181,10 +181,8 @@ public abstract class MHMap<K, V> {
      * The map will be empty after this call returns.
      */
     public void clear(String user) {
-        for (K key : this.map.keySet()) {
-            if (Server.getInstance().getDatabase().isUserEditor(user, Math.toIntExact((Long) key))) {
-                this.map.remove(key);
-            }
+        for (Long key : Server.getInstance().getDatabase().getUsersMovies(user)) {
+            this.map.remove(key);
         }
     }
 
@@ -259,12 +257,11 @@ public abstract class MHMap<K, V> {
     }
 
     /**
+     * Returns a submap,, with the given offset and limit.
      *
-     *   Returns a submap,, with the given offset and limit.
-     *
-     *   @param offset The offset of the submap.
-     *   @param limit The limit of the submap.
-     *   @return A submap of the given map, with the given offset and limit.
+     * @param offset The offset of the submap.
+     * @param limit  The limit of the submap.
+     * @return A submap of the given map, with the given offset and limit.
      */
     public HashMap<K, V> getMap(int offset, int limit) {
         synchronized (this.map) {
@@ -273,15 +270,14 @@ public abstract class MHMap<K, V> {
     }
 
     /**
+     * Returns a submap of the given {@code HashMap} with the given offset and limit.
      *
-     *   Returns a submap of the given {@code HashMap} with the given offset and limit.
-     *
-     *   @param <K> the type of the keys in the map
-     *   @param <V> the type of the values in the map
-     *   @param map the {@code HashMap} to get the submap from
-     *   @param offset the offset of the submap
-     *   @param limit the limit of the submap
-     *   @return a submap of the given {@code HashMap} with the given offset and limit
+     * @param <K>    the type of the keys in the map
+     * @param <V>    the type of the values in the map
+     * @param map    the {@code HashMap} to get the submap from
+     * @param offset the offset of the submap
+     * @param limit  the limit of the submap
+     * @return a submap of the given {@code HashMap} with the given offset and limit
      */
     private static <K, V> Map<K, V> getSubMap(HashMap<K, V> map, int offset, int limit) {
         return map.entrySet().stream().skip(offset).limit(limit).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));

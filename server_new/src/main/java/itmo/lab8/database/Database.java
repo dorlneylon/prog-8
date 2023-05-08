@@ -6,7 +6,6 @@ import itmo.lab8.basic.moviecollection.MovieCollection;
 import itmo.lab8.server.ServerLogger;
 import itmo.lab8.utils.Serializer;
 
-import java.nio.ByteBuffer;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -45,7 +44,6 @@ public class Database {
      * @param password The password of the new user.
      * @return true if the user was successfully added, false otherwise.
      */
-
     public boolean addNewUser(String login, String password) {
         if (isUserExist(login)) return false;
         byte flags = 0; // last 2 digits are flags
@@ -88,6 +86,22 @@ public class Database {
         return flags == 3;
     }
 
+    public ArrayList<Long> getUsersMovies(String user) {
+        ArrayList<Long> movies = new ArrayList<>();
+        try {
+            String sql = "SELECT id FROM \"collection\" WHERE user = ?";
+            PreparedStatement pre = connection.prepareStatement(sql);
+            pre.setString(1, user);
+            ResultSet result = pre.executeQuery();
+            while (result.next()) {
+                movies.add(result.getLong("id"));
+            }
+        } catch (SQLException e) {
+            // Log any errors that occur
+            ServerLogger.getInstance().log(Level.INFO, "Unable to get users movies " + e.getMessage());
+        }
+        return movies;
+    }
 
     /**
      * Checks if a user exists in the database
@@ -115,13 +129,33 @@ public class Database {
             PreparedStatement pre = connection.prepareStatement(sql);
             ResultSet result = pre.executeQuery();
             while (result.next()) {
-                movies.add((Movie)Serializer.deserialize(result.getBytes("movie")));
+                movies.add((Movie) Serializer.deserialize(result.getBytes("movie")));
             }
         } catch (SQLException e) {
             // Log any errors that occur
             ServerLogger.getInstance().log(Level.INFO, "Unable to get movies " + e.getMessage());
         }
         return movies;
+
+    }
+
+    public ArrayList<Movie> getMovies(int offset, int limit) {
+        ArrayList<Movie> movies = new ArrayList<>();
+        try {
+            String sql = "SELECT movie FROM \"collection\" LIMIT ? OFFSET ?";
+            PreparedStatement pre = connection.prepareStatement(sql);
+            pre.setInt(1, limit);
+            pre.setInt(2, offset);
+            ResultSet result = pre.executeQuery();
+            while (result.next()) {
+                movies.add((Movie) Serializer.deserialize(result.getBytes("movie")));
+            }
+        } catch (SQLException e) {
+            // Log any errors that occur
+            ServerLogger.getInstance().log(Level.INFO, "Unable to get movies " + e.getMessage());
+        }
+        return movies;
+
     }
 
     /**
