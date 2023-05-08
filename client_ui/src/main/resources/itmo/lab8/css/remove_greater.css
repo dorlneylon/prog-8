@@ -1,0 +1,15 @@
+.empty-textfield {
+    -fx-effect: dropshadow(one-pass-box , rgba(255, 0, 0, 0.5), 0, 0.0 , 0 , 1);
+}
+
+Button:hover {
+    -fx-background-color: #333333 !important;
+}
+
+Button:pressed {
+    -fx-background-color: #303030 !important;
+}
+
+TextField {
+    -fx-text-fill: #dadada;
+}
