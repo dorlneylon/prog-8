@@ -37,17 +37,16 @@
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-
-<VBox alignment="TOP_CENTER" prefHeight="136.0" prefWidth="331.0" spacing="20.0" style="-fx-background-color: #363636;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <Label fx:id="script_execution_label" contentDisplay="CENTER" prefHeight="30.0" prefWidth="153.0" text="Выполнение скрипта" textFill="#dadada">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Label>
-      <ProgressBar fx:id="script_progressbar" prefWidth="200.0" progress="0.0" />
-   </children>
-   <padding>
-      <Insets top="30.0" />
-   </padding>
+<VBox alignment="TOP_CENTER" prefHeight="136.0" prefWidth="331.0" spacing="20.0" style="-fx-background-color: #363636;"
+      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+    <padding>
+        <Insets top="30.0"/>
+    </padding>
+    <Label fx:id="script_execution_label" contentDisplay="CENTER" prefHeight="30.0" prefWidth="153.0"
+           text="Выполнение скрипта" textFill="#dadada">
+        <font>
+            <Font size="16.0"/>
+        </font>
+    </Label>
+    <ProgressBar fx:id="script_progressbar" prefWidth="200.0" progress="0.0"/>
 </VBox>

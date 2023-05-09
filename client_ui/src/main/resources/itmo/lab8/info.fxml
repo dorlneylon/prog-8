@@ -38,66 +38,62 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER_LEFT" prefHeight="149.0" prefWidth="450.0" style="-fx-background-color: #363636;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <HBox prefHeight="26.0" prefWidth="378.0" spacing="50.0">
-         <children>
-            <Label fx:id="key_info_label" prefHeight="28.0" prefWidth="112.0" text="Тип ключа" textFill="#dadada">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Label>
-            <Label fx:id="key_info" alignment="CENTER" prefHeight="26.0" prefWidth="234.0" text="Тип ключа" textFill="#dadada">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Label>
-         </children>
-      </HBox>
-      <HBox prefHeight="26.0" prefWidth="378.0" spacing="50.0">
-         <children>
-            <Label fx:id="element_info_label" prefHeight="28.0" prefWidth="112.0" text="Тип элементов" textFill="#dadada">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Label>
-            <Label fx:id="element_info" alignment="CENTER" prefHeight="26.0" prefWidth="230.0" text="Тип ключа" textFill="#dadada">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Label>
-         </children>
-      </HBox>
-      <HBox prefHeight="26.0" prefWidth="378.0" spacing="50.0">
-         <children>
-            <Label fx:id="amount_info_label" prefHeight="28.0" prefWidth="112.0" text="Количество" textFill="#dadada">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Label>
-            <Label fx:id="amount_info" alignment="CENTER" prefHeight="26.0" prefWidth="241.0" text="Тип ключа" textFill="#dadada">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Label>
-         </children>
-      </HBox>
-      <HBox prefHeight="26.0" prefWidth="378.0" spacing="22.0">
-         <children>
-            <Label fx:id="date_info_label" prefHeight="26.0" prefWidth="142.0" text="Дата начала сессии" textFill="#dadada">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Label>
-            <Label fx:id="date_info" alignment="CENTER" prefHeight="26.0" prefWidth="240.0" text="Тип ключа" textFill="#dadada">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Label>
-         </children>
-      </HBox>
-   </children>
+<VBox alignment="CENTER_LEFT" prefHeight="149.0" prefWidth="450.0" style="-fx-background-color: #363636;"
+      xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
    <padding>
-      <Insets left="20.0" />
+      <Insets left="20.0"/>
    </padding>
+   <HBox prefHeight="26.0" prefWidth="378.0" spacing="50.0">
+      <Label fx:id="key_info_label" prefHeight="28.0" prefWidth="112.0" text="Тип ключа" textFill="#dadada">
+         <font>
+            <Font size="15.0"/>
+         </font>
+      </Label>
+      <Label fx:id="key_info" alignment="CENTER" prefHeight="26.0" prefWidth="234.0" text="Тип ключа"
+             textFill="#dadada">
+         <font>
+            <Font size="15.0"/>
+         </font>
+      </Label>
+   </HBox>
+   <HBox prefHeight="26.0" prefWidth="378.0" spacing="50.0">
+      <Label fx:id="element_info_label" prefHeight="28.0" prefWidth="112.0" text="Тип элементов" textFill="#dadada">
+         <font>
+            <Font size="15.0"/>
+         </font>
+      </Label>
+      <Label fx:id="element_info" alignment="CENTER" prefHeight="26.0" prefWidth="230.0" text="Тип ключа"
+             textFill="#dadada">
+         <font>
+            <Font size="15.0"/>
+         </font>
+      </Label>
+   </HBox>
+   <HBox prefHeight="26.0" prefWidth="378.0" spacing="50.0">
+      <Label fx:id="amount_info_label" prefHeight="28.0" prefWidth="112.0" text="Количество" textFill="#dadada">
+         <font>
+            <Font size="15.0"/>
+         </font>
+      </Label>
+      <Label fx:id="amount_info" alignment="CENTER" prefHeight="26.0" prefWidth="241.0" text="Тип ключа"
+             textFill="#dadada">
+         <font>
+            <Font size="15.0"/>
+         </font>
+      </Label>
+   </HBox>
+   <HBox prefHeight="26.0" prefWidth="378.0" spacing="22.0">
+      <Label fx:id="date_info_label" prefHeight="26.0" prefWidth="142.0" text="Дата начала сессии"
+             textFill="#dadada">
+         <font>
+            <Font size="15.0"/>
+         </font>
+      </Label>
+      <Label fx:id="date_info" alignment="CENTER" prefHeight="26.0" prefWidth="240.0" text="Тип ключа"
+             textFill="#dadada">
+         <font>
+            <Font size="15.0"/>
+         </font>
+      </Label>
+   </HBox>
 </VBox>
