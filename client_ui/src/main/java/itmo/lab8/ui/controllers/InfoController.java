@@ -29,7 +29,7 @@ public class InfoController extends Controller {
 
     @FXML
     public void initialize() {
-        super.initialize();
+        super.updateUi();
         try {
             short opId = ConnectionManager.getInstance().newOperation(new Command(CommandType.SERVICE, "info"));
             Response response = ConnectionManager.getInstance().waitForResponse(opId);

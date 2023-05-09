@@ -12,6 +12,8 @@ import itmo.lab8.connection.ConnectionManager;
 import itmo.lab8.shared.Response;
 import itmo.lab8.ui.Controller;
 import itmo.lab8.ui.ItemCanvas;
+import itmo.lab8.ui.LocaleManager;
+import itmo.lab8.ui.types.FilterOption;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -31,16 +33,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.ResourceBundle;
 
 public class ShowController extends Controller {
     private Integer offset = 0;
-    private final ResourceBundle resources = ResourceBundle.getBundle("itmo.lab8.locale");
     private ViewController viewController;
     @FXML
     private Label filter_by_label;
     @FXML
-    private ComboBox<String> filter_options;
+    private ComboBox<FilterOption> filter_options;
     @FXML
     private TextField filter_criteria;
     @FXML
@@ -66,7 +66,7 @@ public class ShowController extends Controller {
     private TableColumn<Movie, MpaaRating> mpaaColumn;
     @FXML
     private TableColumn<Movie, String> directorNameColumn;
-    private ShowThread showThread;
+    private ShowThread showThread = new ShowThread();
 
     public void nextPage() {
         this.offset += 20;
@@ -78,17 +78,10 @@ public class ShowController extends Controller {
         }
     }
 
-
-    public ShowThread getMainThread() {
-        return showThread;
-    }
-
     @FXML
     public void initialize() {
         fieldInit();
         showTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        showThread = new ShowThread();
-        showThread.start();
         showTable.fixedCellSizeProperty().setValue(20);
         showTable.setEditable(false);
         idColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(Math.toIntExact(cellData.getValue().getId())).asObject());
@@ -120,8 +113,30 @@ public class ShowController extends Controller {
             });
             return row;
         });
-        filter_options.getItems().addAll(resources.getString("none_filter_option"), resources.getString("id_filter_option"), resources.getString("name_filter_option"), resources.getString("coordinates_filter_option"), resources.getString("creation_date_filter_option"), resources.getString("oscars_filter_option"), resources.getString("genre_filter_option"), resources.getString("mpaa_rating_filter_option"), resources.getString("director_name_filter_option"));
+        filter_options.getItems().addAll(new FilterOption("none_filter_option"), new FilterOption("id_filter_option"), new FilterOption("name_filter_option"), new FilterOption("coordinates_filter_option"), new FilterOption("creation_date_filter_option"), new FilterOption("oscars_filter_option"), new FilterOption("genre_filter_option"), new FilterOption("mpaa_rating_filter_option"), new FilterOption("director_name_filter_option"));
         filter_options.setValue(filter_options.getItems().get(0));
+        showThread.start();
+    }
+
+    @Override
+    public void updateUi() {
+        super.updateUi();
+        ObservableList<FilterOption> newOptions = FXCollections.observableArrayList();
+        for (FilterOption filterOption : filter_options.getItems()) {
+            filterOption.refresh();
+            newOptions.add(filterOption);
+        }
+        filter_options.getItems().clear();
+        filter_options.setItems(newOptions);
+        filter_options.setValue(filter_options.getItems().get(0));
+    }
+
+    @Override
+    public void close() {
+        this.showThread.interrupt();
+        if (showThread.isAlive()) {
+            showThread.interrupt();
+        }
     }
 
     public void fieldInit() {
@@ -129,7 +144,7 @@ public class ShowController extends Controller {
             if (field.isAnnotationPresent(FXML.class) && field.getType().equals(Label.class)) {
                 try {
                     Label label = (Label) field.get(this);
-                    label.setText(resources.getString(label.getId()));
+                    label.setText(LocaleManager.getInstance().getResource((label.getId())));
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
@@ -138,7 +153,7 @@ public class ShowController extends Controller {
             if (field.isAnnotationPresent(FXML.class) && field.getType().equals(Button.class)) {
                 try {
                     Button button = (Button) field.get(this);
-                    button.setText(resources.getString(button.getId()));
+                    button.setText(LocaleManager.getInstance().getResource(button.getId()));
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
@@ -149,82 +164,74 @@ public class ShowController extends Controller {
     @FXML
     public void onFilterButtonClick() {
         // take filter option from combobox and filter criteria from textfield. try to parse the type of filter criteria and hang to other method.
-        String filterOption = filter_options.getValue();
+        FilterOption filterOption = filter_options.getValue();
         String filterCriteria = filter_criteria.getText();
 
         if (filterOption == null || filterCriteria == null) {
             return;
         }
+        switch (filterOption.getTypeName()) {
+            case "id_filter_option" -> {
+                try {
+                    int id = Integer.parseInt(filterCriteria);
+                    filterById(id);
+                } catch (NumberFormatException e) {
+                    // smt
+                }
+            }
+            case "name_filter_option" -> {
+                filterByName(filterCriteria);
+            }
+            case "coordinates_filter_option" -> {
+                try {
+                    String[] coordinates = filterCriteria.split(" ");
+                    float x = Float.parseFloat(coordinates[0]);
+                    Integer y = Integer.parseInt(coordinates[1]);
+                    filterByCoordinates(new Coordinates(x, y));
+                } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                    // smt
+                }
+            }
+            case "creation_date_filter_option" -> {
+                filterByCreationDate(filterCriteria);
+            }
+            case "oscars_filter_option" -> {
+                try {
+                    int oscars = Integer.parseInt(filterCriteria);
+                    filterByOscars(oscars);
+                } catch (NumberFormatException e) {
+                    // smt
+                }
+            }
+            case "genre_filter_option" -> {
+                try {
+                    MovieGenre genre = MovieGenre.valueOf(filterCriteria.toUpperCase());
+                    filterByGenre(genre);
+                } catch (IllegalArgumentException e) {
+                    // smt
+                }
+            }
+            case "mpaa_rating_filter_option" -> {
+                try {
+                    MpaaRating mpaaRating = MpaaRating.valueOf(filterCriteria.toUpperCase());
+                    filterByMpaaRating(mpaaRating);
+                } catch (IllegalArgumentException e) {
+                    // smt
+                }
+            }
+            case "director_name_filter_option" -> {
+                filterByDirectorName(filterCriteria);
 
-
-        if (filterOption.equals(resources.getString("id_filter_option"))) {
-            try {
-                int id = Integer.parseInt(filterCriteria);
-                filterById(id);
-            } catch (NumberFormatException e) {
-                // smt
+            }
+            default -> {
+                showTable.setItems(movieList);
+                if (showThread.isInterrupted()) {
+                    showThread = new ShowThread();
+                    showThread.start();
+                }
+                return;
             }
         }
-
-        if (filterOption.equals(resources.getString("name_filter_option"))) {
-            filterByName(filterCriteria);
-        }
-
-        if (filterOption.equals(resources.getString("coordinates_filter_option"))) {
-            try {
-                String[] coordinates = filterCriteria.split(" ");
-                float x = Float.parseFloat(coordinates[0]);
-                Integer y = Integer.parseInt(coordinates[1]);
-                filterByCoordinates(new Coordinates(x, y));
-            } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-                // smt
-            }
-        }
-
-        if (filterOption.equals(resources.getString("creation_date_filter_option"))) {
-            filterByCreationDate(filterCriteria);
-        }
-
-        if (filterOption.equals(resources.getString("oscars_filter_option"))) {
-            try {
-                int oscars = Integer.parseInt(filterCriteria);
-                filterByOscars(oscars);
-            } catch (NumberFormatException e) {
-                // smt
-            }
-        }
-
-        if (filterOption.equals(resources.getString("genre_filter_option"))) {
-            try {
-                MovieGenre genre = MovieGenre.valueOf(filterCriteria.toUpperCase());
-                filterByGenre(genre);
-            } catch (IllegalArgumentException e) {
-                // smt
-            }
-        }
-
-        if (filterOption.equals(resources.getString("mpaa_rating_filter_option"))) {
-            try {
-                MpaaRating mpaaRating = MpaaRating.valueOf(filterCriteria.toUpperCase());
-                filterByMpaaRating(mpaaRating);
-            } catch (IllegalArgumentException e) {
-                // smt
-            }
-        }
-
-        if (filterOption.equals(resources.getString("director_name_filter_option"))) {
-            filterByDirectorName(filterCriteria);
-        }
-
-        if (filterOption.equals(resources.getString("none_filter_option"))) {
-            showTable.setItems(movieList);
-            if (showThread.isInterrupted()) {
-                showThread = new ShowThread();
-                showThread.start();
-            }
-            return;
-        }
-
         showThread.interrupt();
     }
 
@@ -351,7 +358,8 @@ public class ShowController extends Controller {
     public class ShowThread extends Thread {
         public ShowThread() {
             super(() -> {
-                while (!Thread.currentThread().isInterrupted()) {
+                System.out.println("Show thread started");
+                while (!Thread.interrupted()) {
                     try {
                         short id = ConnectionManager.getInstance().newOperation(new Command(CommandType.SHOW, offset));
                         Response response = ConnectionManager.getInstance().waitForResponse(id);
@@ -372,7 +380,7 @@ public class ShowController extends Controller {
                         Thread.currentThread().interrupt();
                     }
                 }
-                System.out.println("Thread is interrupted");
+                System.out.println("Show thread stopped");
             });
         }
     }

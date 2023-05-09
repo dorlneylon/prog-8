@@ -56,13 +56,13 @@ public class MainController extends Controller {
     @FXML
     private ListView<String> historyList;
 
-    private final ArrayList<Object> controllers = new ArrayList<>();
+    private HistoryThread thread;
 
     // todo: в команде надо добавить параметр "добавлять в историю команд или нет, т. к. иначе SHOW каждую секунду обновляет список"
     @FXML
     public void initialize() {
         initListView();
-        HistoryThread thread = new HistoryThread();
+        thread = new HistoryThread();
         thread.start();
         ObservableList<CommandButton> items = commandList.getItems();
         for (CommandType type : CommandType.getCommands()) {
@@ -84,6 +84,15 @@ public class MainController extends Controller {
         account.setText(AppCore.getInstance().getName());
         lang.setText(Locale.getDefault().getDisplayLanguage());
         commandList.setItems(items);
+    }
+
+    @Override
+    public void updateUi() {
+        super.updateUi();
+        for (CommandButton button : commandList.getItems()) {
+            button.setText(LocaleManager.getInstance().getResource(button.getType().name()));
+        }
+        commandList.refresh();
     }
 
     private void initListView() {
@@ -220,7 +229,7 @@ public class MainController extends Controller {
                     case REMOVE_KEY -> {
                     }
                     case UPDATE -> {
-                        if (isControllerNotPresented(UpdateController.class)) updateHandler();
+                        updateHandler();
                     }
                     case REPLACE_IF_LOWER -> {
                         try {
@@ -235,36 +244,6 @@ public class MainController extends Controller {
             commandList.getSelectionModel().clearSelection();
         });
     }
-
-    private boolean isControllerNotPresented(Class<?> instance) {
-        for (Object c : controllers) {
-            if (c.getClass().equals(instance)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-//    private void executeScriptHandler(File file) {
-//        try {
-//            FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("execute_script.fxml"));
-//            Stage stage = new Stage();
-//            stage.setTitle("Execute Script");
-//            ExecuteScriptController controller = new ExecuteScriptController(sceneManager, file, stage);
-//            fxmlLoader.setController(controller);
-//            controllers.add(controller);
-//            Scene scene = new Scene(fxmlLoader.load());
-//            stage.setScene(scene);
-//            scene.getStylesheets().add(ClientMain.class.getResource("css/execute_script.css").toExternalForm());
-//            stage.setOnCloseRequest(event -> {
-//                controllers.removeIf(c -> c.getClass().equals(ExecuteScriptController.class));
-//            });
-//            stage.show();
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
 
     private void setHistoryList(String[] historyArray) {
         historyList.getItems().clear();
@@ -283,12 +262,8 @@ public class MainController extends Controller {
             stage.setTitle("Update");
             UpdateController controller = new UpdateController();
             fxmlLoader.setController(controller);
-            controllers.add(controller);
             Scene scene = new Scene(fxmlLoader.load());
             stage.setScene(scene);
-            stage.setOnCloseRequest(event -> {
-                controllers.removeIf(c -> c.getClass().equals(UpdateController.class));
-            });
             stage.show();
             scene.getStylesheets().add(Objects.requireNonNull(ClientMain.class.getResource("css/update.css")).toExternalForm());
         } catch (IOException e) {
@@ -296,9 +271,15 @@ public class MainController extends Controller {
         }
     }
 
+    @Override
+    public void close() {
+        thread.interrupt();
+    }
+
     public class HistoryThread extends Thread {
         public HistoryThread() {
             super(() -> {
+                System.out.println("History thread started");
                 while (!Thread.currentThread().isInterrupted()) {
                     short id;
                     try {
@@ -312,17 +293,18 @@ public class MainController extends Controller {
                     if (response == null) {
                         continue;
                     }
-                    var otvet = Serializer.deserialize(response.getMessage());
-                    String[] clientHistory = (String[]) otvet;
+                    var responseArray = Serializer.deserialize(response.getMessage());
+                    String[] clientHistory = (String[]) responseArray;
                     Platform.runLater(() -> {
                         setHistoryList(clientHistory);
                     });
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        Thread.currentThread().interrupt();
                     }
                 }
+                System.out.println("History thread stopped");
             });
         }
     }

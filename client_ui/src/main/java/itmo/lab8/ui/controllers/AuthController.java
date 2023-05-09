@@ -25,7 +25,6 @@ public class AuthController extends Controller {
     @FXML
     private Label login_upper_label;
 
-
     @FXML
     protected void onSignUpButtonClick(ActionEvent event) {
         String login = loginField.getText();
@@ -92,10 +91,10 @@ public class AuthController extends Controller {
 
     @FXML
     public void initialize() {
-        super.initialize();
-//        loginField.setPromptText(LocaleManager.getInstance().getResource("login_input"));
-//        passwordField.setPromptText(LocaleManager.getInstance().getResource("pass_input"));
-//        login_upper_label.setText(LocaleManager.getInstance().getResource("login_upper_label"));
+        super.updateUi();
+        loginField.setPromptText(LocaleManager.getInstance().getResource("login_input"));
+        passwordField.setPromptText(LocaleManager.getInstance().getResource("pass_input"));
+        statusLabel.setText("");
         loginField.textProperty().addListener((observable, oldValue, newValue) -> statusLabel.setText(""));
         passwordField.textProperty().addListener((observable, oldValue, newValue) -> statusLabel.setText(""));
     }

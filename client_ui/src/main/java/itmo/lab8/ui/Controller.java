@@ -7,8 +7,7 @@ import javafx.scene.control.Label;
 import java.lang.reflect.Field;
 
 public abstract class Controller {
-    @FXML
-    public void initialize() {
+    public void updateUi() {
         for (Field field : getClass().getDeclaredFields()) {
             if (!field.isAnnotationPresent(FXML.class) || field.isAnnotationPresent(Variable.class)) continue;
             if (field.getType().equals(Label.class)) {
@@ -30,5 +29,8 @@ public abstract class Controller {
                 }
             }
         }
+    }
+
+    public void close() {
     }
 }

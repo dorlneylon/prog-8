@@ -22,10 +22,11 @@ public class LocaleManager {
     }
 
     public String getResource(String key) {
-        if (localeMap.containsKey(key)) {
+        try {
             return resources.getString(key);
+        } catch (Exception e) {
+            return key;
         }
-        return key;
     }
 
     /**
