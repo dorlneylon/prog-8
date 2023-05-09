@@ -2,7 +2,7 @@ package itmo.lab8.commands.implemented;
 
 
 import itmo.lab8.commands.Action;
-import itmo.lab8.commands.response.Response;
+import itmo.lab8.shared.Response;
 
 public class ReplaceLowerCommand implements Action {
     @Override

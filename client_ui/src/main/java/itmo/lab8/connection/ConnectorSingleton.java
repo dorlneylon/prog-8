@@ -1,10 +1,8 @@
 package itmo.lab8.connection;
 
-import itmo.chunker.ChuckReceiver;
-import itmo.chunker.Chunker;
-import itmo.lab8.basic.utils.serializer.Serializer;
 import itmo.lab8.basic.utils.terminal.Colors;
-import itmo.lab8.commands.response.Response;
+import itmo.lab8.shared.Chunk;
+import itmo.lab8.shared.Chunker;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -18,29 +16,15 @@ import java.util.Arrays;
  */
 public class ConnectorSingleton {
 
-    private static ConnectorSingleton instance;
     private final static int socketTimeout = 16000;
+    private static ConnectorSingleton instance;
+    private final int chunkSize = 1030;
     /**
      * Socket for UDP connection
      */
     private DatagramSocket socket;
     private InetAddress address;
     private int port;
-    private int chunkSize;
-
-
-    /**
-     * Connector constructor with specified server port
-     *
-     * @param port server port
-     * @throws Exception Socket exception
-     */
-    public void setConnectorValues(InetAddress address, int port) throws Exception {
-        socket = new DatagramSocket();
-        socket.setSoTimeout(socketTimeout);
-        this.address = address;
-        this.port = port;
-    }
 
     public static ConnectorSingleton newInstance(InetAddress address, int port) throws Exception {
         instance = new ConnectorSingleton();
@@ -56,6 +40,19 @@ public class ConnectorSingleton {
     }
 
     /**
+     * Connector constructor with specified server port
+     *
+     * @param port server port
+     * @throws Exception Socket exception
+     */
+    public void setConnectorValues(InetAddress address, int port) throws Exception {
+        socket = new DatagramSocket();
+        socket.setSoTimeout(socketTimeout);
+        this.address = address;
+        this.port = port;
+    }
+
+    /**
      * Return port of client
      *
      * @return localhost port
@@ -67,7 +64,6 @@ public class ConnectorSingleton {
     public void setBufferSize(int size) throws SocketException {
         socket.setReceiveBufferSize(size);
         socket.setSendBufferSize(size);
-        chunkSize = 1024;
     }
 
     /**
@@ -76,8 +72,8 @@ public class ConnectorSingleton {
      * @param message string message
      * @throws Exception sending exception
      */
-    public void send(String message) throws Exception {
-        this.send(message.getBytes());
+    public void send(String message, short opId) throws Exception {
+        this.send(message.getBytes(), opId);
     }
 
     /**
@@ -85,8 +81,8 @@ public class ConnectorSingleton {
      *
      * @throws Exception sending exceptions
      */
-    public void send(byte[] dataBytes) throws Exception {
-        Chunker dataChunker = new Chunker(dataBytes, chunkSize);
+    public void send(byte[] dataBytes, short opId) throws Exception {
+        Chunker dataChunker = new Chunker(dataBytes, opId);
         var chunkIterator = dataChunker.newIterator();
         short totalChunks = (short) ((int) Math.ceil((double) dataBytes.length / (double) this.chunkSize));
         int c = 0;
@@ -101,20 +97,11 @@ public class ConnectorSingleton {
         }
     }
 
-    /**
-     * Receives bytes from remote server and transforms them into string
-     *
-     * @return string message
-     * @throws IOException Receiving exception
-     */
-    public Response receive() throws IOException {
-        ChuckReceiver receiver = new ChuckReceiver();
-        byte[] buffer = new byte[chunkSize + 4];
+    public Chunk receive() throws IOException {
+        byte[] buffer = new byte[1030];
         DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-        do {
-            socket.receive(packet);
-            receiver.add(Arrays.copyOf(packet.getData(), packet.getLength()));
-        } while (!receiver.isReceived());
-        return (Response) Serializer.deserialize(receiver.getAllChunks());
+        socket.setSoTimeout(socketTimeout);
+        socket.receive(packet);
+        return new Chunk(Arrays.copyOf(packet.getData(), packet.getLength()));
     }
 }

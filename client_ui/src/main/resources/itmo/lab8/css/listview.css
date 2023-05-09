@@ -1,6 +1,9 @@
 .list-view {
     /* Set the background color of the list view to #363636 */
     -fx-background-color: #404040;
+    -fx-padding: 10px;
+    -fx-background-insets: 8px 8px 8px 8px;
+    -fx-border-color: transparent;
 }
 
 .list-cell {
@@ -8,7 +11,14 @@
     -fx-background-color: #404040;
     -fx-font-size: 16px;
     -fx-text-fill: #FFFFFF;
+    -fx-background-radius: 10;
+    -fx-background-insets: 2px 2px 2px 2px;
 }
+.list-cell:empty {
+    /* Set the background color of each cell to #474747 */
+    -fx-background-color: transparent;
+}
+
 .list-view .scroll-bar {
     /* Set the background color of the vertical scroll bar to #C0C0C0 */
     -fx-background-color: #404040;
@@ -20,6 +30,10 @@
 
 .list-cell:hover {
     -fx-background-color: #333333;
+}
+
+.list-cell:empty:hover {
+    -fx-background-color: transparent;
 }
 
 .list-cell:pressed {

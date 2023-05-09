@@ -40,12 +40,12 @@ public class CommandHandler {
     public static void handlePacket(InetSocketAddress sender, byte[] bytes) throws Exception {
         Request request = (Request) Serializer.deserialize(bytes);
         if (request == null) {
-            Response response = new Response("Unable to get request.", ResponseType.ERROR);
+            Response response = new Response("Unable to get request.", ResponseType.ERROR, 0);
             channel.send(ByteBuffer.wrap(Serializer.serialize(response)), sender);
             return;
         }
         if (!request.isUserAuthorized() && request.getCommand().getCommandType() != CommandType.SERVICE) {
-            Response response = new Response("You are not authorized to use this command.", ResponseType.ERROR);
+            Response response = new Response("You are not authorized to use this command.", ResponseType.ERROR, 0);
             channel.send(ByteBuffer.wrap(Serializer.serialize(response)), sender);
             return;
         }
@@ -53,6 +53,7 @@ public class CommandHandler {
         // Log the command type and sender
         ServerLogger.getLogger().log(Level.INFO, "Received command %s from %s".formatted(request.getCommand().getCommandType(), request.getUserName()));
         Response response = request.getCommand().execute(request.getUserName());
+        response.setOperationId(request.getOperationId());
         // Get the output message from the command
         byte[] output = Serializer.serialize(response);
         // Create a Chunker object with the output message and the chunk size

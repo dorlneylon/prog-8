@@ -21,6 +21,8 @@ public enum CommandType implements Serializable {
     REMOVE_KEY(RemoveKeyCommand.class, "remove_key <id>: delete an element from the collection by its key"),
     SHOW(ShowCommand.class, "show: output to the standard output stream all elements of the collection in the string representation"),
     UPDATE(UpdateCommand.class, "update <id> {element}: update the value of a collection element whose id is equal to the specified"),
+    LANGUAGE(null, "language <language>: change the language of the program"),
+    ACCOUNT(null, "account <login> <password>: change the account"),
     DEFAULT(DefaultCommand.class, ""),
     SERVICE(ServiceCommand.class, "");
 
@@ -32,26 +34,30 @@ public enum CommandType implements Serializable {
         this.description = description;
     }
 
+    public static ArrayList<CommandType> getCommands() {
+        ArrayList<CommandType> commands = new ArrayList<>();
+        commands.add(SHOW);
+        commands.add(EXECUTE_SCRIPT);
+        commands.add(INFO);
+        commands.add(UPDATE);
+        commands.add(INSERT);
+        commands.add(REMOVE_GREATER);
+        commands.add(REMOVE_ALL_BY_MPAA_RATING);
+        commands.add(REPLACE_IF_LOWER);
+        commands.add(REMOVE_KEY);
+        commands.add(LANGUAGE);
+        commands.add(ACCOUNT);
+        commands.add(CLEAR);
+        commands.add(EXIT);
+        return commands;
+    }
+
     public Class<? extends Action> getExecutableClass() {
         return executableClass;
     }
 
     public String getDescription() {
         return description;
-    }
-
-    public static ArrayList<CommandType> getCommands() {
-        ArrayList<CommandType> commands = new ArrayList<>();
-        commands.add(SHOW);
-        commands.add(EXECUTE_SCRIPT);
-        commands.add(INFO);
-        commands.add(INSERT);
-        commands.add(REMOVE_GREATER);
-        commands.add(REMOVE_ALL_BY_MPAA_RATING);
-        commands.add(REPLACE_IF_LOWER);
-        commands.add(REMOVE_KEY);
-        commands.add(EXIT);
-        return commands;
     }
 
 }

@@ -1,3 +1,7 @@
+.active-button {
+    -fx-font-weight: bold;
+}
+
 Button {
     -fx-background-color: #474747 !important;
     -fx-text-fill: #FFFFFF !important;
@@ -9,4 +13,9 @@ Button:hover {
 
 Button:pressed {
     -fx-background-color: #252525 !important;
+}
+
+#historyList .list-cell {
+    -fx-background-color: #363636 !important;
+    -fx-text-fill: #dadada !important;
 }

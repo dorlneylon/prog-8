@@ -1,9 +1,9 @@
 package itmo.lab8.basic.utils.parser;
 
 
-import itmo.lab8.basic.types.builders.annotations.Generated;
 import itmo.lab8.basic.types.builders.Builder;
 import itmo.lab8.basic.types.builders.BuilderFactory;
+import itmo.lab8.basic.types.builders.annotations.Generated;
 import itmo.lab8.basic.utils.parser.exceptions.BadArgumentException;
 import itmo.lab8.basic.utils.parser.exceptions.ObjectParsingException;
 import itmo.lab8.basic.utils.strings.StringUtils;

@@ -1,4 +1,4 @@
-package itmo.lab8.commands.response;
+package itmo.lab8.shared;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -10,8 +10,9 @@ import java.nio.charset.StandardCharsets;
 public class Response implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 1111185098267757690L;
-    private final byte[] responseMessage;
+    private static final long serialVersionUID = -7046677758944234009L;
+
+    private final byte[] content;
     private final ResponseType responseType;
 
     /**
@@ -24,14 +25,15 @@ public class Response implements Serializable {
         this(responseMessage.getBytes(), responseType);
     }
 
+
     /**
      * Constructor for Response class.
      *
-     * @param objects      An array of objects to be included in the response.
+     * @param objectBytes  An array of objectBytes to be included in the response.
      * @param responseType The type of response.
      */
-    public Response(byte[] objects, ResponseType responseType) {
-        this.responseMessage = objects;
+    public Response(byte[] objectBytes, ResponseType responseType) {
+        this.content = objectBytes;
         this.responseType = responseType;
     }
 
@@ -41,11 +43,11 @@ public class Response implements Serializable {
      * @return the response message with the appropriate color
      */
     public byte[] getMessage() {
-        return responseMessage;
+        return content;
     }
 
     public String getStringMessage() {
-        return new String(responseMessage, StandardCharsets.UTF_8);
+        return new String(content, StandardCharsets.UTF_8);
     }
 
     /**

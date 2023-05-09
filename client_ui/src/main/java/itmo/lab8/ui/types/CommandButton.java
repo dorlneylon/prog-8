@@ -12,6 +12,11 @@ public class CommandButton extends Label {
         this.type = type;
     }
 
+    public CommandButton(String name) {
+        super(name);
+        this.type = null;
+    }
+
     public CommandType getType() {
         return type;
     }
