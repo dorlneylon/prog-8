@@ -28,11 +28,11 @@ public class Window {
     }
 
     public void updateLocale() {
-        // TODO: Попробуем так, но лучше сделать 1 общий метод обновления всех полей
-        this.controller.initialize();
+        this.controller.updateUi();
     }
 
     public void close() {
+        controller.close();
         stage.close();
     }
 }

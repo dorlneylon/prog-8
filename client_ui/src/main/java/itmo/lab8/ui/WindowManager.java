@@ -110,6 +110,7 @@ public class WindowManager {
         stage.setResizable(false);
         windowList.add(window);
         stage.setOnCloseRequest(event -> {
+            window.close();
             windowList.remove(window);
         });
         stage.show();
