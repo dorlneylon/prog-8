@@ -36,10 +36,6 @@ import static itmo.lab8.commands.CollectionValidator.checkIfExists;
 import static itmo.lab8.commands.CollectionValidator.isUserCreator;
 
 public class ShowItemController extends Controller {
-    public ShowItemController(Movie movie) {
-        this.movie = movie;
-    }
-
     private final Movie movie;
     @FXML
     private TextField id_insertion_label;
@@ -73,6 +69,9 @@ public class ShowItemController extends Controller {
     private TextField location_insertion_label;
     @FXML
     private ComboBox<Color> haircolor_choicebox;
+    public ShowItemController(Movie movie) {
+        this.movie = movie;
+    }
 
     @FXML
     public void initialize() {

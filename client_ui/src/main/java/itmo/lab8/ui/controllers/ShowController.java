@@ -15,6 +15,10 @@ import itmo.lab8.ui.ItemCanvas;
 import itmo.lab8.ui.LocaleManager;
 import itmo.lab8.ui.WindowManager;
 import itmo.lab8.ui.types.FilterOption;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -27,15 +31,13 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Locale;
-import java.util.Objects;
 
 public class ShowController extends Controller {
     private Integer offset = 0;
@@ -73,11 +75,13 @@ public class ShowController extends Controller {
 
     public void nextPage() {
         this.offset += 20;
+        if (viewController != null) updateView();
     }
 
     public void previousPage() {
         if (this.offset > 0) {
             this.offset -= 20;
+            if (viewController != null) updateView();
         }
     }
 
@@ -90,8 +94,7 @@ public class ShowController extends Controller {
         idColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(Math.toIntExact(cellData.getValue().getId())).asObject());
         nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
         coordinatesColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getCoordinates()));
-        creationDateColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCreationDate()
-                .format(DateTimeFormatter.ofPattern(LocaleManager.getInstance().getResource("date_pattern"), Locale.getDefault()))));
+        creationDateColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCreationDate().format(DateTimeFormatter.ofPattern(LocaleManager.getInstance().getResource("date_pattern"), Locale.getDefault()))));
         oscarsColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(Math.toIntExact(cellData.getValue().getOscars())).asObject());
         genreColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getGenre()));
         mpaaColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getMpaaRating()));
@@ -275,31 +278,6 @@ public class ShowController extends Controller {
         showTable.setItems(movieList.filtered(movie -> movie.getDirector().getName().contains(directorName)));
     }
 
-    private void updateMovieList() {
-        showTable.setItems(movieList);
-        showTable.sort();
-    }
-
-    private void addMovie(Movie movie) {
-        movieList.add(movie);
-        updateMovieList();
-    }
-
-    private void removeMovie(Movie movie) {
-        movieList.remove(movie);
-        updateMovieList();
-    }
-
-    private void updateMovie(Movie movie) {
-        movieList.removeIf(m -> Objects.equals(m.getId(), movie.getId()));
-        movieList.add(movie);
-        updateMovieList();
-    }
-
-    public TableView<Movie> getShowTable() {
-        return showTable;
-    }
-
     @FXML
     public void onViewButtonClick() {
         try {
@@ -321,25 +299,65 @@ public class ShowController extends Controller {
 
     private void updateView() {
         if (viewController != null) {
-            synchronized (movieList) {
-                for (Movie movie : movieList) {
+            short id = 0;
+            try {
+                id = ConnectionManager.getInstance().newOperation(new Command(CommandType.SHOW, offset));
+            } catch (Exception e) {
+                return;
+            }
+            Response response = ConnectionManager.getInstance().waitForResponse(id);
+            if (response == null) return;
+            ArrayList<Movie> array = (ArrayList<Movie>) Serializer.deserialize(response.getMessage());
+            viewController.getCanvasPane().getChildren().clear();
+            for (Movie movie : array) {
+                Thread thread = new Thread(() -> {
                     short opId;
                     try {
                         opId = ConnectionManager.getInstance().newOperation(new Command(CommandType.SERVICE, "movie_color %d".formatted(movie.getId())));
                     } catch (Exception e) {
-                        continue;
+                        return;
                     }
-                    Response response = ConnectionManager.getInstance().waitForResponse(opId);
-                    String responseText = response.getStringMessage();
+                    Response responseWithColor;
+                    responseWithColor = ConnectionManager.getInstance().waitForResponse(opId);
+                    if (responseWithColor == null) {
+                        try {
+                            opId = ConnectionManager.getInstance().newOperation(new Command(CommandType.SERVICE, "movie_color %d".formatted(movie.getId())));
+                            responseWithColor = ConnectionManager.getInstance().waitForResponse(opId);
+                            if (responseWithColor == null) System.err.println("Skipped");
+                        } catch (Exception e) {
+                            return;
+                        }
+                    }
+                    String responseText = responseWithColor.getStringMessage();
                     Canvas canvas = new ItemCanvas(movie.getId(), responseText);
-                    double randomX = Math.random() * (617 - 50);
-                    double randomY = Math.random() * (995 - 50);
-                    canvas.relocate(randomX, randomY);
-                    viewController.getCanvasPane().getChildren().add(canvas);
-                }
+                    canvas.setOnMouseClicked(event -> {
+                        try {
+                            WindowManager.getInstance().newShowItemWindow(movie);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+//                    double X = movie.getCoordinates().getX();
+//                    double Y = movie.getCoordinates().getY();
+                    double X = Math.random() * (viewController.getCanvasPane().getWidth() - canvas.getWidth());
+                    double Y = Math.random() * (viewController.getCanvasPane().getHeight() - canvas.getHeight());
+                    canvas.relocate(X, Y);
+                    canvas.setOpacity(0);
+                    Timeline timeline = new Timeline();
+                    KeyValue keyValue = new KeyValue(canvas.opacityProperty(), 1);
+                    KeyFrame keyFrame = new KeyFrame(Duration.seconds(1), keyValue);
+                    timeline.getKeyFrames().add(keyFrame);
+                    // Update the canvas list in a thread-safe way using Platform.runLater()
+                    Platform.runLater(() -> {
+                        viewController.getCanvasPane().getChildren().add(canvas);
+                        timeline.play();
+                    });
+                });
+                thread.start();
             }
         }
     }
+
 
     public class ShowThread extends Thread {
         public ShowThread() {
@@ -356,11 +374,12 @@ public class ShowController extends Controller {
                         movieList.clear();
                         movieList.addAll(array);
                         showTable.refresh();
+                        showTable.sort();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     try {
-                        Thread.sleep(2000);
+                        Thread.sleep(1500);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }

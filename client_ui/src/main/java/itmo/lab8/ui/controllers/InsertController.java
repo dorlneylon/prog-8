@@ -25,7 +25,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.ResourceBundle;
 import java.util.Set;
 
 import static itmo.lab8.commands.CollectionValidator.checkIfExists;
@@ -104,7 +103,7 @@ public class InsertController extends Controller {
             }
         }
         String creationDate = creation_date_insertion_label.getPromptText() + " (" + LocaleManager.getInstance().getResource("date_pattern") + ")";
-        String birthDate = birthdate_insertion_label.getPromptText() + " (" +LocaleManager.getInstance().getResource("date_pattern") + ")";
+        String birthDate = birthdate_insertion_label.getPromptText() + " (" + LocaleManager.getInstance().getResource("date_pattern") + ")";
         creation_date_insertion_label.setPromptText(creationDate);
         birthdate_insertion_label.setPromptText(birthDate);
     }

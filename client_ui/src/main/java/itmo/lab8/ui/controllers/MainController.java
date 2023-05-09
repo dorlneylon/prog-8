@@ -58,7 +58,6 @@ public class MainController extends Controller {
 
     private HistoryThread thread;
 
-    // todo: в команде надо добавить параметр "добавлять в историю команд или нет, т. к. иначе SHOW каждую секунду обновляет список"
     @FXML
     public void initialize() {
         initListView();
@@ -235,9 +234,7 @@ public class MainController extends Controller {
                             e.printStackTrace();
                         }
                     }
-                    case UPDATE -> {
-                        updateHandler();
-                    }
+                    case UPDATE -> {}
                     case REPLACE_IF_LOWER -> {
                         try {
                             WindowManager.getInstance().newReplaceIfLowerWindow();
@@ -260,23 +257,22 @@ public class MainController extends Controller {
         }
     }
 
-    @Deprecated
-    private void updateHandler() {
-        // TODO: REMOVE!
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("update.fxml"));
-            Stage stage = new Stage();
-            stage.setTitle("Update");
-            UpdateController controller = new UpdateController();
-            fxmlLoader.setController(controller);
-            Scene scene = new Scene(fxmlLoader.load());
-            stage.setScene(scene);
-            stage.show();
-            scene.getStylesheets().add(Objects.requireNonNull(ClientMain.class.getResource("css/update.css")).toExternalForm());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    @Deprecated
+//    private void updateHandler() {
+//        try {
+//            FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("update.fxml"));
+//            Stage stage = new Stage();
+//            stage.setTitle("Update");
+//            UpdateController controller = new UpdateController();
+//            fxmlLoader.setController(controller);
+//            Scene scene = new Scene(fxmlLoader.load());
+//            stage.setScene(scene);
+//            stage.show();
+//            scene.getStylesheets().add(Objects.requireNonNull(ClientMain.class.getResource("css/update.css")).toExternalForm());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     @Override
     public void close() {

@@ -6,10 +6,12 @@ import itmo.lab8.basic.moviecollection.MovieCollection;
 import itmo.lab8.server.ServerLogger;
 import itmo.lab8.utils.Serializer;
 
+import java.security.SecureRandom;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Level;
 
 /**
@@ -52,10 +54,16 @@ public class Database {
             String encryptedPassword = Encryptor.encryptString(password);
 
             // Create a prepared statement to insert a new user into the users table
-            PreparedStatement userStatement = connection.prepareStatement("INSERT INTO \"user\" (login, password) VALUES (?, ?)");
+            PreparedStatement userStatement = connection.prepareStatement("INSERT INTO \"user\" (login, password, color) VALUES (?, ?, ?)");
             // Set the login and password parameters of the prepared statement
             userStatement.setString(1, login);
             userStatement.setString(2, encryptedPassword);
+            SecureRandom random = new SecureRandom();
+            // create a big random number - maximum is ffffff (hex) = 16777215 (dez)
+            int nextInt = random.nextInt(0xffffff + 1);
+            // format it as hexadecimal string (with hashtag and leading zeros)
+            String hex = String.format("%06x", nextInt);
+            userStatement.setString(3, hex);
             // If the user was successfully added, set the first flag to 1
             if (userStatement.executeUpdate() > 0) flags |= 1;
 

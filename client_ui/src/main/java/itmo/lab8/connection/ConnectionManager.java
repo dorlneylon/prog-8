@@ -15,12 +15,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ConnectionManager {
     private static ConnectionManager instance;
-    private ReceiverThread receiverThread;
-
     private final AtomicInteger operationId = new AtomicInteger(Short.MIN_VALUE);
-
     private final ConcurrentHashMap<Short, BlockingChunkList> chunkMap = new ConcurrentHashMap<>();
-
+    private ReceiverThread receiverThread;
 
     public static ConnectionManager getInstance() {
         if (instance == null) {

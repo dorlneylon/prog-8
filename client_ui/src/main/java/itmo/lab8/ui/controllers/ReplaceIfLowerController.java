@@ -68,7 +68,6 @@ public class ReplaceIfLowerController extends Controller {
     @FXML
     public void initialize() {
         initBoxes();
-        // TODO: FIX THIS LATER
         for (Field field : getClass().getDeclaredFields()) {
             if (!field.isAnnotationPresent(FXML.class)) continue;
 

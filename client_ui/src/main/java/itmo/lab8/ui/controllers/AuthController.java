@@ -42,6 +42,15 @@ public class AuthController extends Controller {
         task.setOnSucceeded(e -> {
             Platform.runLater(() -> {
                 boolean status = task.getValue();
+                if (status) {
+                    AppCore.getInstance().setName(login);
+                    WindowManager.getInstance().closeWindow(this.getClass());
+                    try {
+                        WindowManager.getInstance().newMainWindow();
+                    } catch (IOException err) {
+                        throw new RuntimeException(err);
+                    }
+                }
             });
         });
         task.run();
