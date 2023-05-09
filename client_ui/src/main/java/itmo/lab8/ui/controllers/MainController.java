@@ -93,6 +93,7 @@ public class MainController extends Controller {
             button.setText(LocaleManager.getInstance().getResource(button.getType().name()));
         }
         commandList.refresh();
+        lang.setText(Locale.getDefault().getDisplayLanguage());
     }
 
     private void initListView() {
