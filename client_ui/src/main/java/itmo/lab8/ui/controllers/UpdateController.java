@@ -65,6 +65,7 @@ public class UpdateController extends Controller {
     @FXML
     private ComboBox<Color> haircolor_choicebox;
 
+    @Override
     @FXML
     public void initialize() {
         initBoxes();
@@ -91,7 +92,7 @@ public class UpdateController extends Controller {
 
             if (field.getType().equals(ComboBox.class)) {
                 try {
-                    ComboBox<?> comboBox = (ComboBox<?>) field.get(this);
+                    ComboBox comboBox = (ComboBox) field.get(this);
                     comboBox.setPromptText(resources.getString(comboBox.getId()));
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();

@@ -8,7 +8,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
 import java.util.Locale;
-import java.util.Set;
 
 public class LanguageController extends Controller {
     @FXML
@@ -27,18 +26,21 @@ public class LanguageController extends Controller {
 
     @FXML
     public void initialize() {
-        updateUi();
+        super.initialize();
         setActive();
+
     }
 
     @FXML
     public void onRuButtonClick() {
+        removeActiveButton();
         LocaleManager.getInstance().updateLocale("ru");
         setActive();
     }
 
     @FXML
     public void onFinButtonClick() {
+        removeActiveButton();
         LocaleManager.getInstance().updateLocale("fi");
         setActive();
 
@@ -46,12 +48,14 @@ public class LanguageController extends Controller {
 
     @FXML
     public void onEspButtonClick() {
+        removeActiveButton();
         LocaleManager.getInstance().updateLocale("es");
         setActive();
     }
 
     @FXML
     public void onCatButtonClick() {
+        removeActiveButton();
         LocaleManager.getInstance().updateLocale("ca");
         setActive();
     }
@@ -62,13 +66,17 @@ public class LanguageController extends Controller {
     }
 
     private void removeActiveButton() {
-        for (Button btn : Set.of(ru_lang, fin_lang, esp_lang, cat_lang)) {
-            btn.getStyleClass().remove("active-button");
-        }
+        var currentActiveButton = switch (Locale.getDefault().getLanguage()) {
+            case "ru" -> ru_lang;
+            case "fi" -> fin_lang;
+            case "es" -> esp_lang;
+            case "ca" -> cat_lang;
+            default -> throw new IllegalStateException("Unexpected value: " + Locale.getDefault().getLanguage());
+        };
+        currentActiveButton.getStyleClass().remove("active-button");
     }
 
     private void setActive() {
-        removeActiveButton();
         switch (Locale.getDefault().getLanguage()) {
             case "ru" -> ru_lang.getStyleClass().add("active-button");
             case "fi" -> fin_lang.getStyleClass().add("active-button");

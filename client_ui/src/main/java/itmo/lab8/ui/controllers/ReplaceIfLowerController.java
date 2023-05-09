@@ -65,9 +65,11 @@ public class ReplaceIfLowerController extends Controller {
     @FXML
     private ComboBox<Color> haircolor_choicebox;
 
+    @Override
     @FXML
     public void initialize() {
         initBoxes();
+
         // TODO: FIX THIS LATER
         for (Field field : getClass().getDeclaredFields()) {
             if (!field.isAnnotationPresent(FXML.class)) continue;
@@ -92,7 +94,7 @@ public class ReplaceIfLowerController extends Controller {
 
             if (field.getType().equals(ComboBox.class)) {
                 try {
-                    ComboBox<?> comboBox = (ComboBox<?>) field.get(this);
+                    ComboBox comboBox = (ComboBox) field.get(this);
                     comboBox.setPromptText(LocaleManager.getInstance().getResource(comboBox.getId()));
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();

@@ -39,6 +39,8 @@ public class ClientMain extends Application {
         LocaleManager.getInstance().setDefaultLocale("ru");
         AppCore.newInstance(serverAddress, serverPort);
         ConnectionManager.getInstance().start();
+        System.out.println(LocaleManager.getInstance().getResource("UPDATE"));
         WindowManager.getInstance().newAuthWindow();
     }
+
 }
