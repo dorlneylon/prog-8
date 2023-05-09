@@ -242,4 +242,262 @@
          </font>
       </Button>
    </HBox>
+=======
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<?import javafx.scene.control.ComboBox?>
+<VBox prefHeight="430.0" prefWidth="574.0" style="-fx-background-color: #363636;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox alignment="TOP_CENTER" prefHeight="30.0" prefWidth="321.0">
+         <children>
+            <Label fx:id="insert_upper_label" alignment="TOP_CENTER" text="Вставка в коллекцию" textAlignment="CENTER" textFill="#dadada">
+               <font>
+                  <Font name="Helvetica Neue" size="20.0" />
+               </font>
+               <HBox.margin>
+                  <Insets left="-10.0" top="20.0" />
+               </HBox.margin>
+            </Label>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <VBox prefHeight="296.0" prefWidth="316.0">
+               <children>
+                  <HBox alignment="TOP_CENTER" fillHeight="false" prefHeight="39.0" prefWidth="455.0">
+                     <children>
+                        <Label fx:id="movie_label" alignment="CENTER" contentDisplay="CENTER" text="Фильм" textAlignment="CENTER" textFill="#dadada">
+                           <font>
+                              <Font name="Helvetica Neue" size="15.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="-10.0" top="20.0" />
+                           </HBox.margin>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <VBox alignment="TOP_CENTER" fillWidth="false" prefHeight="242.0" prefWidth="432.0" spacing="10.0">
+                     <children>
+                        <HBox prefHeight="28.0" prefWidth="380.0">
+                           <VBox.margin>
+                              <Insets left="5.0" right="15.0" />
+                           </VBox.margin>
+                           <children>
+                              <TextField prefHeight="26.0" prefWidth="363.0" promptText="id" style="-fx-background-color: #474747;">
+                                 <HBox.margin>
+                                    <Insets left="7.75" />
+                                 </HBox.margin>
+                              </TextField>
+                           </children>
+                        </HBox>
+                        <HBox prefHeight="28.0" prefWidth="380.0">
+                           <children>
+                              <TextField fx:id="name_insertion_label" prefHeight="26.0" prefWidth="363.0" promptText="Название" style="-fx-background-color: #474747;">
+                                 <HBox.margin>
+                                    <Insets left="7.75" />
+                                 </HBox.margin>
+                              </TextField>
+                           </children>
+                           <VBox.margin>
+                              <Insets left="5.0" right="15.0" />
+                           </VBox.margin>
+                        </HBox>
+                        <HBox prefHeight="28.0" prefWidth="380.0">
+                           <children>
+                              <TextField fx:id="coords_insertion_label" prefHeight="26.0" prefWidth="363.0" promptText="Координаты (x;y)" style="-fx-background-color: #474747;">
+                                 <HBox.margin>
+                                    <Insets left="7.75" />
+                                 </HBox.margin>
+                              </TextField>
+                           </children>
+                           <VBox.margin>
+                              <Insets left="5.0" right="15.0" />
+                           </VBox.margin>
+                        </HBox>
+                        <HBox prefHeight="28.0" prefWidth="380.0">
+                           <children>
+                              <TextField fx:id="creation_date_insertion_label" prefHeight="26.0" prefWidth="363.0" promptText="" style="-fx-background-color: #474747;">
+                                 <HBox.margin>
+                                    <Insets left="7.75" />
+                                 </HBox.margin>
+                              </TextField>
+                           </children>
+                           <VBox.margin>
+                              <Insets left="5.0" right="15.0" />
+                           </VBox.margin>
+                        </HBox>
+                        <HBox prefHeight="28.0" prefWidth="380.0">
+                           <children>
+                              <TextField fx:id="oscars_count_insertion_label" prefHeight="26.0" prefWidth="363.0" promptText="Количество Оскаров" style="-fx-background-color: #474747;">
+                                 <HBox.margin>
+                                    <Insets left="7.75" />
+                                 </HBox.margin>
+                              </TextField>
+                           </children>
+                           <VBox.margin>
+                              <Insets left="5.0" right="15.0" />
+                           </VBox.margin>
+                        </HBox>
+                        <HBox prefHeight="28.0" prefWidth="380.0">
+                           <children>
+                              <ComboBox fx:id="genre_choicebox" prefHeight="26.0" prefWidth="362.0" style="-fx-background-color: #474747;">
+                                 <HBox.margin>
+                                    <Insets left="10.0" />
+                                 </HBox.margin>
+                              </ComboBox>
+                           </children>
+                           <VBox.margin>
+                              <Insets left="5.0" right="15.0" />
+                           </VBox.margin>
+                        </HBox>
+                        <HBox prefHeight="28.0" prefWidth="380.0">
+                           <children>
+                              <ComboBox fx:id="rating_choicebox" prefHeight="26.0" prefWidth="361.0" style="-fx-background-color: #474747;">
+                                 <HBox.margin>
+                                    <Insets left="10.0" />
+                                 </HBox.margin>
+                              </ComboBox>
+                           </children>
+                           <VBox.margin>
+                              <Insets left="5.0" right="15.0" />
+                           </VBox.margin>
+                        </HBox>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="15.0" />
+                     </VBox.margin>
+                  </VBox>
+               </children>
+            </VBox>
+            <VBox alignment="CENTER_RIGHT" prefHeight="410.0" prefWidth="343.0">
+               <children>
+                  <HBox alignment="TOP_CENTER" fillHeight="false" prefHeight="39.0" prefWidth="272.0">
+                     <children>
+                        <Label fx:id="director_label" alignment="CENTER" contentDisplay="CENTER" text="Директор" textAlignment="CENTER" textFill="#dadada">
+                           <font>
+                              <Font name="Helvetica Neue" size="15.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="-5.0" right="-20.0" top="20.0" />
+                           </HBox.margin>
+                        </Label>
+                     </children>
+                     <VBox.margin>
+                        <Insets left="20.0" right="15.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <VBox alignment="TOP_CENTER" fillWidth="false" prefHeight="242.0" prefWidth="288.0" spacing="10.0">
+                     <children>
+                        <HBox prefHeight="28.0" prefWidth="380.0">
+                           <VBox.margin>
+                              <Insets left="5.0" right="10.0" />
+                           </VBox.margin>
+                           <children>
+                              <TextField fx:id="director_name_insertion_label" prefHeight="26.0" prefWidth="363.0" promptText="Имя" style="-fx-background-color: #474747;">
+                                 <HBox.margin>
+                                    <Insets left="7.75" />
+                                 </HBox.margin>
+                              </TextField>
+                           </children>
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                        </HBox>
+                        <HBox prefHeight="28.0" prefWidth="380.0">
+                           <children>
+                              <TextField fx:id="birthdate_insertion_label" prefHeight="26.0" prefWidth="363.0" promptText="День рождения (dd-mm-yyyy)" style="-fx-background-color: #474747;">
+                                 <HBox.margin>
+                                    <Insets left="7.75" />
+                                 </HBox.margin>
+                              </TextField>
+                           </children>
+                           <VBox.margin>
+                              <Insets left="5.0" right="10.0" />
+                           </VBox.margin>
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                        </HBox>
+                        <HBox prefHeight="28.0" prefWidth="380.0">
+                           <children>
+                              <TextField fx:id="location_insertion_label" prefHeight="26.0" prefWidth="363.0" promptText="Локация (x;y;z)" style="-fx-background-color: #474747;">
+                                 <HBox.margin>
+                                    <Insets left="7.75" />
+                                 </HBox.margin>
+                              </TextField>
+                           </children>
+                           <VBox.margin>
+                              <Insets left="5.0" right="10.0" />
+                           </VBox.margin>
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                        </HBox>
+                        <HBox prefHeight="28.0" prefWidth="380.0">
+                           <children>
+                              <TextField fx:id="height_insertion_label" prefHeight="26.0" prefWidth="363.0" promptText="Рост" style="-fx-background-color: #474747;">
+                                 <HBox.margin>
+                                    <Insets left="7.75" />
+                                 </HBox.margin>
+                              </TextField>
+                           </children>
+                           <VBox.margin>
+                              <Insets left="5.0" right="10.0" />
+                           </VBox.margin>
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                        </HBox>
+                        <HBox prefHeight="28.0" prefWidth="380.0">
+                           <children>
+                              <ComboBox fx:id="haircolor_choicebox" prefHeight="26.0" prefWidth="362.0" style="-fx-background-color: #474747;">
+                                 <HBox.margin>
+                                    <Insets left="10.0" />
+                                 </HBox.margin>
+                              </ComboBox>
+                           </children>
+                           <VBox.margin>
+                              <Insets left="5.0" right="10.0" />
+                           </VBox.margin>
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                        </HBox>
+                        <HBox prefHeight="28.0" prefWidth="380.0">
+                           <VBox.margin>
+                              <Insets left="5.0" right="10.0" />
+                           </VBox.margin>
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                        </HBox>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="15.0" />
+                     </VBox.margin>
+                  </VBox>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      <HBox alignment="BOTTOM_CENTER" prefHeight="54.0" prefWidth="574.0">
+         <VBox.margin>
+            <Insets top="20.0" />
+         </VBox.margin>
+         <children>
+            <Button mnemonicParsing="false" prefHeight="23.0" prefWidth="98.0" style="-fx-background-color: #474747;" text="Вставить" textFill="#dadada">
+               <font>
+                  <Font name="Helvetica Neue" size="13.0" />
+               </font>
+            </Button>
+         </children>
+      </HBox>
+   </children>
 </VBox>
