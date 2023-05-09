@@ -39,7 +39,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox alignment="CENTER" focusTraversable="true" prefHeight="372.0" prefWidth="276.0" style="-fx-background-color: #363636;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+<VBox styleClass="main-class" alignment="CENTER" focusTraversable="true" prefHeight="372.0" prefWidth="276.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
     <VBox alignment="TOP_CENTER" fillWidth="false" prefHeight="323.0" prefWidth="242.0" snapToPixel="false" spacing="50.0">
         <VBox.margin>
             <Insets bottom="30.0" left="20.0" right="20.0" top="40.0" />

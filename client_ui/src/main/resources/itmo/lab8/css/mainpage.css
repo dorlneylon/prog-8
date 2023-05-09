@@ -2,9 +2,17 @@
     -fx-font-weight: bold;
 }
 
+.leet-labels-panes {
+    -fx-background-color: #0c4f00 !important;
+}
+
+.leet-lists-btns {
+    -fx-background-color: #072a00 !important;
+}
+
 Button {
-    -fx-background-color: #474747 !important;
-    -fx-text-fill: #FFFFFF !important;
+    -fx-background-color: #474747;
+    -fx-text-fill: #FFFFFF;
 }
 
 Button:hover {
@@ -13,6 +21,18 @@ Button:hover {
 
 Button:pressed {
     -fx-background-color: #252525 !important;
+}
+
+.history-item {
+    -fx-text-fill: #dadada; -fx-background-color: #363636;
+}
+
+.history-list {
+    -fx-background-color: #363636; -fx-border-color: #474747;
+}
+
+.main-class {
+    -fx-background-color: #363636;
 }
 
 #historyList .list-cell {

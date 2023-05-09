@@ -37,7 +37,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox prefHeight="437.0" prefWidth="574.0" style="-fx-background-color: #363636;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+<VBox styleClass="main-class" prefHeight="437.0" prefWidth="574.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
    <HBox alignment="TOP_CENTER" prefHeight="30.0" prefWidth="321.0">
       <Label fx:id="replace_lower_upper_label" alignment="TOP_CENTER" text="Вставка в коллекцию" textAlignment="CENTER" textFill="#dadada">
          <font>

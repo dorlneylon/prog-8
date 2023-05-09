@@ -24,6 +24,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -41,6 +42,8 @@ public class MainController extends Controller {
     private Label details;
     @FXML
     private Label commands_list;
+    @FXML
+    private VBox mainBox;
     @FXML
     private Label cur_account;
     @FXML
@@ -117,7 +120,7 @@ public class MainController extends Controller {
                     super.updateItem(item, empty);
                     if (!(empty || item == null)) {
                         setText(item);
-                        setStyle("-fx-text-fill: #dadada; -fx-background-color: #363636");
+                        getStyleClass().add("history-item");
                     }
                 }
             };

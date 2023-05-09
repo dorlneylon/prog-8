@@ -48,7 +48,8 @@ public class WindowManager {
         stage.setTitle("Main page");
         stage.setScene(scene);
         stage.setHeight(538);
-        stage.setWidth(635);
+        stage.setMinHeight(538);
+        stage.setResizable(false);
         windowList.add(window);
         stage.setOnCloseRequest(event -> {
             closeAllWindows();
@@ -75,7 +76,8 @@ public class WindowManager {
         Window window = new Window(stage, scene, authController);
         stage.setTitle("Authentication");
         stage.setScene(scene);
-        stage.setResizable(false);
+        stage.setMinHeight(372);
+        stage.setMinWidth(276);
         windowList.add(window);
         stage.setOnCloseRequest(event -> {
             windowList.remove(window);
@@ -135,6 +137,8 @@ public class WindowManager {
         Stage stage = new Stage();
         Window window = new Window(stage, scene, controller);
         stage.setTitle("Insert");
+        stage.setMinHeight(437);
+        stage.setMinWidth(574);
         stage.setScene(scene);
         stage.setOnCloseRequest(event -> {
             windowList.remove(window);
@@ -156,11 +160,13 @@ public class WindowManager {
         LanguageController controller = new LanguageController();
         fxmlLoader.setController(controller);
         Scene scene = new Scene(fxmlLoader.load());
-        scene.getStylesheets().add(Objects.requireNonNull(ClientMain.class.getResource("css/mainpage.css")).toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(ClientMain.class.getResource("css/language.css")).toExternalForm());
         Stage stage = new Stage();
         Window window = new Window(stage, scene, controller);
         stage.setTitle("Language");
         stage.setScene(scene);
+        stage.setMinHeight(279);
+        stage.setMinWidth(217);
         stage.setOnCloseRequest(event -> {
             windowList.remove(window);
         });
@@ -186,6 +192,9 @@ public class WindowManager {
         stage.setTitle("info");
         Window window = new Window(stage, scene, controller);
         stage.setScene(scene);
+        stage.setMinHeight(149);
+        stage.setMinWidth(450);
+        stage.setResizable(false);
         stage.setOnCloseRequest(event -> {
             windowList.remove(window);
         });
@@ -211,6 +220,8 @@ public class WindowManager {
         stage.setTitle("Remove by MPAA rating");
         Window window = new Window(stage, scene, controller);
         stage.setScene(scene);
+        stage.setMinHeight(171);
+        stage.setMinWidth(255);
         stage.setOnCloseRequest(event -> {
             windowList.remove(window);
         });
@@ -236,6 +247,8 @@ public class WindowManager {
         Window window = new Window(stage, scene, controller);
         stage.setTitle("Remove Greater");
         stage.setScene(scene);
+        stage.setMinHeight(171);
+        stage.setMinWidth(228);
         stage.setOnCloseRequest(event -> {
             windowList.remove(window);
         });
@@ -261,6 +274,8 @@ public class WindowManager {
         Window window = new Window(stage, scene, controller);
         stage.setTitle("Remove By ID");
         stage.setScene(scene);
+        stage.setMinHeight(171);
+        stage.setMinWidth(228);
         stage.setOnCloseRequest(event -> {
             windowList.remove(window);
         });
@@ -286,6 +301,8 @@ public class WindowManager {
         Window window = new Window(stage, scene, controller);
         stage.setTitle("Replace if lower");
         stage.setScene(scene);
+        stage.setMinHeight(437);
+        stage.setMinWidth(574);
         stage.setOnCloseRequest(event -> {
             windowList.remove(window);
         });
@@ -304,6 +321,8 @@ public class WindowManager {
         Window window = new Window(stage, scene, controller);
         stage.setTitle(item.getName());
         stage.setScene(scene);
+        stage.setMinHeight(437);
+        stage.setMinWidth(574);
         stage.setOnCloseRequest(event -> {
             windowList.remove(window);
         });

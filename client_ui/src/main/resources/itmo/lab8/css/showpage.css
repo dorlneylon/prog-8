@@ -12,6 +12,18 @@
     -fx-font-family: "Helvetica Neue";
 }
 
+.leet-labels-panes {
+    -fx-background-color: #0c4f00;
+}
+
+.leet-lists-btns {
+    -fx-background-color: #072a00;
+}
+
+.main-class {
+    -fx-background-color: #363636;
+}
+
 .table-row-cell {
     -fx-border-color: #474747;
     -fx-table-cell-border-color: #474747;

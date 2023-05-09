@@ -6,6 +6,18 @@
     -fx-background-color: #252525!important;
 }
 
+.leet-labels-panes {
+    -fx-background-color: #0c4f00;
+}
+
+.leet-lists-btns {
+    -fx-background-color: #072a00;
+}
+
+.main-class {
+    -fx-background-color: #363636;
+}
+
 #passwordField {
     -fx-text-fill: #dadada;
 }

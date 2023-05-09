@@ -3,6 +3,18 @@
     -fx-text-fill: #b2b2b2;
 }
 
+.leet-labels-panes {
+    -fx-background-color: #0c4f00;
+}
+
+.leet-lists-btns {
+    -fx-background-color: #072a00;
+}
+
+.main-class {
+    -fx-background-color: #363636;
+}
+
 .list-cell {
     -fx-background-color: #474747;
     -fx-text-fill: #dadada;

@@ -6,6 +6,18 @@ Button:hover {
     -fx-background-color: #333333 !important;
 }
 
+.leet-labels-panes {
+    -fx-background-color: #0c4f00;
+}
+
+.leet-lists-btns {
+    -fx-background-color: #072a00;
+}
+
+.main-class {
+    -fx-background-color: #363636;
+}
+
 Button:pressed {
     -fx-background-color: #303030 !important;
 }

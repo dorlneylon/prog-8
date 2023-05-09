@@ -39,7 +39,6 @@ public enum CommandType implements Serializable {
         commands.add(SHOW);
         commands.add(EXECUTE_SCRIPT);
         commands.add(INFO);
-        commands.add(UPDATE);
         commands.add(INSERT);
         commands.add(REMOVE_GREATER);
         commands.add(REMOVE_ALL_BY_MPAA_RATING);

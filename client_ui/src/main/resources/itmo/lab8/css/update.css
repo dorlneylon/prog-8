@@ -9,6 +9,18 @@
     -fx-border-color: #474747;
 }
 
+.leet-labels-panes {
+    -fx-background-color: #0c4f00;
+}
+
+.leet-lists-btns {
+    -fx-background-color: #072a00;
+}
+
+.main-class {
+    -fx-background-color: #363636;
+}
+
 .combo-box {
     -fx-border-color: #474747;
 }

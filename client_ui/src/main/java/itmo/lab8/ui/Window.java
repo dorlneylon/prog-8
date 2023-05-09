@@ -31,6 +31,10 @@ public class Window {
         this.controller.updateUi();
     }
 
+    public void setLeet() {
+        this.controller.setLeet();
+    }
+
     public void close() {
         controller.close();
         stage.close();

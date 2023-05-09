@@ -2,6 +2,7 @@ package itmo.lab8.ui.controllers;
 
 import itmo.lab8.ui.Controller;
 import itmo.lab8.ui.LocaleManager;
+import itmo.lab8.ui.Window;
 import itmo.lab8.ui.WindowManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -23,6 +24,8 @@ public class LanguageController extends Controller {
     private Button cat_lang;
     @FXML
     private Button go_back;
+    @FXML
+    private Button leetButton;
 
 
     @FXML
@@ -59,6 +62,13 @@ public class LanguageController extends Controller {
     @FXML
     public void onGoBackButtonClick() {
         WindowManager.getInstance().closeWindow(this.getClass());
+    }
+
+    @FXML
+    public void onLeetButtonClick() {
+        LocaleManager.getInstance().updateLocale("le");
+        WindowManager.getInstance().getWindowList().forEach(Window::setLeet);
+        setActive();
     }
 
     private void removeActiveButton() {

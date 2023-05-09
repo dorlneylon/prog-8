@@ -38,7 +38,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="538.0" prefWidth="635.0" style="-fx-background-color: #363636;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="mainBox" prefHeight="538.0" prefWidth="635.0" styleClass="main-class" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="502.0" prefWidth="635.0" VBox.vgrow="ALWAYS">
         <Label fx:id="commands_list" layoutX="76.0" layoutY="48.0" prefHeight="30.0" prefWidth="191.0" textFill="WHITE">
             <font>
@@ -50,7 +50,7 @@
                 <Font name="Helvetica Neue" size="20.0" />
             </font>
         </Label>
-        <ListView fx:id="historyList" layoutX="343.0" layoutY="93.0" prefHeight="174.0" prefWidth="264.0" style="-fx-background-color: #363636; -fx-border-color: #474747;" />
+        <ListView styleClass="history-list" fx:id="historyList" layoutX="343.0" layoutY="93.0" prefHeight="174.0" prefWidth="264.0" />
         <Label fx:id="details" layoutX="440.0" layoutY="355.0" prefHeight="26.0" prefWidth="71.0" textAlignment="CENTER" textFill="WHITE">
             <font>
                 <Font name="Helvetica Neue" size="20.0" />
@@ -77,6 +77,6 @@
                 <Font name="Helvetica Neue" size="13.0" />
             </font>
         </Label>
-        <ListView fx:id="commandList" layoutX="27.0" layoutY="88.0" prefHeight="424.0" prefWidth="280.0" style="-fx-background-color: #363636; -fx-border-color: #474747;" stylesheets="@css/listview.css" AnchorPane.bottomAnchor="26.0" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="88.0" />
+        <ListView fx:id="commandList" layoutX="27.0" layoutY="88.0" prefHeight="370.0" prefWidth="280.0" style="-fx-background-color: #363636; -fx-border-color: #474747;" stylesheets="@css/listview.css" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="88.0" />
     </AnchorPane>
 </VBox>

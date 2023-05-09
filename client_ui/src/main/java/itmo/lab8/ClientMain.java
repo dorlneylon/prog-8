@@ -31,6 +31,7 @@ public class ClientMain extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+        LocaleManager.getInstance().addLocale("le", new Locale("le"));
         LocaleManager.getInstance().addLocale("ru", new Locale("ru"));
         LocaleManager.getInstance().addLocale("fi", new Locale("fi"));
         LocaleManager.getInstance().addLocale("ca", new Locale("ca"));

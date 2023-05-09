@@ -7,8 +7,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-      prefHeight="136.0" prefWidth="255.0" spacing="10.0" style="-fx-background-color: #363636;"
+<VBox styleClass="main-class" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+      prefHeight="136.0" prefWidth="255.0" spacing="10.0"
       xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
     <Label fx:id="choose_mpaa_label" alignment="TOP_CENTER" prefHeight="25.0" prefWidth="293.0" text="Выберите MPAA"
            textFill="#dadada">

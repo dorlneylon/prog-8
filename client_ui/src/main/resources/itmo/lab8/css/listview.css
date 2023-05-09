@@ -5,6 +5,18 @@
     -fx-border-color: transparent;
 }
 
+.leet-labels-panes {
+    -fx-background-color: #0c4f00 !important;
+}
+
+.leet-lists-btns {
+    -fx-background-color: #072a00 !important;;
+}
+
+.main-class {
+    -fx-background-color: #363636;
+}
+
 .list-cell {
     /* Set the background color of each cell to #474747 */
     -fx-background-color: #404040;
