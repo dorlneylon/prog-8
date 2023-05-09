@@ -1,7 +1,6 @@
 .list-view {
     /* Set the background color of the list view to #363636 */
     -fx-background-color: #404040;
-    -fx-padding: 10px;
     -fx-background-insets: 8px 8px 8px 8px;
     -fx-border-color: transparent;
 }

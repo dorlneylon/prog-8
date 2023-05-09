@@ -14,17 +14,26 @@ import itmo.lab8.connection.ConnectionManager;
 import itmo.lab8.core.AppCore;
 import itmo.lab8.shared.Response;
 import itmo.lab8.ui.Controller;
+import itmo.lab8.ui.LocaleManager;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 import java.lang.reflect.Field;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.ResourceBundle;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Set;
 
 import static itmo.lab8.commands.CollectionValidator.checkIfExists;
+import static itmo.lab8.commands.CollectionValidator.isUserCreator;
 
 public class ShowItemController extends Controller {
     public ShowItemController(Movie movie) {
@@ -32,12 +41,12 @@ public class ShowItemController extends Controller {
     }
 
     private final Movie movie;
-    private final ResourceBundle resources = ResourceBundle.getBundle("itmo.lab8.locale");
-
     @FXML
     private TextField id_insertion_label;
     @FXML
-    private Label insert_upper_label;
+    private Label update_upper_label;
+    @FXML
+    private Button update_button_label;
     @FXML
     private Label movie_label;
     @FXML
@@ -79,7 +88,7 @@ public class ShowItemController extends Controller {
             if (field.getType().equals(Label.class)) {
                 try {
                     Label label = (Label) field.get(this);
-                    label.setText(resources.getString(field.getName()));
+                    label.setText(LocaleManager.getInstance().getResource(field.getName()));
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
@@ -88,7 +97,7 @@ public class ShowItemController extends Controller {
                 try {
                     TextField textField = (TextField) field.get(this);
                     textField.setEditable(isUserCreator);
-                    textField.setPromptText(resources.getString(field.getName()));
+                    textField.setPromptText(LocaleManager.getInstance().getResource(field.getName()));
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
@@ -101,14 +110,9 @@ public class ShowItemController extends Controller {
 
         coords_insertion_label.setText(movie.getCoordinates().toString());
 
-        creation_date_insertion_label.setText(movie.getCreationDate().toString());
-
         oscars_count_insertion_label.setText(String.valueOf(movie.getOscars()));
 
-
         director_name_insertion_label.setText(movie.getDirector().getName());
-
-        birthdate_insertion_label.setText(movie.getDirector().getBirthday().toString());
 
         height_insertion_label.setText(String.valueOf(movie.getDirector().getHeight()));
 
@@ -120,10 +124,15 @@ public class ShowItemController extends Controller {
         rating_choicebox.setValue(movie.getRating());
         haircolor_choicebox.getItems().addAll(Color.values());
         haircolor_choicebox.setValue(movie.getDirector().getHairColor());
+
+        creation_date_insertion_label.setText(new SimpleDateFormat(LocaleManager.getInstance().getResource("date_pattern")).format(Date.from(movie.getCreationDate().toInstant())));
+
+        birthdate_insertion_label.setText(new SimpleDateFormat(LocaleManager.getInstance().getResource("date_pattern")).format(Date.from(movie.getDirector().getBirthday().toInstant())));
     }
 
     @FXML
-    protected void onInsertButtonClick() {
+    protected void onUpdateButtonClick() {
+        NumberFormat numberFormat = NumberFormat.getInstance(Locale.getDefault());
         String id = id_insertion_label.getText();
         String name = name_insertion_label.getText();
         String coords = coords_insertion_label.getText();
@@ -136,8 +145,11 @@ public class ShowItemController extends Controller {
         String height = height_insertion_label.getText();
         String location = location_insertion_label.getText();
         Color hairColor = haircolor_choicebox.getValue();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(LocaleManager.getInstance().getResource("date_pattern"));
         Coordinates coordinates1 = null;
         Location location1 = null;
+        ZonedDateTime date = null;
+        Date directorBirthdate = null;
 
         for (TextField s : Set.of(id_insertion_label, name_insertion_label, coords_insertion_label, creation_date_insertion_label, oscars_count_insertion_label, director_name_insertion_label, birthdate_insertion_label, height_insertion_label, location_insertion_label)) {
             if (s.getText().equals("")) {
@@ -157,42 +169,52 @@ public class ShowItemController extends Controller {
         }
 
         try {
-            if (checkIfExists(Long.parseLong(id))) {
+            if (checkIfExists(Long.parseLong(id)) || !isUserCreator(name, Long.parseLong(id))) {
                 id_insertion_label.getStyleClass().add("empty-textfield");
             } else id_insertion_label.getStyleClass().remove("empty-textfield");
         } catch (Exception e) {
             id_insertion_label.getStyleClass().add("empty-textfield");
         }
 
-        for (TextField f : Set.of(creation_date_insertion_label, birthdate_insertion_label)) {
-            try {
-                new SimpleDateFormat("dd-MM-yyyy").parse(f.getText());
-                f.getStyleClass().remove("empty-textfield");
-            } catch (Exception e) {
-                f.getStyleClass().add("empty-textfield");
-            }
+        try {
+            LocalDate date1 = LocalDate.parse(creationDate, formatter);
+            date = date1.atStartOfDay(ZoneId.systemDefault()).withZoneSameInstant(ZoneId.systemDefault());
+        } catch (Exception e) {
+            creation_date_insertion_label.getStyleClass().add("empty-textfield");
+        }
+
+        try {
+            directorBirthdate = Date.from(LocalDate.parse(birthdate, formatter).atStartOfDay(ZoneId.systemDefault()).toInstant());
+        } catch (Exception e) {
+            birthdate_insertion_label.getStyleClass().add("empty-textfield");
         }
 
         try {
             String coordinates = coords.substring(1, coords.length() - 1);
-            coordinates1 = new Coordinates(Float.parseFloat(coordinates.split(";")[0]), Integer.parseInt(coordinates.split(";")[1]));
+            String[] coordsSplit = coordinates.split(";");
+            coordinates1 = new Coordinates(numberFormat.parse(coordsSplit[0]).floatValue(), numberFormat.parse(coordsSplit[1]).intValue());
             coords_insertion_label.getStyleClass().remove("empty-textfield");
         } catch (Exception e) {
+            System.err.println(e.getMessage());
             coords_insertion_label.getStyleClass().add("empty-textfield");
         }
 
         try {
             String loc = location.substring(1, location.length() - 1);
-            location1 = new Location(Long.parseLong(loc.split(";")[0]), Double.parseDouble(loc.split(";")[1]), Double.parseDouble(loc.split(";")[2]));
+            String[] numbers = loc.split(";");
+            location1 = new Location(numberFormat.parse(numbers[0]).longValue(), numberFormat.parse(numbers[1]).doubleValue(), numberFormat.parse(numbers[2]).doubleValue());
             location_insertion_label.getStyleClass().remove("empty-textfield");
         } catch (Exception e) {
+            System.err.println(e.getMessage());
             location_insertion_label.getStyleClass().add("empty-textfield");
         }
+
         try {
-            Movie movie = new Movie(Long.parseLong(id), name, coordinates1, Long.parseLong(oscarsCount), genre, rating, new Person(directorName, new SimpleDateFormat("dd-mm-yyyy").parse(birthdate), Integer.parseInt(height), hairColor, location1));
-            short opID = ConnectionManager.getInstance().newOperation(new Command(CommandType.INSERT, movie));
+            Movie movie = new Movie(Long.parseLong(id), date, name, coordinates1, Long.parseLong(oscarsCount), genre, rating, new Person(directorName, directorBirthdate, Integer.parseInt(height), hairColor, location1));
+            short opID = ConnectionManager.getInstance().newOperation(new Command(CommandType.UPDATE, movie));
             Response response = ConnectionManager.getInstance().waitForResponse(opID);
             System.out.println(new String(response.getMessage()));
+            id_insertion_label.getStyleClass().remove("empty-textfield");
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }

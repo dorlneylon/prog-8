@@ -93,6 +93,7 @@ public class MainController extends Controller {
             button.setText(LocaleManager.getInstance().getResource(button.getType().name()));
         }
         commandList.refresh();
+        lang.setText(Locale.getDefault().getDisplayLanguage());
     }
 
     private void initListView() {
@@ -186,6 +187,7 @@ public class MainController extends Controller {
                         try {
                             short opId = ConnectionManager.getInstance().newOperation(new Command(CommandType.CLEAR));
                             Response response = ConnectionManager.getInstance().waitForResponse(opId);
+                            System.out.println(response.getStringMessage());
                             Platform.runLater(() -> {
                                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                                 if (response.getType().equals(ResponseType.ERROR)) {
@@ -227,6 +229,11 @@ public class MainController extends Controller {
                         }
                     }
                     case REMOVE_KEY -> {
+                        try {
+                            WindowManager.getInstance().newRemoveByKeyWindow();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                     case UPDATE -> {
                         updateHandler();

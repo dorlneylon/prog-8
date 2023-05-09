@@ -13,6 +13,7 @@ import itmo.lab8.shared.Response;
 import itmo.lab8.ui.Controller;
 import itmo.lab8.ui.ItemCanvas;
 import itmo.lab8.ui.LocaleManager;
+import itmo.lab8.ui.WindowManager;
 import itmo.lab8.ui.types.FilterOption;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -29,8 +30,10 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -87,7 +90,8 @@ public class ShowController extends Controller {
         idColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(Math.toIntExact(cellData.getValue().getId())).asObject());
         nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
         coordinatesColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getCoordinates()));
-        creationDateColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCreationDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.getDefault()))));
+        creationDateColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCreationDate()
+                .format(DateTimeFormatter.ofPattern(LocaleManager.getInstance().getResource("date_pattern"), Locale.getDefault()))));
         oscarsColumn.setCellValueFactory(cellData -> new SimpleIntegerProperty(Math.toIntExact(cellData.getValue().getOscars())).asObject());
         genreColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getGenre()));
         mpaaColumn.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getMpaaRating()));
@@ -108,7 +112,11 @@ public class ShowController extends Controller {
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
                     Movie movie = row.getItem();
-                    showMovieRow(movie);
+                    try {
+                        WindowManager.getInstance().newShowItemWindow(movie);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
             return row;
@@ -267,11 +275,6 @@ public class ShowController extends Controller {
         showTable.setItems(movieList.filtered(movie -> movie.getDirector().getName().contains(directorName)));
     }
 
-    private void setMovieList(ObservableList<Movie> movieList) {
-        this.movieList = movieList;
-        showTable.setItems(movieList);
-    }
-
     private void updateMovieList() {
         showTable.setItems(movieList);
         showTable.sort();
@@ -295,23 +298,6 @@ public class ShowController extends Controller {
 
     public TableView<Movie> getShowTable() {
         return showTable;
-    }
-
-    private void showMovieRow(Movie movie) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("itemshow.fxml"));
-            Stage stage = new Stage();
-            stage.setTitle(movie.getName());
-            ShowItemController controller = new ShowItemController(movie);
-            fxmlLoader.setController(controller);
-            Pane root = fxmlLoader.load();
-            Scene scene = new Scene(root);
-            scene.getStylesheets().add(Objects.requireNonNull(ClientMain.class.getResource("css/insert.css")).toExternalForm());
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @FXML
@@ -365,7 +351,6 @@ public class ShowController extends Controller {
                         Response response = ConnectionManager.getInstance().waitForResponse(id);
                         if (response == null) continue;
                         ArrayList<Movie> array = (ArrayList<Movie>) Serializer.deserialize(response.getMessage());
-                        var items = showTable.getItems();
                         movieList = showTable.getItems();
                         if (array == null) continue;
                         movieList.clear();

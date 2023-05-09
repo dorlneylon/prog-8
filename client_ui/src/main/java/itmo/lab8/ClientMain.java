@@ -33,8 +33,7 @@ public class ClientMain extends Application {
     public void start(Stage stage) throws IOException {
         LocaleManager.getInstance().addLocale("ru", new Locale("ru"));
         LocaleManager.getInstance().addLocale("fi", new Locale("fi"));
-        LocaleManager.getInstance().addLocale("leet", new Locale("leet"));
-        LocaleManager.getInstance().addLocale("en", new Locale("en"));
+        LocaleManager.getInstance().addLocale("ca", new Locale("ca"));
         LocaleManager.getInstance().addLocale("es", new Locale("es"));
         LocaleManager.getInstance().setDefaultLocale("ru");
         AppCore.newInstance(serverAddress, serverPort);

@@ -89,7 +89,7 @@ public class Database {
     public ArrayList<Long> getUsersMovies(String user) {
         ArrayList<Long> movies = new ArrayList<>();
         try {
-            String sql = "SELECT id FROM \"collection\" WHERE user = ?";
+            String sql = "SELECT id FROM \"collection\" WHERE editor = ?";
             PreparedStatement pre = connection.prepareStatement(sql);
             pre.setString(1, user);
             ResultSet result = pre.executeQuery();

@@ -19,3 +19,12 @@ Button:pressed {
     -fx-background-color: #363636 !important;
     -fx-text-fill: #dadada !important;
 }
+
+#historyList .scroll-bar {
+    /* Set the background color of the vertical scroll bar to #C0C0C0 */
+    -fx-background-color: #404040;
+}
+
+#historyList .scroll-bar .thumb{
+    -fx-background-color: #4d4d4d;
+}

@@ -104,6 +104,6 @@ public class Location implements Serializable {
 
     @Override
     public String toString() {
-        return "(" + x + ", " + y + ", " + z + ")";
+        return "(" + x + ";" + y + ";" + z + ")";
     }
 }

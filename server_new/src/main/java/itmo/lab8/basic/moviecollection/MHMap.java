@@ -181,8 +181,8 @@ public abstract class MHMap<K, V> {
      * The map will be empty after this call returns.
      */
     public void clear(String user) {
-        for (Long key : Server.getInstance().getDatabase().getUsersMovies(user)) {
-            this.map.remove(key);
+        synchronized (this.map) {
+            this.map.clear();
         }
     }
 

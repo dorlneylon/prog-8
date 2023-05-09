@@ -1,10 +1,12 @@
 package itmo.lab8.ui;
 
 import itmo.lab8.ClientMain;
+import itmo.lab8.basic.baseclasses.Movie;
 import itmo.lab8.ui.controllers.*;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -283,6 +285,24 @@ public class WindowManager {
         Stage stage = new Stage();
         Window window = new Window(stage, scene, controller);
         stage.setTitle("Replace if lower");
+        stage.setScene(scene);
+        stage.setOnCloseRequest(event -> {
+            windowList.remove(window);
+        });
+        windowList.add(window);
+        stage.show();
+    }
+
+    public void newShowItemWindow(Movie item) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(ClientMain.class.getResource("update.fxml"));
+        ShowItemController controller = new ShowItemController(item);
+        fxmlLoader.setController(controller);
+        Pane root = fxmlLoader.load();
+        Stage stage = new Stage();
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(Objects.requireNonNull(ClientMain.class.getResource("css/update.css")).toExternalForm());
+        Window window = new Window(stage, scene, controller);
+        stage.setTitle(item.getName());
         stage.setScene(scene);
         stage.setOnCloseRequest(event -> {
             windowList.remove(window);
